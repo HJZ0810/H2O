@@ -1,0 +1,28 @@
+test_all_four_multi_choices_and_finish_buffer (__main__.CoreTests.test_all_four_multi_choices_and_finish_buffer) ... ok
+test_answer_timeout_never_retries (__main__.CoreTests.test_answer_timeout_never_retries) ... ok
+test_disconnect_reconnect_never_auto_restarts (__main__.CoreTests.test_disconnect_reconnect_never_auto_restarts) ... ok
+test_duplicate_question_preserves_selection (__main__.CoreTests.test_duplicate_question_preserves_selection) ... ok
+test_explicit_restart_can_receive_story_after_recovery (__main__.CoreTests.test_explicit_restart_can_receive_story_after_recovery) ... ok
+test_explicit_start_then_story_request (__main__.CoreTests.test_explicit_start_then_story_request) ... ok
+test_finished_http_snapshot_resolves_lost_final_reply_without_start (__main__.CoreTests.test_finished_http_snapshot_resolves_lost_final_reply_without_start) ... ok
+test_finished_score_stays_known_after_reconnect (__main__.CoreTests.test_finished_score_stays_known_after_reconnect) ... ok
+test_heartbeat_does_not_interrupt_exam (__main__.CoreTests.test_heartbeat_does_not_interrupt_exam) ... ok
+test_hint_removes_selection_and_does_not_submit (__main__.CoreTests.test_hint_removes_selection_and_does_not_submit) ... ok
+test_http_snapshot_cannot_replace_pending_start (__main__.CoreTests.test_http_snapshot_cannot_replace_pending_start) ... ok
+test_inflight_or_queued_snapshot_cannot_cross_recovery_fence (__main__.CoreTests.test_inflight_or_queued_snapshot_cannot_cross_recovery_fence) ... ok
+test_judge_kept_until_ack_and_duplicate_not_counted (__main__.CoreTests.test_judge_kept_until_ack_and_duplicate_not_counted) ... ok
+test_late_follow_accepted_after_user_ack (__main__.CoreTests.test_late_follow_accepted_after_user_ack) ... ok
+test_malformed_message_fails_closed (__main__.CoreTests.test_malformed_message_fails_closed) ... ok
+test_multi_selection_toggles_and_sorts (__main__.CoreTests.test_multi_selection_toggles_and_sorts) ... ok
+test_old_http_snapshot_cannot_overwrite_active_score (__main__.CoreTests.test_old_http_snapshot_cannot_overwrite_active_score) ... ok
+test_oversized_and_invalid_options_rejected (__main__.CoreTests.test_oversized_and_invalid_options_rejected) ... ok
+test_stale_finished_snapshot_cannot_cross_recovery_fence (__main__.CoreTests.test_stale_finished_snapshot_cannot_cross_recovery_fence) ... ok
+test_stale_judge_cannot_score_next_question (__main__.CoreTests.test_stale_judge_cannot_score_next_question) ... ok
+test_start_requires_current_connection_score_snapshot (__main__.CoreTests.test_start_requires_current_connection_score_snapshot) ... ok
+test_submit_requires_selection_and_blocks_repeat (__main__.CoreTests.test_submit_requires_selection_and_blocks_repeat) ... ok
+test_timeout_requires_new_score_snapshot_before_restart (__main__.CoreTests.test_timeout_requires_new_score_snapshot_before_restart) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.384s
+
+OK

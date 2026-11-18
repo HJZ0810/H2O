@@ -1,0 +1,10 @@
+test_delayed_reply_cannot_replace_current_state (__main__.V2.test_delayed_reply_cannot_replace_current_state) ... ok
+test_finished_snapshot_restores_result_without_start (__main__.V2.test_finished_snapshot_restores_result_without_start) ... ok
+test_handshake_needs_resume_and_start_uses_session_and_revision (__main__.V2.test_handshake_needs_resume_and_start_uses_session_and_revision) ... ok
+test_lost_answer_recovers_judge_without_adding_score_twice (__main__.V2.test_lost_answer_recovers_judge_without_adding_score_twice) ... ok
+test_resume_restores_question_and_hint_removals (__main__.V2.test_resume_restores_question_and_hint_removals) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.307s
+
+OK

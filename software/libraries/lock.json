@@ -1,0 +1,63 @@
+{
+  "arduino_cli": "1.5.1",
+  "esp32_core": "3.3.12",
+  "libraries": [
+    {
+      "directory": "Adafruit BusIO",
+      "name": "Adafruit BusIO",
+      "version": "1.17.4",
+      "url": "https://github.com/adafruit/Adafruit_BusIO",
+      "tree_sha256": "85b21d2c69e7be11b750c0f432ea2581fe9d5bc55250626c98c14d2a30226ac5"
+    },
+    {
+      "directory": "Adafruit GFX Library",
+      "name": "Adafruit GFX Library",
+      "version": "1.13.0",
+      "url": "https://github.com/adafruit/Adafruit-GFX-Library",
+      "tree_sha256": "d5d32c5fb5e2dbf6c5d651d281c9bde2ba7a9fcbc9e9228636dd4f5a22f5b261"
+    },
+    {
+      "directory": "Adafruit Unified Sensor",
+      "name": "Adafruit Unified Sensor",
+      "version": "1.1.15",
+      "url": "https://github.com/adafruit/Adafruit_Sensor",
+      "tree_sha256": "32a3897d551d779c9e8b49351335f9b5f931d088a08712cbcd8d8128c17ecfac"
+    },
+    {
+      "directory": "Adafruit_ST7735_and_ST7789_Library-1.12.0",
+      "name": "Adafruit ST7735 and ST7789 Library",
+      "version": "1.12.0",
+      "url": "https://github.com/adafruit/Adafruit-ST7735-Library",
+      "tree_sha256": "5e1ab16b3a019d6369ef20fe1058b4344c7eabbf79b8b33be48d73b4ccfcde5b"
+    },
+    {
+      "directory": "ArduinoJson",
+      "name": "ArduinoJson",
+      "version": "7.4.3",
+      "url": "https://arduinojson.org/?utm_source=meta&utm_medium=library.properties",
+      "tree_sha256": "73289f007c33645c7e990ef5a5fef5ace092222ee7ed1edefc857898ef8beda2"
+    },
+    {
+      "directory": "DHT sensor library",
+      "name": "DHT sensor library",
+      "version": "1.4.7",
+      "url": "https://github.com/adafruit/DHT-sensor-library",
+      "tree_sha256": "48684fa244fbf859ebce44bbc6f161414342e9a3da4e80eb5fa63d151036e2d2"
+    },
+    {
+      "directory": "PubSubClient",
+      "name": "PubSubClient",
+      "version": "2.8",
+      "url": "http://pubsubclient.knolleary.net",
+      "tree_sha256": "526c0bc21205433c810bdedd06e08a40ac33d4cec49487e238c537e73fc9670a"
+    },
+    {
+      "directory": "U8g2_for_Adafruit_GFX-1.8.0",
+      "name": "U8g2_for_Adafruit_GFX",
+      "version": "1.8.0",
+      "url": "https://github.com/olikraus/U8g2_for_Adafruit_GFX",
+      "tree_sha256": "2af920ec55043a6e3ccda4bb0b376d2ee6b3cd965f2c2ac2c1f0a3f0836d7557"
+    }
+  ],
+  "tree_sha256_algorithm": "sorted-sha256-space-space-posix-path-LF"
+}

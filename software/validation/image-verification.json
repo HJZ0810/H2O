@@ -1,0 +1,11 @@
+{
+  "passed": 5,
+  "checks": [
+    "ESP32-S3 image, checksum, validation hash, matching ELF hash",
+    "ExamHandheld.ino.bootloader.bin at 0x0",
+    "ExamHandheld.ino.partitions.bin at 0x8000",
+    "ExamHandheld.ino.bin at 0x10000",
+    "Core boot_app0 at 0xe000"
+  ],
+  "hardware_flashes": 0
+}

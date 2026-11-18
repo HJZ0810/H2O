@@ -1,0 +1,48 @@
+{
+  "version": "1.1.0-r3.1",
+  "verified_at": "2026-11-11T23:49:57.849039+08:00",
+  "arduino_cli": "1.5.1",
+  "esp32_core": "3.3.12",
+  "fqbn": "esp32:esp32:esp32s3:USBMode=hwcdc,CDCOnBoot=cdc,FlashMode=qio,FlashSize=16M,PartitionScheme=app3M_fat9M_16MB,PSRAM=opi,LoopCore=1,EventsCore=1,EraseFlash=none",
+  "program_bytes": 1263371,
+  "program_limit": 3145728,
+  "global_bytes": 50428,
+  "dynamic_free_bytes": 277252,
+  "backend_and_integration_tests": {
+    "passed": 23,
+    "failed": 0
+  },
+  "native_core_tests": {
+    "passed": 28,
+    "failed": 0
+  },
+  "button_and_portal_programs": {
+    "passed": 3,
+    "failed": 0
+  },
+  "source_audit_checks": 27,
+  "source_files": 19,
+  "image_checks": 5,
+  "live_full_score": 350,
+  "live_correct": 35,
+  "test_records_cleared": [
+    "99001",
+    "99111"
+  ],
+  "account_preserved": "99001",
+  "temporary_account_removed": "99111",
+  "frontend_layout_preserved": true,
+  "privacy_text_files_scanned": 233,
+  "production_credentials_in_package": false,
+  "temporary_plaintext_credentials_removed": true,
+  "old_archive_preserved": true,
+  "hardware_flashes": 0,
+  "binary_sha256": {
+    "ExamHandheld.ino.bin": "604f0efa45facc91a7bbbf528b494351d8be367f3ad2bb774d3e62d80099bf47",
+    "ExamHandheld.ino.bootloader.bin": "84bb365666003b051f564d04380d0cf5d9d85c420ddafe9fc863071b49e49bfc",
+    "ExamHandheld.ino.elf": "dde2d7a621de26945ee8f3861505dc5f12b110a2f254efd0895cc77e9e0784ff",
+    "ExamHandheld.ino.map": "41bd63c8457371ff87913f17fc32c3f4a9b649dcf37626f3b81d041bc0b9b236",
+    "ExamHandheld.ino.merged.bin": "a2dddbb81f3b86c1fd1513cbdea4c689e1d79aa2353ac345550022a60d0fa9fe",
+    "ExamHandheld.ino.partitions.bin": "ace02503447d0f470692e65fa76002f2d77a92dc81cd3813d8aa66718d716da9"
+  }
+}

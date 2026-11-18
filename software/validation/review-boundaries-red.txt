@@ -1,0 +1,68 @@
+✔ wrong qid is rejected without changing score or position (13.3684ms)
+✔ identical request replays the same judge without a second mutation (14.5648ms)
+✔ request id cannot be reused for different content (12.2604ms)
+✔ stale revision with a fresh id cannot advance a story (7.9336ms)
+✔ start continues an existing question instead of resetting (11.697ms)
+✔ answer before a question and invalid single choices do not mutate (9.604ms)
+✔ lost judge is recovered after process reload, and continue advances once (13.4801ms)
+✔ hint removed options and spent hint survive reload (11.4349ms)
+✔ protocol2 session cannot be downgraded by legacy hello or mutations (9.4879ms)
+✔ retry credits each qid once but still counts a correct answer toward passing (83.4602ms)
+✔ persistence failure leaves in-memory score and revision unchanged (10.3717ms)
+✔ corrupt state fails closed rather than opening a fresh empty exam (2.9674ms)
+✔ two groups retain independent state across reload (16.4525ms)
+✔ evicted receipts cannot be replayed with a stale revision (155.9819ms)
+✔ a deleted test session gets a new identity and rejects its old commands (9.2744ms)
+✖ persisted score must match real credited questions and cannot exceed the bank (9.9847ms)
+✖ a read-only resume can recover a committed judge even if further writes fail (12.7538ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 15
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 504.3014
+
+✖ failing tests:
+
+test at work\repair-v1.1\tests\engine.test.cjs:23:1
+✖ persisted score must match real credited questions and cannot exceed the bank (9.9847ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\Users\Administrator\Documents\Codex\2026-11-11\eda-esp32-skill-skill-10-10\work\repair-v1.1\tests\engine.test.cjs:23:406)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at work\repair-v1.1\tests\engine.test.cjs:24:1
+✖ a read-only resume can recover a committed judge even if further writes fail (12.7538ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'error'
+  - 'resume_ack'
+  
+      at TestContext.<anonymous> (C:\Users\Administrator\Documents\Codex\2026-11-11\eda-esp32-skill-skill-10-10\work\repair-v1.1\tests\engine.test.cjs:24:240)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'error',
+    expected: 'resume_ack',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

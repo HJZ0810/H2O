@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "removedGameAndSensors": [
+    "99001",
+    "99111"
+  ],
+  "preservedAccount": "99001",
+  "removedTemporaryAccount": "99111",
+  "unrelatedGamesPreserved": true,
+  "remainingAccounts": 1,
+  "remainingPlayers": 0,
+  "remainingSensorGroups": 0,
+  "time": "2026-11-11T15:31:28.054Z"
+}

@@ -1,0 +1,51 @@
+✔ wrong qid is rejected without changing score or position (24.6093ms)
+✔ identical request replays the same judge without a second mutation (29.5684ms)
+✔ request id cannot be reused for different content (34.093ms)
+✔ stale revision with a fresh id cannot advance a story (20.4666ms)
+✔ start continues an existing question instead of resetting (32.0762ms)
+✔ answer before a question and invalid single choices do not mutate (25.4396ms)
+✔ lost judge is recovered after process reload, and continue advances once (31.3267ms)
+✔ hint removed options and spent hint survive reload (27.8048ms)
+✔ protocol2 session cannot be downgraded by legacy hello or mutations (25.5381ms)
+✔ retry credits each qid once but still counts a correct answer toward passing (188.334ms)
+✔ persistence failure leaves in-memory score and revision unchanged (29.3442ms)
+✔ corrupt state fails closed rather than opening a fresh empty exam (8.2144ms)
+✔ two groups retain independent state across reload (32.5973ms)
+✔ evicted receipts cannot be replayed with a stale revision (356.809ms)
+✔ a deleted test session gets a new identity and rejects its old commands (22.8931ms)
+✔ persisted score must match real credited questions and cannot exceed the bank (31.8181ms)
+✔ a read-only resume can recover a committed judge even if further writes fail (26.7603ms)
+✖ protocol2 reconnect handshake remains possible when later writes fail (38.8075ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 17
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1090.3941
+
+✖ failing tests:
+
+test at work\repair-v1.1\tests\engine.test.cjs:25:1
+✖ protocol2 reconnect handshake remains possible when later writes fail (38.8075ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'error'
+  - 'hello_ack'
+  
+      at TestContext.<anonymous> (C:\Users\Administrator\Documents\Codex\2026-11-11\eda-esp32-skill-skill-10-10\work\repair-v1.1\tests\engine.test.cjs:25:275)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'error',
+    expected: 'hello_ack',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

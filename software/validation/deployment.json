@@ -1,0 +1,14 @@
+{
+  "deployed": true,
+  "migrated": [
+    "99001"
+  ],
+  "files": {
+    "index.js": "9534e5ba42812a66835075b7ca7f8de1ab5da10154319e10b34f9f138039eb1f",
+    "game.js": "1ff2cfc08acf29930318a63c1abf65e5e21a9b30c6568296b1b8e102b85447fa",
+    "game-engine.js": "3d86e745916e068b99ba0d8f32869c40d0414f073ba89490ecf64cd3e37e8c41",
+    "public/student.html": "5584e834e6dd60deef48839e118605c9771f4b7bbdc3bdf478277df180ed71cd",
+    "public/admin.html": "43e62c12c2abac752e969c87eaf3e5bb601124e35c9f73401d32c9493821bf97"
+  },
+  "time": "2026-11-11T15:24:35.289Z"
+}

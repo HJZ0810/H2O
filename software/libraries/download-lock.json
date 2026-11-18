@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Adafruit_ST7735_and_ST7789_Library-1.12.0.zip",
+    "url": "https://downloads.arduino.cc/libraries/github.com/adafruit/Adafruit_ST7735_and_ST7789_Library-1.12.0.zip",
+    "sha256": "60a88b11a026559712154df97488cc7512b72d5ac1b8ec91c8cace9c2ef853a8"
+  },
+  {
+    "name": "U8g2_for_Adafruit_GFX-1.8.0.zip",
+    "url": "https://downloads.arduino.cc/libraries/github.com/olikraus/U8g2_for_Adafruit_GFX-1.8.0.zip",
+    "sha256": "9f79d2c8eb37e2e2cf2b1359e7324c420fe409b4c2a1aebcebb5a19e7623bf05"
+  }
+]

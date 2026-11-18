@@ -1,0 +1,16 @@
+# 编译中间产物（完整版本见 dist/ 内原始交付包）
+*.elf
+*.map
+*.merged.bin
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# 构建输出
+build/
+output/

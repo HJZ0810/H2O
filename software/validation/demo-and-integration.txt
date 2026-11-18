@@ -1,0 +1,12 @@
+✔ real C++ core and production bank complete 35 questions through loss, reload and client restart (600.5981ms)
+✔ legacy protocol still completes all seven levels, with a bounded 350 point score (112.4233ms)
+✔ automatic demonstration reads pages, selects and submits all 35 answers through normal commands (566.3746ms)
+✔ demo pauses before submitting a changed question, and can be cancelled (30.7072ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1399.2226
