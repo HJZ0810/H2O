@@ -1,0 +1,202 @@
+{
+  "projectUuid": "9bb45a06b061469e8ee71b0820f2b7b7",
+  "projectArchiveSha256": "a8922b1d77d888596e78e712bc697574a92c78a8543484a43d1f489d0b08b930",
+  "pcb": [
+    {
+      "board": "PCB1-手柄",
+      "documentUuid": "607a3674be402c29",
+      "bbox_mm": [
+        99.6,
+        99.6
+      ],
+      "pcbSemanticSha256": "78ae56d6c69e959292c7310679058d071d093a752b7ea25dba282e82bc0a50f6",
+      "gerberSha256": "336e72db0e068cf4c80755ebc1183eb23f0c203fce0013803da879ebdbdba348",
+      "nativeDRC": 0,
+      "advisoryDFM": {
+        "danglingEnds": 0,
+        "acuteAngles": 4,
+        "nonOrthogonal": 0,
+        "trackOverPad": 0,
+        "clearance": 0,
+        "silkscreenFlipped": 16,
+        "overlappingVias": 0,
+        "singleLayerVias": 0,
+        "widthMismatches": 1,
+        "duplicateSegments": 0,
+        "parallelCoupling": 5,
+        "antennaKeepout": 0,
+        "netlessPours": 0,
+        "viaCrossesPlane": 0,
+        "floatingIslands": 0,
+        "powerNotPoured": 3,
+        "netlessViaInPad": 0,
+        "widthUnderSpec": 0,
+        "silkOverPad": 0,
+        "silkOffBoard": 0,
+        "decapTooFar": 0,
+        "viaInPad": 0,
+        "copperNearEdge": 0,
+        "fiducialMissing": 0,
+        "zoneViolation": 0,
+        "internalOnEdge": 0,
+        "connectorPlugClearance": 3,
+        "connectorMatingBlocked": 0,
+        "connectorOpeningInward": 0,
+        "errors": 0,
+        "warnings": 31,
+        "total": 32
+      },
+      "componentCount": 27,
+      "pcbPadCount": 119,
+      "schematicPinCount": 117,
+      "signalSegments": 272,
+      "vias": 36,
+      "groundPours": 2,
+      "gerberEntryCount": 16,
+      "flyingProbeAlias": {},
+      "switchLocatingHoles_mm": [
+        [
+          47.6,
+          -52.381
+        ],
+        [
+          52.0,
+          -52.381
+        ]
+      ],
+      "powerPadsBackOnly": 6,
+      "esp32Pitch_mm": 2.54,
+      "esp32RowSpacing_mm": 22.86,
+      "displayHeaderX_mm": 72.799,
+      "fastChargePadRowsNominal_mm": 18.5
+    },
+    {
+      "board": "PCB2-执行器",
+      "documentUuid": "eb635eb59d7014f8",
+      "bbox_mm": [
+        67.056,
+        50.292
+      ],
+      "pcbSemanticSha256": "c99de59bbed97e739a859d10ba0a755b001d7c1a702cfef78c63808b9e99802d",
+      "gerberSha256": "883fe5c10123792450adaf4d0986315f4fb91b71db0b75dfb15f42075023df42",
+      "nativeDRC": 0,
+      "advisoryDFM": {
+        "danglingEnds": 0,
+        "acuteAngles": 0,
+        "nonOrthogonal": 0,
+        "trackOverPad": 0,
+        "clearance": 0,
+        "silkscreenFlipped": 4,
+        "overlappingVias": 0,
+        "singleLayerVias": 0,
+        "widthMismatches": 0,
+        "duplicateSegments": 0,
+        "parallelCoupling": 6,
+        "antennaKeepout": 0,
+        "netlessPours": 0,
+        "viaCrossesPlane": 0,
+        "floatingIslands": 0,
+        "powerNotPoured": 2,
+        "netlessViaInPad": 0,
+        "widthUnderSpec": 0,
+        "silkOverPad": 0,
+        "silkOffBoard": 0,
+        "decapTooFar": 0,
+        "viaInPad": 0,
+        "copperNearEdge": 0,
+        "fiducialMissing": 0,
+        "zoneViolation": 0,
+        "internalOnEdge": 0,
+        "connectorPlugClearance": 0,
+        "connectorMatingBlocked": 0,
+        "connectorOpeningInward": 0,
+        "errors": 0,
+        "warnings": 12,
+        "total": 12
+      },
+      "componentCount": 6,
+      "pcbPadCount": 37,
+      "schematicPinCount": 35,
+      "signalSegments": 69,
+      "vias": 6,
+      "groundPours": 2,
+      "gerberEntryCount": 14,
+      "flyingProbeAlias": {
+        "SERVO_PWM_SW": "NET_1"
+      },
+      "switchLocatingHoles_mm": [
+        [
+          35.138,
+          -35.9
+        ],
+        [
+          39.538,
+          -35.9
+        ]
+      ],
+      "servoHoles_mm": {
+        "diameter": 2.2,
+        "spacing": 27.5,
+        "centers": [
+          [
+            31.081,
+            -15.7734
+          ],
+          [
+            58.581,
+            -15.7734
+          ]
+        ]
+      },
+      "boardMountHoles_mm": 3.2
+    }
+  ],
+  "schematics": 3,
+  "firmware": {
+    "routedGpio": {
+      "MQ2_AO_ADC": 4,
+      "DHT_DATA": 5,
+      "GPIO6_EXT": 6,
+      "KEY_F1": 7,
+      "TFT_CS": 15,
+      "KEY_LEFT": 16,
+      "KEY_RIGHT": 17,
+      "KEY_OK": 18,
+      "KEY_F2": 8,
+      "GPIO9_EXT": 9,
+      "GPIO10_EXT": 10,
+      "KEY_UP": 11,
+      "KEY_DOWN": 12,
+      "TFT_MOSI": 13,
+      "TFT_SCK": 14,
+      "MQ1_AO_ADC": 1,
+      "TFT_DC": 2,
+      "SERVO_PWM": 42,
+      "MOTOR_PWM": 41,
+      "MOTOR_AIN1": 40,
+      "MOTOR_AIN2": 39,
+      "MOTOR_STBY": 38,
+      "GPIO47_EXT": 47,
+      "TFT_RST": 21,
+      "GPIO20_EXT": 20,
+      "GPIO19_EXT": 19
+    },
+    "programBytes": 1271866,
+    "ramBytes": 50556,
+    "uploaded": false,
+    "liveServerTested": false
+  },
+  "idc": [
+    "+5V",
+    "SERVO_PWM",
+    "+5V",
+    "MOTOR_PWM",
+    "GND",
+    "MOTOR_AIN1",
+    "+3V3",
+    "MOTOR_AIN2",
+    "GND",
+    "MOTOR_STBY"
+  ],
+  "hardwareAcceptance": "pending: module fit, 5 V total load, fan travel and firmware on hardware"
+}

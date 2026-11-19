@@ -5,3 +5,6 @@
 *.zip binary
 *.epro2 binary
 *.bin binary
+
+# Preserve upstream bytes for the bundled library tree hashes.
+software/libraries/** -text !eol

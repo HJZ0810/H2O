@@ -14,7 +14,7 @@ foreach ($binaryName in @('ExamHandheld.ino.bin','ExamHandheld.ino.bootloader.bi
   if (-not (Test-Path -LiteralPath (Join-Path $binaryPath $binaryName))) { throw "Missing binary: $binaryName. Run tools\build.ps1 first." }
 }
 $fqbn = 'esp32:esp32:esp32s3:USBMode=hwcdc,CDCOnBoot=cdc,FlashMode=qio,FlashSize=16M,PartitionScheme=app3M_fat9M_16MB,PSRAM=opi,LoopCore=1,EventsCore=1,EraseFlash=none'
-Write-Host "Uploading to $Port. Remove JP2 before powering the development board by USB."
+Write-Host "Uploading to $Port. Disconnect the handheld external 5 V before connecting the ESP32 to USB."
 & $ArduinoCli upload --fqbn $fqbn --port $Port --input-dir $binaryPath --verify
 if ($LASTEXITCODE -ne 0) { throw "Firmware upload failed ($LASTEXITCODE)." }
 Write-Host 'Upload and verification passed. Configure the device and validate it on hardware.'

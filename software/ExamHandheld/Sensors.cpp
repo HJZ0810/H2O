@@ -12,16 +12,14 @@ static AnalogSample readAnalog(int pin,bool enabled) {
 void Sensors::begin(const DeviceConfig& cfg) {
   mq[0].enabled=cfg.mq1;mq[1].enabled=cfg.mq2;
   analogReadResolution(12);
-  for(int pin:{board::MQ1,board::MQ2,board::LDR}) {pinMode(pin,INPUT);analogSetPinAttenuation(pin,ADC_11db);}
+  for(int pin:{board::MQ1,board::MQ2}) {pinMode(pin,INPUT);analogSetPinAttenuation(pin,ADC_11db);}
   dht_.begin();lastDht_=millis();
 }
 void Sensors::tick() {
   uint32_t now=millis();
   if(uint32_t(now-lastAnalog_)>=500) {
     lastAnalog_=now;mq[0]=readAnalog(board::MQ1,mq[0].enabled);mq[1]=readAnalog(board::MQ2,mq[1].enabled);
-    auto light=readAnalog(board::LDR,true);lightRaw=light.raw;lightMv=light.mv;lightClipped=light.clipped;
-    // Relative ADC scale, not lux; divider topology is LDR to 3V3 and 10k to GND.
-    lightPercent=100.0f*light.raw/4095.0f;revision++;
+    revision++;
   }
   if(uint32_t(now-lastDht_)>=2500) {
     lastDht_=now;float h=dht_.readHumidity(),t=dht_.readTemperature();
@@ -34,9 +32,8 @@ String Sensors::json() const {
   if(dhtValid) {d["temperature"]=temperature;d["humidity"]=humidity;}
   else {d["temperature"]=nullptr;d["humidity"]=nullptr;}
   d["dht_status"]=dhtValid?"ok":"unavailable";
-  d["light"]=nullptr;d["light_raw"]=lightRaw;d["light_mv"]=lightMv;
-  d["light_percent"]=roundf(lightPercent*10)/10;
-  d["light_status"]=lightClipped?"clipped":"uncalibrated";
+  d["light"]=nullptr;
+  d["light_status"]="unavailable";
   for(unsigned i=0;i<2;i++) {
     auto a=d[i?"mq2":"mq1"].to<JsonObject>();a["enabled"]=mq[i].enabled;
     a["valid"]=mq[i].enabled&&!mq[i].clipped;
