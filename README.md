@@ -2,12 +2,12 @@
 
 ## R9 十芯直连与直插装配
 
-手柄板 99.60 × 99.60 mm，执行板 86 × 64 mm，适配 MG996R 180°。一根 2×5、2.54 mm IDC 排线，5 V、地、3.3 V 各占一针，其余七针直接连接舵机和 TB6612 两路控制。执行板右侧三组直插螺丝端子分别接 B 路输出、方向输入和 PWM/GND。手柄正面、背面各有一颗方头直插灯。
+手柄板 99.60 × 99.60 mm，执行板 86 × 64 mm，适配 MG996R 180°。一根 2×5、2.54 mm IDC 排线，5 V、地、3.3 V 各占一针，其余七针直接连接舵机和 TB6612 两路控制。执行板右侧三组直插螺丝端子分别接 B 路输出、方向输入和 PWM/GND。两板由原 Type-C 取电板统一断电，板上自锁键只管启停。执行板按常见 MG996R 的 49.5 × 10 mm 耳位加工四个 Ø4.0 固定孔。
 
 | 内容 | 文件 |
 | --- | --- |
 | 嘉立创专业版工程 | [两块板和原理图](hardware/R9-10P/ESP32-handheld-R9-10P.epro2) |
-| 针序、器件与装配 | [逐图改版核对](docs/R9/十芯直连与直插装配.md) |
+| 针序、器件与装配 | [启停接线、舵机孔位与逐图核对](docs/R9/十芯直连与直插装配.md) |
 | 制板文件 | [手柄 Gerber](hardware/R9-10P/PCB1-R9-10P-Gerber.zip) · [执行板 Gerber](hardware/R9-10P/PCB2-R9-10P-Gerber.zip) |
 | 保存后验证 | [手柄正面](hardware/R9-10P/PCB1-front.png) · [执行板正面](hardware/R9-10P/PCB2-front.png) · [DRC 和线序核对](hardware/R9-10P/validation.json) |
 | Arduino `1.2.2-r9-10p` | [手柄源码](software/ExamHandheld/ExamHandheld.ino) · [编译与烧录](software/README_先读我.md) · [烧录文件](software/binaries/) |

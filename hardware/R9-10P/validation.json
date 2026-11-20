@@ -1,25 +1,57 @@
 {
   "PCB1": {
     "native_drc": 0,
-    "verified_pin_count": 17,
-    "probe_aliases": {
-      "MOTOR_B_PWM": "NET_10"
-    },
+    "part_count": 29,
+    "removed_refs": [
+      "D2",
+      "D3",
+      "Q1",
+      "R23",
+      "R24",
+      "R25"
+    ],
+    "verified_pin_count": 19,
     "closed_gerber_contours": 1,
-    "gerber_sha256": "9da37385ae3d2ce49533f25e9c70e8d9d1153fac1a616e402a5c986334b114b0"
+    "gerber_sha256": "089cf31f89c419ed8cd3067d74a506e77d94b495093f1bb25493f21abb3f107c"
   },
   "PCB2": {
     "native_drc": 0,
-    "verified_pin_count": 37,
-    "probe_aliases": {
-      "MOTOR_B_PWM": "NET_2",
-      "SERVO_PWM_SW": "NET_1"
-    },
+    "part_count": 9,
+    "removed_refs": [
+      "Q11",
+      "R35"
+    ],
+    "verified_pin_count": 41,
     "closed_gerber_contours": 12,
-    "gerber_sha256": "058970a5ec53e81a918f53e65925d4bfd5e94c47d6ae19585686627130da7978"
+    "gerber_sha256": "0d3b6579951491d0814130d6de26b08fea5fc85741d0da264b8f0577c43b3d2a",
+    "servo_mount_centers_mm": [
+      [
+        29.25,
+        12
+      ],
+      [
+        29.25,
+        22
+      ],
+      [
+        78.75,
+        12
+      ],
+      [
+        78.75,
+        22
+      ]
+    ],
+    "servo_mount_diameter_mm": 4.0
   },
-  "project_sha256": "c83e9c30d69fb86a7242bf58ff0c23230aafe0c0e8789519f1d07b087b9336af",
-  "firmware_app_sha256": "8d6ff66cad5384820f28ba7640c227fd04ed13937aba1fb0c36d739c3d7105ef",
-  "firmware_core": "esp32 3.3.12",
-  "firmware_build": true
+  "physical_paths_checked": [
+    "hand:J22.2->J8.1",
+    "hand:J1.3->SW10.2",
+    "fan:J10.1->J12.7",
+    "fan:J10.1->J3.2",
+    "fan:SW20.2->J13.4",
+    "fan:J10.7->SW20.1"
+  ],
+  "project_sha256": "51509c44165d4b0508bfec2dedbf898a32a3402671f498337386ad4d321751f9",
+  "firmware_app_sha256": "8d6ff66cad5384820f28ba7640c227fd04ed13937aba1fb0c36d739c3d7105ef"
 }
