@@ -1,0 +1,48 @@
+{
+  "project": "1bf51cf5312b471c8fc5a8a3aa85e1f1",
+  "boards": [
+    {
+      "board": "PCB1-手柄",
+      "outline_mm": [
+        99.6,
+        99.6
+      ],
+      "footprints": 29,
+      "pads": 124,
+      "drc": 0,
+      "tracks": 252,
+      "vias": 18,
+      "fabrication_net_aliases": {
+        "MAIN_PWR_GATE": "NET_14"
+      }
+    },
+    {
+      "board": "PCB2-执行器",
+      "outline_mm": [
+        67.056,
+        50.292
+      ],
+      "footprints": 8,
+      "pads": 42,
+      "drc": 0,
+      "tracks": 69,
+      "vias": 1,
+      "fabrication_net_aliases": {
+        "FAN_PWR_GATE": "NET_7",
+        "SERVO_PWM_SW": "NET_1"
+      }
+    }
+  ],
+  "idc_pinout": [
+    "+5V",
+    "SERVO_PWM",
+    "+5V",
+    "MOTOR_PWM",
+    "GND",
+    "MOTOR_AIN1",
+    "+3V3",
+    "MOTOR_AIN2",
+    "GND",
+    "MOTOR_STBY"
+  ]
+}
