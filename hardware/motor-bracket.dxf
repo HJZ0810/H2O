@@ -97,7 +97,7 @@ $TRACEWID
   9
 $TEXTSTYLE
   7
-CN
+Standard
   9
 $CLAYER
   8
@@ -493,7 +493,7 @@ $SKPOLY
   9
 $TDCREATE
  40
-2461363.6674074074
+2461363.870462963
   9
 $TDUCREATE
  40
@@ -501,7 +501,7 @@ $TDUCREATE
   9
 $TDUPDATE
  40
-2461363.6674074074
+2461363.870462963
   9
 $TDUUPDATE
  40
@@ -553,7 +553,7 @@ $SPLINESEGS
   9
 $HANDSEED
   5
-EF
+9A
   9
 $SURFTAB1
  70
@@ -933,11 +933,11 @@ $PSTYLEMODE
   9
 $FINGERPRINTGUID
   2
-{C2949418-6BA9-45AA-B1F1-8F83D55DD34B}
+{ED4D5280-4723-43AB-BCFA-1F1A2219833C}
   9
 $VERSIONGUID
   2
-{63CEB962-A101-416A-99C7-FFBDC2D3B490}
+{732E68B5-9762-4A3F-9534-F439685774D3}
   9
 $EXTNAMES
 290
@@ -1639,7 +1639,7 @@ AcDbSymbolTableRecord
 100
 AcDbLayerTableRecord
   2
-HOLE
+CUT
  70
 0
  62
@@ -1663,11 +1663,11 @@ AcDbSymbolTableRecord
 100
 AcDbLayerTableRecord
   2
-REFERENCE
+NOTES
  70
 0
  62
-8
+7
   6
 Continuous
 370
@@ -1687,11 +1687,11 @@ AcDbSymbolTableRecord
 100
 AcDbLayerTableRecord
   2
-TEXT
+REFERENCE
  70
 0
  62
-7
+8
   6
 Continuous
 370
@@ -1829,7 +1829,7 @@ ACAD
   0
 APPID
   5
-EC
+97
 330
 3
 100
@@ -1843,7 +1843,7 @@ HATCHBACKGROUNDCOLOR
   0
 APPID
   5
-ED
+98
 330
 3
 100
@@ -2019,7 +2019,7 @@ BLOCK_RECORD
 100
 AcDbSymbolTable
  70
-9
+2
   0
 BLOCK_RECORD
   5
@@ -2054,146 +2054,6 @@ AcDbBlockTableRecord
 *Paper_Space
 340
 1E
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-52
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-*D1
-340
-0
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-57
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-_CLOSEDFILLED
-340
-0
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-67
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-*D2
-340
-0
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-90
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-*D3
-340
-0
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-A1
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-*D4
-340
-0
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-C0
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-*D5
-340
-0
- 70
-0
-280
-1
-281
-0
-  0
-BLOCK_RECORD
-  5
-D1
-330
-9
-100
-AcDbSymbolTableRecord
-100
-AcDbBlockTableRecord
-  2
-*D6
-340
-0
  70
 0
 280
@@ -2278,1524 +2138,6 @@ ENDBLK
 1D
 330
 1B
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-53
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-*D1
- 70
-1
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-*D1
-  1
-
-  0
-LINE
-  5
-55
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-32.0
- 20
-111.0
- 30
-0.0
- 11
-32.0
- 21
-104.0
- 31
-0.0
-  0
-LINE
-  5
-56
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-67.0
- 20
-111.0
- 30
-0.0
- 11
-67.0
- 21
-104.0
- 31
-0.0
-  0
-INSERT
-  5
-5B
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-32.0
- 20
-105.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-180.0
-  0
-INSERT
-  5
-5D
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-67.0
- 20
-105.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
-  0
-LINE
-  5
-5F
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-33.5
- 20
-105.0
- 30
-0.0
- 11
-65.5
- 21
-105.0
- 31
-0.0
-  0
-MTEXT
-  5
-60
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbMText
- 10
-49.5
- 20
-106.875
- 30
-0.0
- 40
-2.5
- 71
-5
-  1
-35
-  0
-POINT
-  5
-61
-330
-52
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-32.0
- 20
-105.0
- 30
-0.0
-  0
-POINT
-  5
-62
-330
-52
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-32.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-63
-330
-52
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-67.0
- 20
-112.0
- 30
-0.0
-  0
-ENDBLK
-  5
-54
-330
-52
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-58
-330
-57
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-_CLOSEDFILLED
- 70
-0
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-_CLOSEDFILLED
-  1
-
-  0
-SOLID
-  5
-5A
-330
-57
-100
-AcDbEntity
-  8
-0
-  6
-BYBLOCK
- 62
-0
-100
-AcDbTrace
- 10
--1.0
- 20
-0.16439898372402537
- 30
-0.0
- 11
-0.0
- 21
-0.0
- 31
-0.0
- 12
--1.0
- 22
--0.16439898372402537
- 32
-0.0
- 13
--1.0
- 23
--0.16439898372402537
- 33
-0.0
-  0
-ENDBLK
-  5
-59
-330
-57
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-68
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-*D2
- 70
-1
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-*D2
-  1
-
-  0
-LINE
-  5
-6A
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-68.0
- 20
-112.0
- 30
-0.0
- 11
-75.0
- 21
-112.0
- 31
-0.0
-  0
-LINE
-  5
-6B
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-68.0
- 20
-147.0
- 30
-0.0
- 11
-75.0
- 21
-147.0
- 31
-0.0
-  0
-INSERT
-  5
-6C
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-74.0
- 20
-112.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-270.0
-  0
-INSERT
-  5
-6E
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-74.0
- 20
-147.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-90.0
-  0
-LINE
-  5
-70
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-74.0
- 20
-113.5
- 30
-0.0
- 11
-74.0
- 21
-145.5
- 31
-0.0
-  0
-MTEXT
-  5
-71
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbMText
- 10
-72.125
- 20
-129.5
- 30
-0.0
- 40
-2.5
- 71
-5
-  1
-35
- 50
-90.0
-  0
-POINT
-  5
-72
-330
-67
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-74.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-73
-330
-67
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-67.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-74
-330
-67
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-67.0
- 20
-147.0
- 30
-0.0
-  0
-ENDBLK
-  5
-69
-330
-67
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-91
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-*D3
- 70
-1
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-*D3
-  1
-
-  0
-LINE
-  5
-93
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-112.0
- 20
-111.0
- 30
-0.0
- 11
-112.0
- 21
-104.0
- 31
-0.0
-  0
-LINE
-  5
-94
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-147.0
- 20
-111.0
- 30
-0.0
- 11
-147.0
- 21
-104.0
- 31
-0.0
-  0
-INSERT
-  5
-95
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-112.0
- 20
-105.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-180.0
-  0
-INSERT
-  5
-97
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-147.0
- 20
-105.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
-  0
-LINE
-  5
-99
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-113.5
- 20
-105.0
- 30
-0.0
- 11
-145.5
- 21
-105.0
- 31
-0.0
-  0
-MTEXT
-  5
-9A
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbMText
- 10
-129.5
- 20
-106.875
- 30
-0.0
- 40
-2.5
- 71
-5
-  1
-35
-  0
-POINT
-  5
-9B
-330
-90
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-112.0
- 20
-105.0
- 30
-0.0
-  0
-POINT
-  5
-9C
-330
-90
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-112.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-9D
-330
-90
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-147.0
- 20
-112.0
- 30
-0.0
-  0
-ENDBLK
-  5
-92
-330
-90
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-A2
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-*D4
- 70
-1
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-*D4
-  1
-
-  0
-LINE
-  5
-A4
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-148.0
- 20
-112.0
- 30
-0.0
- 11
-155.0
- 21
-112.0
- 31
-0.0
-  0
-LINE
-  5
-A5
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-148.0
- 20
-142.0
- 30
-0.0
- 11
-155.0
- 21
-142.0
- 31
-0.0
-  0
-INSERT
-  5
-A6
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-154.0
- 20
-112.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-270.0
-  0
-INSERT
-  5
-A8
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-154.0
- 20
-142.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-90.0
-  0
-LINE
-  5
-AA
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-154.0
- 20
-113.5
- 30
-0.0
- 11
-154.0
- 21
-140.5
- 31
-0.0
-  0
-MTEXT
-  5
-AB
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbMText
- 10
-152.125
- 20
-127.0
- 30
-0.0
- 40
-2.5
- 71
-5
-  1
-30
- 50
-90.0
-  0
-POINT
-  5
-AC
-330
-A1
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-154.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-AD
-330
-A1
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-147.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-AE
-330
-A1
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-147.0
- 20
-142.0
- 30
-0.0
-  0
-ENDBLK
-  5
-A3
-330
-A1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-C1
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-*D5
- 70
-1
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-*D5
-  1
-
-  0
-LINE
-  5
-C3
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-208.0
- 20
-111.0
- 30
-0.0
- 11
-208.0
- 21
-104.0
- 31
-0.0
-  0
-LINE
-  5
-C4
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-238.0
- 20
-111.0
- 30
-0.0
- 11
-238.0
- 21
-104.0
- 31
-0.0
-  0
-INSERT
-  5
-C5
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-208.0
- 20
-105.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-180.0
-  0
-INSERT
-  5
-C7
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-238.0
- 20
-105.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
-  0
-LINE
-  5
-C9
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-209.5
- 20
-105.0
- 30
-0.0
- 11
-236.5
- 21
-105.0
- 31
-0.0
-  0
-MTEXT
-  5
-CA
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbMText
- 10
-223.0
- 20
-106.875
- 30
-0.0
- 40
-2.5
- 71
-5
-  1
-30
-  0
-POINT
-  5
-CB
-330
-C0
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-208.0
- 20
-105.0
- 30
-0.0
-  0
-POINT
-  5
-CC
-330
-C0
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-208.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-CD
-330
-C0
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-238.0
- 20
-112.0
- 30
-0.0
-  0
-ENDBLK
-  5
-C2
-330
-C0
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockEnd
-  0
-BLOCK
-  5
-D2
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockBegin
-  2
-*D6
- 70
-1
- 10
-0.0
- 20
-0.0
- 30
-0.0
-  3
-*D6
-  1
-
-  0
-LINE
-  5
-D4
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-240.5
- 20
-112.0
- 30
-0.0
- 11
-248.0
- 21
-112.0
- 31
-0.0
-  0
-LINE
-  5
-D5
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-240.5
- 20
-147.0
- 30
-0.0
- 11
-248.0
- 21
-147.0
- 31
-0.0
-  0
-INSERT
-  5
-D6
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-247.0
- 20
-112.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-270.0
-  0
-INSERT
-  5
-D8
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbBlockReference
-  2
-_CLOSEDFILLED
- 10
-247.0
- 20
-147.0
- 30
-0.0
- 41
-1.5
- 42
-1.5
- 50
-90.0
-  0
-LINE
-  5
-DA
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbLine
- 10
-247.0
- 20
-113.5
- 30
-0.0
- 11
-247.0
- 21
-145.5
- 31
-0.0
-  0
-MTEXT
-  5
-DB
-330
-D1
-100
-AcDbEntity
-  8
-0
-100
-AcDbMText
- 10
-245.125
- 20
-129.5
- 30
-0.0
- 40
-2.5
- 71
-5
-  1
-35
- 50
-90.0
-  0
-POINT
-  5
-DC
-330
-D1
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-247.0
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-DD
-330
-D1
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-239.5
- 20
-112.0
- 30
-0.0
-  0
-POINT
-  5
-DE
-330
-D1
-100
-AcDbEntity
-  8
-Defpoints
-100
-AcDbPoint
- 10
-239.5
- 20
-147.0
- 30
-0.0
-  0
-ENDBLK
-  5
-D3
-330
-D1
 100
 AcDbEntity
   8
@@ -3905,7 +2247,7 @@ AcDbLine
  31
 0.0
   0
-TEXT
+LINE
   5
 38
 330
@@ -3913,25 +2255,23 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-15.0
+8.0
  20
-191.0
+174.0
  30
 0.0
- 40
-5.0
-  1
-R4-M01 轻量风扇电机支架 / 舵机安装
-  7
-CN
-100
-AcDbText
+ 11
+289.0
+ 21
+174.0
+ 31
+0.0
   0
-TEXT
+LINE
   5
 39
 330
@@ -3939,23 +2279,21 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-15.0
+184.0
  20
-183.0
+76.0
  30
 0.0
- 40
-3.0
-  1
-单位 mm；成品尺寸；新设计；装配待实物试装。材料：5052铝板 t=1.5，所有边去毛刺。
-  7
-CN
-100
-AcDbText
+ 11
+184.0
+ 21
+174.0
+ 31
+0.0
   0
 LINE
   5
@@ -3969,19 +2307,19 @@ OUTLINE
 100
 AcDbLine
  10
-32.0
+8.0
  20
-112.0
+76.0
  30
 0.0
  11
-67.0
+289.0
  21
-112.0
+76.0
  31
 0.0
   0
-LINE
+TEXT
   5
 3B
 330
@@ -3989,23 +2327,25 @@ LINE
 100
 AcDbEntity
   8
-OUTLINE
+NOTES
 100
-AcDbLine
+AcDbText
  10
-67.0
+15.0
  20
-112.0
+191.0
  30
 0.0
- 11
-67.0
- 21
-147.0
- 31
-0.0
+ 40
+5.6
+  1
+R5-M01  摇头风扇装配与电机托架
+  7
+CN
+100
+AcDbText
   0
-LINE
+TEXT
   5
 3C
 330
@@ -4013,23 +2353,25 @@ LINE
 100
 AcDbEntity
   8
-OUTLINE
+NOTES
 100
-AcDbLine
+AcDbText
  10
-67.0
+15.0
  20
-147.0
+181.0
  30
 0.0
- 11
-32.0
- 21
-147.0
- 31
-0.0
+ 40
+3.0
+  1
+单位 mm  |  托架用 1.5 mm 5052 铝板  |  成品内弯半径 1.5，按加工设备展开
+  7
+CN
+100
+AcDbText
   0
-LINE
+TEXT
   5
 3D
 330
@@ -4037,23 +2379,25 @@ LINE
 100
 AcDbEntity
   8
-OUTLINE
+NOTES
 100
-AcDbLine
+AcDbText
  10
-32.0
+15.0
  20
-147.0
+164.0
  30
 0.0
- 11
-32.0
- 21
-112.0
- 31
-0.0
+ 40
+3.8
+  1
+托架电机面 · 正视
+  7
+CN
+100
+AcDbText
   0
-LINE
+TEXT
   5
 3E
 330
@@ -4061,21 +2405,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbLine
+AcDbText
  10
-41.25
+101.0
  20
-116.25
+164.0
  30
 0.0
- 11
-43.75
- 21
-116.25
- 31
-0.0
+ 40
+3.8
+  1
+托架底脚 · 俯视
+  7
+CN
+100
+AcDbText
   0
 LINE
   5
@@ -4085,23 +2431,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-41.25
+34.0
  20
-113.75
+109.0
  30
 0.0
  11
-43.75
+69.0
  21
-113.75
+109.0
  31
 0.0
   0
-ARC
+LINE
   5
 40
 330
@@ -4109,25 +2455,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
-AcDbCircle
+AcDbLine
  10
-43.75
+69.0
  20
-115.0
+109.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+ 11
+69.0
+ 21
+147.0
+ 31
+0.0
   0
-ARC
+LINE
   5
 41
 330
@@ -4135,23 +2479,21 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
-AcDbCircle
+AcDbLine
  10
-41.25
+69.0
  20
-115.0
+147.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-90.0
- 51
-270.0
+ 11
+34.0
+ 21
+147.0
+ 31
+0.0
   0
 LINE
   5
@@ -4161,23 +2503,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-41.25
+34.0
  20
-142.25
+147.0
  30
 0.0
  11
-43.75
+34.0
  21
-142.25
+109.0
  31
 0.0
   0
-LINE
+CIRCLE
   5
 43
 330
@@ -4185,23 +2527,19 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+CUT
 100
-AcDbLine
+AcDbCircle
  10
-41.25
+51.5
  20
-139.75
+128.0
  30
 0.0
- 11
-43.75
- 21
-139.75
- 31
-0.0
+ 40
+3.5
   0
-ARC
+CIRCLE
   5
 44
 330
@@ -4209,25 +2547,19 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
 AcDbCircle
  10
-43.75
+51.5
  20
-141.0
+128.0
  30
 0.0
  40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+12.2
   0
-ARC
+CIRCLE
   5
 45
 330
@@ -4235,25 +2567,19 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+CUT
 100
 AcDbCircle
  10
-41.25
+51.5
  20
-141.0
+119.75
  30
 0.0
  40
-1.25
-100
-AcDbArc
- 50
-90.0
- 51
-270.0
+0.975
   0
-LINE
+CIRCLE
   5
 46
 330
@@ -4261,23 +2587,19 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+CUT
 100
-AcDbLine
+AcDbCircle
  10
-55.25
+51.5
  20
-116.25
+136.25
  30
 0.0
- 11
-57.75
- 21
-116.25
- 31
-0.0
+ 40
+0.975
   0
-LINE
+TEXT
   5
 47
 330
@@ -4285,23 +2607,25 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbLine
+AcDbText
  10
-55.25
+15.0
  20
-113.75
+100.0
  30
 0.0
- 11
-57.75
- 21
-113.75
- 31
-0.0
+ 40
+2.8
+  1
+宽 35 × 高 38，轴孔 Ø7，轴中心高 19
+  7
+CN
+100
+AcDbText
   0
-ARC
+TEXT
   5
 48
 330
@@ -4309,25 +2633,25 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbCircle
+AcDbText
  10
-57.75
+15.0
  20
-115.0
+94.0
  30
 0.0
  40
-1.25
+2.8
+  1
+上下 2 × Ø1.95，中心距 16.50
+  7
+CN
 100
-AcDbArc
- 50
-270.0
- 51
-90.0
+AcDbText
   0
-ARC
+TEXT
   5
 49
 330
@@ -4335,23 +2659,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbCircle
+AcDbText
  10
-55.25
+15.0
  20
-115.0
+88.0
  30
 0.0
  40
-1.25
+2.7
+  1
+对应电机前端 Ø16.5 分度圆上的一对 M1.7 孔
+  7
+CN
 100
-AcDbArc
- 50
-90.0
- 51
-270.0
+AcDbText
   0
 LINE
   5
@@ -4361,19 +2685,19 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-55.25
+118.0
  20
-142.25
+111.0
  30
 0.0
  11
-57.75
+153.0
  21
-142.25
+111.0
  31
 0.0
   0
@@ -4385,23 +2709,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-55.25
+153.0
  20
-139.75
+111.0
  30
 0.0
  11
-57.75
+153.0
  21
-139.75
+141.0
  31
 0.0
   0
-ARC
+LINE
   5
 4C
 330
@@ -4409,25 +2733,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
-AcDbCircle
+AcDbLine
  10
-57.75
+153.0
  20
 141.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+ 11
+118.0
+ 21
+141.0
+ 31
+0.0
   0
-ARC
+LINE
   5
 4D
 330
@@ -4435,23 +2757,21 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
-AcDbCircle
+AcDbLine
  10
-55.25
+118.0
  20
 141.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-90.0
- 51
-270.0
+ 11
+118.0
+ 21
+111.0
+ 31
+0.0
   0
 CIRCLE
   5
@@ -4461,19 +2781,19 @@ CIRCLE
 100
 AcDbEntity
   8
-REFERENCE
+CUT
 100
 AcDbCircle
  10
-49.5
+135.5
  20
-128.0
+126.0
  30
 0.0
  40
-12.2
+2.0
   0
-CIRCLE
+LINE
   5
 4F
 330
@@ -4481,17 +2801,21 @@ CIRCLE
 100
 AcDbEntity
   8
-REFERENCE
+CUT
 100
-AcDbCircle
+AcDbLine
  10
-49.5
+125.75
  20
-128.0
+119.25
  30
 0.0
- 40
-1.0
+ 11
+129.25
+ 21
+119.25
+ 31
+0.0
   0
 LINE
   5
@@ -4501,23 +2825,23 @@ LINE
 100
 AcDbEntity
   8
-REFERENCE
+CUT
 100
 AcDbLine
  10
-49.5
+125.75
  20
-112.0
+116.75
  30
 0.0
  11
-49.5
+129.25
  21
-147.0
+116.75
  31
 0.0
   0
-DIMENSION
+ARC
   5
 51
 330
@@ -4525,79 +2849,477 @@ DIMENSION
 100
 AcDbEntity
   8
-0
+CUT
 100
-AcDbDimension
-280
-0
-  2
-*D1
-  3
-Standard
+AcDbCircle
  10
-32.0
+129.25
  20
-105.0
+118.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+270.0
+ 51
+90.0
+  0
+ARC
+  5
+52
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+125.75
+ 20
+118.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+90.0
+ 51
+270.0
+  0
+LINE
+  5
+53
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbLine
+ 10
+125.75
+ 20
+135.25
  30
 0.0
  11
-49.5
+129.25
  21
-106.875
+135.25
  31
 0.0
- 70
-32
- 71
-5
-  1
-<>
+  0
+LINE
+  5
+54
+330
+17
 100
-AcDbAlignedDimension
- 13
-32.0
- 23
-112.0
- 33
+AcDbEntity
+  8
+CUT
+100
+AcDbLine
+ 10
+125.75
+ 20
+132.75
+ 30
 0.0
- 14
-67.0
- 24
-112.0
- 34
+ 11
+129.25
+ 21
+132.75
+ 31
 0.0
+  0
+ARC
+  5
+55
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+129.25
+ 20
+134.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
  50
-0.0
+270.0
+ 51
+90.0
+  0
+ARC
+  5
+56
+330
+17
 100
-AcDbRotatedDimension
-1001
-ACAD
-1000
-DSTYLE
-1002
-{
-1070
-140
-1040
-2.5
-1070
-41
-1040
-1.5
-1070
-42
-1040
-1.0
-1070
-44
-1040
-1.0
-1070
-77
-1070
-1
-1002
-}
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+125.75
+ 20
+134.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+90.0
+ 51
+270.0
+  0
+LINE
+  5
+57
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbLine
+ 10
+141.75
+ 20
+119.25
+ 30
+0.0
+ 11
+145.25
+ 21
+119.25
+ 31
+0.0
+  0
+LINE
+  5
+58
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbLine
+ 10
+141.75
+ 20
+116.75
+ 30
+0.0
+ 11
+145.25
+ 21
+116.75
+ 31
+0.0
+  0
+ARC
+  5
+59
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+145.25
+ 20
+118.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+270.0
+ 51
+90.0
+  0
+ARC
+  5
+5A
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+141.75
+ 20
+118.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+90.0
+ 51
+270.0
+  0
+LINE
+  5
+5B
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbLine
+ 10
+141.75
+ 20
+135.25
+ 30
+0.0
+ 11
+145.25
+ 21
+135.25
+ 31
+0.0
+  0
+LINE
+  5
+5C
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbLine
+ 10
+141.75
+ 20
+132.75
+ 30
+0.0
+ 11
+145.25
+ 21
+132.75
+ 31
+0.0
+  0
+ARC
+  5
+5D
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+145.25
+ 20
+134.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+270.0
+ 51
+90.0
+  0
+ARC
+  5
+5E
+330
+17
+100
+AcDbEntity
+  8
+CUT
+100
+AcDbCircle
+ 10
+141.75
+ 20
+134.0
+ 30
+0.0
+ 40
+1.25
+100
+AcDbArc
+ 50
+90.0
+ 51
+270.0
+  0
+TEXT
+  5
+5F
+330
+17
+100
+AcDbEntity
+  8
+NOTES
+100
+AcDbText
+ 10
+101.0
+ 20
+100.0
+ 30
+0.0
+ 40
+2.8
+  1
+35 × 30，Ø4 中孔给中心螺钉让位
+  7
+CN
+100
+AcDbText
+  0
+TEXT
+  5
+60
+330
+17
+100
+AcDbEntity
+  8
+NOTES
+100
+AcDbText
+ 10
+101.0
+ 20
+94.0
+ 30
+0.0
+ 40
+2.8
+  1
+4 × 6 × 2.5 槽，中心相对轴线 ±8 / ±8
+  7
+CN
+100
+AcDbText
+  0
+TEXT
+  5
+61
+330
+17
+100
+AcDbEntity
+  8
+NOTES
+100
+AcDbText
+ 10
+101.0
+ 20
+88.0
+ 30
+0.0
+ 40
+2.7
+  1
+底脚和舵盘间加防滑垫，两条扎带对拉固定
+  7
+CN
+100
+AcDbText
+  0
+TEXT
+  5
+62
+330
+17
+100
+AcDbEntity
+  8
+NOTES
+100
+AcDbText
+ 10
+191.0
+ 20
+164.0
+ 30
+0.0
+ 40
+3.8
+  1
+装配示意 · 侧视 / 中位
+  7
+CN
+100
+AcDbText
+  0
+LINE
+  5
+63
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+194.0
+ 20
+91.4
+ 30
+0.0
+ 11
+275.0
+ 21
+91.4
+ 31
+0.0
   0
 LINE
   5
@@ -4607,23 +3329,23 @@ LINE
 100
 AcDbEntity
   8
-REFERENCE
+OUTLINE
 100
 AcDbLine
  10
-32.0
+275.0
  20
-105.0
+91.4
  30
 0.0
  11
-67.0
+275.0
  21
-105.0
+93.0
  31
 0.0
   0
-TEXT
+LINE
   5
 65
 330
@@ -4631,25 +3353,23 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-47.5
+275.0
  20
-106.0
+93.0
  30
 0.0
- 40
-2.5
-  1
-35
-  7
-CN
-100
-AcDbText
+ 11
+194.0
+ 21
+93.0
+ 31
+0.0
   0
-DIMENSION
+LINE
   5
 66
 330
@@ -4657,79 +3377,357 @@ DIMENSION
 100
 AcDbEntity
   8
-0
+OUTLINE
 100
-AcDbDimension
-280
-0
-  2
-*D2
-  3
-Standard
+AcDbLine
  10
-74.0
+194.0
  20
-112.0
+93.0
  30
 0.0
  11
-72.125
+194.0
  21
-129.5
+91.4
  31
 0.0
- 70
-32
- 71
-5
-  1
-<>
+  0
+LINE
+  5
+67
+330
+17
 100
-AcDbAlignedDimension
- 13
-67.0
- 23
-112.0
- 33
-0.0
- 14
-67.0
- 24
-147.0
- 34
-0.0
- 50
-90.0
+AcDbEntity
+  8
+OUTLINE
 100
-AcDbRotatedDimension
-1001
-ACAD
-1000
-DSTYLE
-1002
-{
-1070
-140
-1040
-2.5
-1070
-41
-1040
-1.5
-1070
-42
-1040
-1.0
-1070
-44
-1040
-1.0
-1070
-77
-1070
-1
-1002
-}
+AcDbLine
+ 10
+232.0
+ 20
+93.0
+ 30
+0.0
+ 11
+236.0
+ 21
+93.0
+ 31
+0.0
+  0
+LINE
+  5
+68
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+236.0
+ 20
+93.0
+ 30
+0.0
+ 11
+236.0
+ 21
+113.0
+ 31
+0.0
+  0
+LINE
+  5
+69
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+236.0
+ 20
+113.0
+ 30
+0.0
+ 11
+232.0
+ 21
+113.0
+ 31
+0.0
+  0
+LINE
+  5
+6A
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+232.0
+ 20
+113.0
+ 30
+0.0
+ 11
+232.0
+ 21
+93.0
+ 31
+0.0
+  0
+LINE
+  5
+6B
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+259.5
+ 20
+93.0
+ 30
+0.0
+ 11
+263.5
+ 21
+93.0
+ 31
+0.0
+  0
+LINE
+  5
+6C
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+263.5
+ 20
+93.0
+ 30
+0.0
+ 11
+263.5
+ 21
+113.0
+ 31
+0.0
+  0
+LINE
+  5
+6D
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+263.5
+ 20
+113.0
+ 30
+0.0
+ 11
+259.5
+ 21
+113.0
+ 31
+0.0
+  0
+LINE
+  5
+6E
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+259.5
+ 20
+113.0
+ 30
+0.0
+ 11
+259.5
+ 21
+93.0
+ 31
+0.0
+  0
+LINE
+  5
+6F
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+235.75
+ 20
+96.5
+ 30
+0.0
+ 11
+259.75
+ 21
+96.5
+ 31
+0.0
+  0
+LINE
+  5
+70
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+259.75
+ 20
+96.5
+ 30
+0.0
+ 11
+259.75
+ 21
+118.4
+ 31
+0.0
+  0
+LINE
+  5
+71
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+259.75
+ 20
+118.4
+ 30
+0.0
+ 11
+235.75
+ 21
+118.4
+ 31
+0.0
+  0
+LINE
+  5
+72
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+235.75
+ 20
+118.4
+ 30
+0.0
+ 11
+235.75
+ 21
+96.5
+ 31
+0.0
+  0
+LINE
+  5
+73
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+232.0
+ 20
+113.0
+ 30
+0.0
+ 11
+263.5
+ 21
+113.0
+ 31
+0.0
+  0
+LINE
+  5
+74
+330
+17
+100
+AcDbEntity
+  8
+OUTLINE
+100
+AcDbLine
+ 10
+232.0
+ 20
+113.0
+ 30
+0.0
+ 11
+232.0
+ 21
+114.5
+ 31
+0.0
   0
 LINE
   5
@@ -4739,23 +3737,23 @@ LINE
 100
 AcDbEntity
   8
-REFERENCE
+OUTLINE
 100
 AcDbLine
  10
-74.0
+263.5
  20
-112.0
+113.0
  30
 0.0
  11
-74.0
+263.5
  21
-147.0
+114.5
  31
 0.0
   0
-TEXT
+LINE
   5
 76
 330
@@ -4763,25 +3761,23 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-75.0
+242.3
  20
-129.5
+118.4
  30
 0.0
- 40
-2.5
-  1
-35
-  7
-CN
-100
-AcDbText
+ 11
+247.16000000000003
+ 21
+118.4
+ 31
+0.0
   0
-TEXT
+LINE
   5
 77
 330
@@ -4789,25 +3785,23 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-27.0
+247.16000000000003
  20
-156.0
+118.4
  30
 0.0
- 40
-3.5
-  1
-正视 / 电机轴水平
-  7
-CN
-100
-AcDbText
+ 11
+247.16000000000003
+ 21
+122.80000000000001
+ 31
+0.0
   0
-TEXT
+LINE
   5
 78
 330
@@ -4815,25 +3809,23 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-21.0
+247.16000000000003
  20
-94.0
+122.80000000000001
  30
 0.0
- 40
-2.8
-  1
-4×5×2.5槽，中心 x=±7，z=3/29
-  7
-CN
-100
-AcDbText
+ 11
+242.3
+ 21
+122.80000000000001
+ 31
+0.0
   0
-TEXT
+LINE
   5
 79
 330
@@ -4841,23 +3833,21 @@ TEXT
 100
 AcDbEntity
   8
-TEXT
+OUTLINE
 100
-AcDbText
+AcDbLine
  10
-21.0
+242.3
  20
-88.0
+122.80000000000001
  30
 0.0
- 40
-2.8
-  1
-电机中心 z=16；圆形为Ø24.4参考包络
-  7
-CN
-100
-AcDbText
+ 11
+242.3
+ 21
+118.4
+ 31
+0.0
   0
 LINE
   5
@@ -4871,15 +3861,15 @@ OUTLINE
 100
 AcDbLine
  10
-112.0
+233.0
  20
-112.0
+122.8
  30
 0.0
  11
-147.0
+257.0
  21
-112.0
+122.8
  31
 0.0
   0
@@ -4895,15 +3885,15 @@ OUTLINE
 100
 AcDbLine
  10
-147.0
+257.0
  20
-112.0
+122.8
  30
 0.0
  11
-147.0
+257.0
  21
-142.0
+125.5
  31
 0.0
   0
@@ -4919,15 +3909,15 @@ OUTLINE
 100
 AcDbLine
  10
-147.0
+257.0
  20
-142.0
+125.5
  30
 0.0
  11
-112.0
+233.0
  21
-142.0
+125.5
  31
 0.0
   0
@@ -4943,15 +3933,15 @@ OUTLINE
 100
 AcDbLine
  10
-112.0
+233.0
  20
-142.0
+125.5
  30
 0.0
  11
-112.0
+233.0
  21
-112.0
+122.8
  31
 0.0
   0
@@ -4963,19 +3953,19 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-120.25
+229.75
  20
-120.25
+125.5
  30
 0.0
  11
-122.75
+259.75
  21
-120.25
+125.5
  31
 0.0
   0
@@ -4987,23 +3977,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-120.25
+229.75
  20
-117.75
+125.5
  30
 0.0
  11
-122.75
+229.75
  21
-117.75
+163.5
  31
 0.0
   0
-ARC
+LINE
   5
 80
 330
@@ -5011,25 +4001,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
-AcDbCircle
+AcDbLine
  10
-122.75
+231.25
  20
-119.0
+127.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+ 11
+259.75
+ 21
+127.0
+ 31
+0.0
   0
-ARC
+LINE
   5
 81
 330
@@ -5037,23 +4025,21 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
-AcDbCircle
+AcDbLine
  10
-120.25
+231.25
  20
-119.0
+127.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-90.0
- 51
-270.0
+ 11
+231.25
+ 21
+163.5
+ 31
+0.0
   0
 LINE
   5
@@ -5063,19 +4049,19 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
 AcDbLine
  10
-120.25
+231.25
  20
-136.25
+132.3
  30
 0.0
  11
-122.75
+243.55
  21
-136.25
+132.3
  31
 0.0
   0
@@ -5087,23 +4073,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
 AcDbLine
  10
-120.25
+243.55
  20
-133.75
+132.3
  30
 0.0
  11
-122.75
+243.55
  21
-133.75
+156.70000000000002
  31
 0.0
   0
-ARC
+LINE
   5
 84
 330
@@ -5111,25 +4097,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
-AcDbCircle
+AcDbLine
  10
-122.75
+243.55
  20
-135.0
+156.70000000000002
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+ 11
+231.25
+ 21
+156.70000000000002
+ 31
+0.0
   0
-ARC
+LINE
   5
 85
 330
@@ -5137,23 +4121,21 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
-AcDbCircle
+AcDbLine
  10
-120.25
+231.25
  20
-135.0
+156.70000000000002
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-90.0
- 51
-270.0
+ 11
+231.25
+ 21
+132.3
+ 31
+0.0
   0
 LINE
   5
@@ -5163,19 +4145,19 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+OUTLINE
 100
 AcDbLine
  10
-136.25
+223.75
  20
-120.25
+144.5
  30
 0.0
  11
-138.75
+231.25
  21
-120.25
+144.5
  31
 0.0
   0
@@ -5187,23 +4169,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
 AcDbLine
  10
-136.25
+224.75
  20
-117.75
+124.5
  30
 0.0
  11
-138.75
+224.75
  21
-117.75
+164.5
  31
 0.0
   0
-ARC
+LINE
   5
 88
 330
@@ -5211,25 +4193,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
-AcDbCircle
+AcDbLine
  10
-138.75
+224.75
  20
-119.0
+145.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+ 11
+211.0
+ 21
+145.0
+ 31
+0.0
   0
-ARC
+TEXT
   5
 89
 330
@@ -5237,23 +4217,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbCircle
+AcDbText
  10
-136.25
+190.0
  20
-119.0
+150.0
  30
 0.0
  40
-1.25
+2.7
+  1
+35–40 mm 扇叶
+  7
+CN
 100
-AcDbArc
- 50
-90.0
- 51
-270.0
+AcDbText
   0
 LINE
   5
@@ -5263,23 +4243,23 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
 AcDbLine
  10
-136.25
+243.0
  20
-136.25
+134.0
  30
 0.0
  11
-138.75
+259.0
  21
-136.25
+140.0
  31
 0.0
   0
-LINE
+TEXT
   5
 8B
 330
@@ -5287,23 +4267,25 @@ LINE
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbLine
+AcDbText
  10
-136.25
+260.0
  20
-133.75
+140.0
  30
 0.0
- 11
-138.75
- 21
-133.75
- 31
-0.0
+ 40
+2.7
+  1
+直流电机
+  7
+CN
+100
+AcDbText
   0
-ARC
+LINE
   5
 8C
 330
@@ -5311,25 +4293,23 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
-AcDbCircle
+AcDbLine
  10
-138.75
+252.0
  20
-135.0
+124.0
  30
 0.0
- 40
-1.25
-100
-AcDbArc
- 50
-270.0
- 51
-90.0
+ 11
+267.0
+ 21
+129.0
+ 31
+0.0
   0
-ARC
+TEXT
   5
 8D
 330
@@ -5337,25 +4317,25 @@ ARC
 100
 AcDbEntity
   8
-HOLE
+NOTES
 100
-AcDbCircle
+AcDbText
  10
-136.25
+251.0
  20
-135.0
+132.0
  30
 0.0
  40
-1.25
+2.7
+  1
+舵盘与托架
+  7
+CN
 100
-AcDbArc
- 50
-90.0
- 51
-270.0
+AcDbText
   0
-CIRCLE
+LINE
   5
 8E
 330
@@ -5363,19 +4343,23 @@ CIRCLE
 100
 AcDbEntity
   8
-HOLE
+REFERENCE
 100
-AcDbCircle
+AcDbLine
  10
-129.5
+252.0
  20
-127.0
+107.0
  30
 0.0
- 40
-2.0
+ 11
+275.0
+ 21
+104.0
+ 31
+0.0
   0
-DIMENSION
+TEXT
   5
 8F
 330
@@ -5383,257 +4367,45 @@ DIMENSION
 100
 AcDbEntity
   8
-0
-100
-AcDbDimension
-280
-0
-  2
-*D3
-  3
-Standard
- 10
-112.0
- 20
-105.0
- 30
-0.0
- 11
-129.5
- 21
-106.875
- 31
-0.0
- 70
-32
- 71
-5
-  1
-<>
-100
-AcDbAlignedDimension
- 13
-112.0
- 23
-112.0
- 33
-0.0
- 14
-147.0
- 24
-112.0
- 34
-0.0
- 50
-0.0
-100
-AcDbRotatedDimension
-1001
-ACAD
-1000
-DSTYLE
-1002
-{
-1070
-140
-1040
-2.5
-1070
-41
-1040
-1.5
-1070
-42
-1040
-1.0
-1070
-44
-1040
-1.0
-1070
-77
-1070
-1
-1002
-}
-  0
-LINE
-  5
-9E
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-112.0
- 20
-105.0
- 30
-0.0
- 11
-147.0
- 21
-105.0
- 31
-0.0
-  0
-TEXT
-  5
-9F
-330
-17
-100
-AcDbEntity
-  8
-TEXT
+NOTES
 100
 AcDbText
  10
-127.5
+264.0
  20
 106.0
  30
 0.0
  40
-2.5
+2.7
   1
-35
+MG90S
   7
 CN
 100
 AcDbText
   0
-DIMENSION
-  5
-A0
-330
-17
-100
-AcDbEntity
-  8
-0
-100
-AcDbDimension
-280
-0
-  2
-*D4
-  3
-Standard
- 10
-154.0
- 20
-112.0
- 30
-0.0
- 11
-152.125
- 21
-127.0
- 31
-0.0
- 70
-32
- 71
-5
-  1
-<>
-100
-AcDbAlignedDimension
- 13
-147.0
- 23
-112.0
- 33
-0.0
- 14
-147.0
- 24
-142.0
- 34
-0.0
- 50
-90.0
-100
-AcDbRotatedDimension
-1001
-ACAD
-1000
-DSTYLE
-1002
-{
-1070
-140
-1040
-2.5
-1070
-41
-1040
-1.5
-1070
-42
-1040
-1.0
-1070
-44
-1040
-1.0
-1070
-77
-1070
-1
-1002
-}
-  0
-LINE
-  5
-AF
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-154.0
- 20
-112.0
- 30
-0.0
- 11
-154.0
- 21
-142.0
- 31
-0.0
-  0
 TEXT
   5
-B0
+90
 330
 17
 100
 AcDbEntity
   8
-TEXT
+NOTES
 100
 AcDbText
  10
-155.0
+192.0
  20
-127.0
+81.0
  30
 0.0
  40
-2.5
+2.7
   1
-30
+舵机轴竖直，风扇轴水平，舵机带动风扇转向。
   7
 CN
 100
@@ -5641,709 +4413,25 @@ AcDbText
   0
 TEXT
   5
-B1
+91
 330
 17
 100
 AcDbEntity
   8
-TEXT
-100
-AcDbText
- 10
-109.0
- 20
-156.0
- 30
-0.0
- 40
-3.5
-  1
-俯视 / 底脚
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-B2
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-102.0
- 20
-94.0
- 30
-0.0
- 40
-2.8
-  1
-4×5×2.5槽，中心相对轴线±8/±8
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-B3
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-102.0
- 20
-88.0
- 30
-0.0
- 40
-2.8
-  1
-中心Ø4通孔，供舵盘中心螺钉操作
-  7
-CN
-100
-AcDbText
-  0
-LINE
-  5
-B4
-330
-17
-100
-AcDbEntity
-  8
-OUTLINE
-100
-AcDbLine
- 10
-208.0
- 20
-112.0
- 30
-0.0
- 11
-238.0
- 21
-112.0
- 31
-0.0
-  0
-LINE
-  5
-B5
-330
-17
-100
-AcDbEntity
-  8
-OUTLINE
-100
-AcDbLine
- 10
-238.0
- 20
-112.0
- 30
-0.0
- 11
-238.0
- 21
-147.0
- 31
-0.0
-  0
-LINE
-  5
-B6
-330
-17
-100
-AcDbEntity
-  8
-OUTLINE
-100
-AcDbLine
- 10
-208.0
- 20
-110.5
- 30
-0.0
- 11
-239.5
- 21
-110.5
- 31
-0.0
-  0
-LINE
-  5
-B7
-330
-17
-100
-AcDbEntity
-  8
-OUTLINE
-100
-AcDbLine
- 10
-239.5
- 20
-110.5
- 30
-0.0
- 11
-239.5
- 21
-147.0
- 31
-0.0
-  0
-LINE
-  5
-B8
-330
-17
-100
-AcDbEntity
-  8
-OUTLINE
-100
-AcDbLine
- 10
-208.0
- 20
-112.0
- 30
-0.0
- 11
-208.0
- 21
-110.5
- 31
-0.0
-  0
-LINE
-  5
-B9
-330
-17
-100
-AcDbEntity
-  8
-OUTLINE
-100
-AcDbLine
- 10
-238.0
- 20
-147.0
- 30
-0.0
- 11
-239.5
- 21
-147.0
- 31
-0.0
-  0
-LINE
-  5
-BA
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-222.7
- 20
-115.8
- 30
-0.0
- 11
-235.0
- 21
-115.8
- 31
-0.0
-  0
-LINE
-  5
-BB
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-235.0
- 20
-115.8
- 30
-0.0
- 11
-235.0
- 21
-140.2
- 31
-0.0
-  0
-LINE
-  5
-BC
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-235.0
- 20
-140.2
- 30
-0.0
- 11
-222.7
- 21
-140.2
- 31
-0.0
-  0
-LINE
-  5
-BD
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-222.7
- 20
-140.2
- 30
-0.0
- 11
-222.7
- 21
-115.8
- 31
-0.0
-  0
-LINE
-  5
-BE
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-222.7
- 20
-128.0
- 30
-0.0
- 11
-215.7
- 21
-128.0
- 31
-0.0
-  0
-DIMENSION
-  5
-BF
-330
-17
-100
-AcDbEntity
-  8
-0
-100
-AcDbDimension
-280
-0
-  2
-*D5
-  3
-Standard
- 10
-208.0
- 20
-105.0
- 30
-0.0
- 11
-223.0
- 21
-106.875
- 31
-0.0
- 70
-32
- 71
-5
-  1
-<>
-100
-AcDbAlignedDimension
- 13
-208.0
- 23
-112.0
- 33
-0.0
- 14
-238.0
- 24
-112.0
- 34
-0.0
- 50
-0.0
-100
-AcDbRotatedDimension
-1001
-ACAD
-1000
-DSTYLE
-1002
-{
-1070
-140
-1040
-2.5
-1070
-41
-1040
-1.5
-1070
-42
-1040
-1.0
-1070
-44
-1040
-1.0
-1070
-77
-1070
-1
-1002
-}
-  0
-LINE
-  5
-CE
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-208.0
- 20
-105.0
- 30
-0.0
- 11
-238.0
- 21
-105.0
- 31
-0.0
-  0
-TEXT
-  5
-CF
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-221.0
- 20
-106.0
- 30
-0.0
- 40
-2.5
-  1
-30
-  7
-CN
-100
-AcDbText
-  0
-DIMENSION
-  5
-D0
-330
-17
-100
-AcDbEntity
-  8
-0
-100
-AcDbDimension
-280
-0
-  2
-*D6
-  3
-Standard
- 10
-247.0
- 20
-112.0
- 30
-0.0
- 11
-245.125
- 21
-129.5
- 31
-0.0
- 70
-32
- 71
-5
-  1
-<>
-100
-AcDbAlignedDimension
- 13
-239.5
- 23
-112.0
- 33
-0.0
- 14
-239.5
- 24
-147.0
- 34
-0.0
- 50
-90.0
-100
-AcDbRotatedDimension
-1001
-ACAD
-1000
-DSTYLE
-1002
-{
-1070
-140
-1040
-2.5
-1070
-41
-1040
-1.5
-1070
-42
-1040
-1.0
-1070
-44
-1040
-1.0
-1070
-77
-1070
-1
-1002
-}
-  0
-LINE
-  5
-DF
-330
-17
-100
-AcDbEntity
-  8
-REFERENCE
-100
-AcDbLine
- 10
-247.0
- 20
-112.0
- 30
-0.0
- 11
-247.0
- 21
-147.0
- 31
-0.0
-  0
-TEXT
-  5
-E0
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-248.0
- 20
-129.5
- 30
-0.0
- 40
-2.5
-  1
-35
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-E1
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-204.0
- 20
-156.0
- 30
-0.0
- 40
-3.5
-  1
-右视 / 折弯90°
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-E2
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-191.0
- 20
-94.0
- 30
-0.0
- 40
-2.8
-  1
-内R=1.5；底脚内长30；立板内高35
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-E3
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-191.0
- 20
-88.0
- 30
-0.0
- 40
-2.8
-  1
-电机后盖与立板间留3mm绝缘软垫
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-E4
-330
-17
-100
-AcDbEntity
-  8
-TEXT
+NOTES
 100
 AcDbText
  10
 15.0
  20
-73.0
+66.0
  30
 0.0
  40
-2.6
+3.0
   1
-1. 电机：RF-300FA-12350，外径24.4、机身长12.3、轴径2.0；选2mm轴孔、35~40mm轻型塑料扇叶。
+1. 电机用 RF-300FA-12350。两只 M1.7×0.35 螺钉穿托架拧进电机前端。
   7
 CN
 100
@@ -6351,25 +4439,25 @@ AcDbText
   0
 TEXT
   5
-E5
+92
 330
 17
 100
 AcDbEntity
   8
-TEXT
+NOTES
 100
 AcDbText
  10
 15.0
  20
-66.5
+59.0
  30
 0.0
  40
-2.6
+3.0
   1
-2. 电机用两根2.5mm宽尼龙扎带穿立板上下槽夹紧，路径位于轴线左右7mm，避开输出轴和焊片。
+    1.50 mm 板配 2.5 mm 螺钉时，名义伸入 1.0 mm。实测伸入不得超过厂家规定的 1.1 mm。
   7
 CN
 100
@@ -6377,25 +4465,25 @@ AcDbText
   0
 TEXT
   5
-E6
+93
 330
 17
 100
 AcDbEntity
   8
-TEXT
+NOTES
 100
 AcDbText
  10
 15.0
  20
-60.0
+49.0
  30
 0.0
  40
-2.6
+3.0
   1
-3. 底脚放在MG90S配套十字舵盘上，用两根扎带穿底脚槽交叉绑紧；中心螺钉必须装回；扎带不可碰固定机身。
+2. PCB 对应舵机耳片的两孔为 Ø2.6 / 中心距 27.50。两根 M2×20 隔柱下端固定到 PCB，上端锁舵机耳片。
   7
 CN
 100
@@ -6403,25 +4491,25 @@ AcDbText
   0
 TEXT
   5
-E7
+94
 330
 17
 100
 AcDbEntity
   8
-TEXT
+NOTES
 100
 AcDbText
  10
 15.0
  20
-53.5
+39.0
  30
 0.0
  40
-2.6
+3.0
   1
-4. MG90S耳片用两根M2×20隔柱抬高；PCB槽上、下均用外径≥5mm垫片；耳片上面用M2×5螺钉锁紧。
+3. 用原配舵盘中心螺钉固定输出轴。先装舵机中位，再装底脚和扇叶。PCB 下方四个支脚孔用于固定整块底板。
   7
 CN
 100
@@ -6429,25 +4517,25 @@ AcDbText
   0
 TEXT
   5
-E8
+95
 330
 17
 100
 AcDbEntity
   8
-TEXT
+NOTES
 100
 AcDbText
  10
 15.0
  20
-47.0
+29.0
  30
 0.0
  40
-2.6
+3.0
   1
-5. 舵机耳片下表面距机身底部按厂家F=18.5；20mm隔柱提供约1.5mm净空，螺钉不穿入机身。
+4. 电机软线从托架背后沿轴附近留弯，下接执行板 J4，先在两个线束孔扎紧。舵机三芯插头接 J3。
   7
 CN
 100
@@ -6455,77 +4543,25 @@ AcDbText
   0
 TEXT
   5
-E9
+96
 330
 17
 100
 AcDbEntity
   8
-TEXT
+NOTES
 100
 AcDbText
  10
 15.0
  20
-40.5
+19.0
  30
 0.0
  40
-2.6
+3.0
   1
-6. 电机软线留半圈松弛弯，夹固于舵盘与底板；初次限位60°~120°，检查全程无夹线、擦板或撞扇叶再放宽。
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-EA
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-15.0
- 20
-34.0
- 30
-0.0
- 40
-2.6
-  1
-7. 图示设计尺寸不等于实物验证；不同卖家MG90S/风叶/轴长存在差异。先纸样及空载试装，不按图盲目扩角。
-  7
-CN
-100
-AcDbText
-  0
-TEXT
-  5
-EB
-330
-17
-100
-AcDbEntity
-  8
-TEXT
-100
-AcDbText
- 10
-15.0
- 20
-27.5
- 30
-0.0
- 40
-2.6
-  1
-8. 支架约8g（按未减孔毛坯估算）；此结构用于小型演示风扇，非持续高负载机械机构。
+5. 先空载慢扫 60°～120°，检查扇叶、线束、底座净空后再加大角度。舵机和托架尺寸需按到手实物试装。
   7
 CN
 100
@@ -7521,7 +5557,7 @@ CREATED_BY_EZDXF
   3
 WRITTEN_BY_EZDXF
 350
-EE
+99
   0
 DICTIONARYVAR
   5
@@ -7533,11 +5569,11 @@ DictionaryVariables
 280
 0
   1
-1.4.5 @ 2026-11-18T08:01:04.821220+00:00
+1.4.5 @ 2026-11-18T12:53:28.263242+00:00
   0
 DICTIONARYVAR
   5
-EE
+99
 330
 2D
 100
@@ -7545,7 +5581,7 @@ DictionaryVariables
 280
 0
   1
-1.4.5 @ 2026-11-18T08:01:04.835816+00:00
+1.4.5 @ 2026-11-18T12:53:28.270515+00:00
   0
 ENDSEC
   0
