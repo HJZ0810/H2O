@@ -1,4 +1,6 @@
 {
+  "revision": "r9.1.2",
+  "scope": "PCB2 MG996R mounting-hole correction",
   "PCB1": {
     "native_drc": 0,
     "part_count": 29,
@@ -16,6 +18,7 @@
   },
   "PCB2": {
     "native_drc": 0,
+    "reload_verified": true,
     "part_count": 9,
     "removed_refs": [
       "Q11",
@@ -23,26 +26,31 @@
     ],
     "verified_pin_count": 41,
     "closed_gerber_contours": 12,
-    "gerber_sha256": "0d3b6579951491d0814130d6de26b08fea5fc85741d0da264b8f0577c43b3d2a",
+    "gerber_sha256": "300bc2d476d1a1e1a97a0926fc958526cd50357a8681de0454961bd52f50ed5f",
     "servo_mount_centers_mm": [
       [
-        29.25,
+        29.75,
         12
       ],
       [
-        29.25,
+        29.75,
         22
       ],
       [
-        78.75,
+        78.25,
         12
       ],
       [
-        78.75,
+        78.25,
         22
       ]
     ],
-    "servo_mount_diameter_mm": 4.0
+    "servo_mount_diameter_mm": 4.4,
+    "servo_mount_spacing_mm": [
+      48.5,
+      10
+    ],
+    "routed_adjustment": "MOTOR_A2 bottom-layer detour from Y=19.2 mm to Y=19.0 mm; no layer change or via"
   },
   "physical_paths_checked": [
     "hand:J22.2->J8.1",
@@ -50,8 +58,9 @@
     "fan:J10.1->J12.7",
     "fan:J10.1->J3.2",
     "fan:SW20.2->J13.4",
-    "fan:J10.7->SW20.1"
+    "fan:J10.7->SW20.1",
+    "fan:J12.4->J4.2"
   ],
-  "project_sha256": "51509c44165d4b0508bfec2dedbf898a32a3402671f498337386ad4d321751f9",
+  "project_sha256": "8c435c9226a477c7b5d161a29c4da29672edfd9c00ea0f9d2663af8e8ddf0c94",
   "firmware_app_sha256": "8d6ff66cad5384820f28ba7640c227fd04ed13937aba1fb0c36d739c3d7105ef"
 }
