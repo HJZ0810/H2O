@@ -1,0 +1,4 @@
+e5f26355f6c825ee8f567f7f82dc615ea7a5ba78d3b645179447d53caf11b957  hardware/ESP32-handheld-R1.epro2
+1469ade52dfd5cb98730bc46eea6b646cdc3a0bda70a782d31c2091fc5f7f817  images/r1-pcb-layout.jpg
+de42f97eb0ec66035769a74ec7cb40197d58d3124b627cecc3b6e63964fe4f60  images/r1-schematic.jpg
+d2c58084e4dcecd483ea105539cba2f69cd7d514697d3d1bc1e51c453d53061e  README.md
