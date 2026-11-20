@@ -1,0 +1,25 @@
+{
+  "PCB1": {
+    "native_drc": 0,
+    "verified_pin_count": 17,
+    "probe_aliases": {
+      "MOTOR_B_PWM": "NET_10"
+    },
+    "closed_gerber_contours": 1,
+    "gerber_sha256": "9da37385ae3d2ce49533f25e9c70e8d9d1153fac1a616e402a5c986334b114b0"
+  },
+  "PCB2": {
+    "native_drc": 0,
+    "verified_pin_count": 37,
+    "probe_aliases": {
+      "MOTOR_B_PWM": "NET_2",
+      "SERVO_PWM_SW": "NET_1"
+    },
+    "closed_gerber_contours": 12,
+    "gerber_sha256": "058970a5ec53e81a918f53e65925d4bfd5e94c47d6ae19585686627130da7978"
+  },
+  "project_sha256": "c83e9c30d69fb86a7242bf58ff0c23230aafe0c0e8789519f1d07b087b9336af",
+  "firmware_app_sha256": "8d6ff66cad5384820f28ba7640c227fd04ed13937aba1fb0c36d739c3d7105ef",
+  "firmware_core": "esp32 3.3.12",
+  "firmware_build": true
+}

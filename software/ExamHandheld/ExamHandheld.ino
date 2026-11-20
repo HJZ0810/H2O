@@ -71,7 +71,11 @@ void render() {
     foot="上下滚动查看";
   } else if(view==View::Fan) {
     title="风扇控制";
-    body="电机占空比 "+String(fan.speedPercent())+"%\n舵机目标 "+String(fan.pulseWidth())+" us\n\n上下调速，左右转向。\n确认停转，返回关闭。";
+    body=String(fan.channelB() ? "选择 B" : "选择 A")+"  A "+String(fan.speedPercent(false))+
+         "% / B "+String(fan.speedPercent(true))+"%\n"+
+         "手柄输出就绪"+
+         (fan.pulseWidth() ? "\n舵机 "+String(fan.pulseWidth())+" us" : "\n舵机待命")+
+         "\n测试切换 A/B，上下调速\n左右转向，确认停止";
     if(!fan.ready())body="PWM 未就绪，输出保持关闭。";
     foot="上下调速 左右转向";
   } else if(view==View::ConfirmStart) {
@@ -127,6 +131,7 @@ void handleKey(board::Key key, Press press) {
   if (view==View::Fan) {
     if (key==Back) switchView(View::Main);
     else if (key==Confirm) fan.stop();
+    else if (press==Press::Short && key==Test) fan.selectNextChannel();
     else if (press==Press::Short && key==Up) fan.changeSpeed(1);
     else if (press==Press::Short && key==Down) fan.changeSpeed(-1);
     else if (press==Press::Short && key==Left) fan.turn(-1);
