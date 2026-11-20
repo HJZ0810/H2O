@@ -3,7 +3,12 @@
 #include <DHT.h>
 #include "Config.h"
 #include "Board.h"
-struct AnalogSample {int raw=0,mv=0; bool enabled=false,clipped=false;};
+struct AnalogSample {
+  int raw=0,mv=0;
+  bool enabled=false,sampled=false,clipped=false;
+  bool valid() const {return enabled && sampled && !clipped;}
+  int outputMv() const {return lroundf(mv/board::MqDivider);}
+};
 class Sensors {
  public:
   float temperature=NAN,humidity=NAN;

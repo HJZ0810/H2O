@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <esp_system.h>
+#include <algorithm>
 #include "Board.h"
 #include "Actuators.h"
 #include "ButtonLogic.h"
@@ -10,6 +11,8 @@
 #include "AutoDemo.h"
 #include "ExamNetwork.h"
 #include "Sensors.h"
+#include "ThingsCloud.h"
+#include "RemoteGlyphs.h"
 
 Configuration configuration;
 Display screen;
@@ -18,6 +21,8 @@ exam::AutoDemo demo;
 ExamNetwork network;
 Sensors sensors;
 Actuators fan;
+ThingsCloud cloud;
+RemoteGlyphs remoteGlyphs;
 ButtonLogic buttons[board::KeyCount];
 enum class View {Main,Sensor,Info,ConfirmStart,ConfirmSetup,Setup,Fan};
 View view=View::Main,returnView=View::Main;
@@ -27,7 +32,8 @@ unsigned optionCursor=0;
 std::string cursorQuestion;
 String feedback,lastScreenKey;
 uint32_t feedbackAt=0,lastReport=0,lastPaint=0,linkEpoch=0,lastResume=0;
-bool networkStarted=false;
+uint32_t lastWifiRetry=0,lastCloudSample=0;
+bool networkStarted=false,cloudControlled=false,revealOption=false;
 unsigned paintedRevision=0;
 bool swallowKey[board::KeyCount]={};
 
@@ -36,11 +42,14 @@ void sendCommand(const std::string& command) {
   if(!command.empty()&&!network.send(command,linkEpoch))session.fail("请求未发送，等待恢复连接并同步原进度。");
 }
 void switchView(View v) {
-  if (view==View::Fan && v!=View::Fan) fan.stop();
+  if ((view==View::Fan && v!=View::Fan) || v==View::Setup) {
+    fan.stop();
+    cloudControlled=false;
+  }
   view=v;
   lastScreenKey="";
 }
-void startDemo(){if(demo.start(session,millis())){feedback="";switchView(View::Main);}else tell("先等待进度同步；已通关组不能重置成绩");}
+void startDemo(){if(demo.start(session,millis())){feedback="";switchView(View::Main);}else tell(demo.status().c_str());}
 bool examActive(){return session.phase==exam::Phase::Question||session.phase==exam::Phase::Story||session.phase==exam::Phase::Judge;}
 void syncLinkState(){
   // Connection events can be dropped when the receive queue is full. Read the
@@ -56,12 +65,14 @@ String sensorBody() {
   for(int i=0;i<2;i++) {
     s+=i==0?"\nMQ-2 ":"\nMQ-135 ";
     if(!sensors.mq[i].enabled)s+="未启用";
-    else {s+=String(sensors.mq[i].raw)+" ADC\nAO "+String(sensors.mq[i].mv/board::MqDivider/1000.0f,3)+" V";if(sensors.mq[i].clipped)s+=" [超量程]";}
+    else if(!sensors.mq[i].sampled)s+="等待采样";
+    else {s+=String(sensors.mq[i].raw)+" ADC\nAO "+String(sensors.mq[i].outputMv())+" mV";if(sensors.mq[i].clipped)s+=" [超量程]";}
   }
-  return s+"\nMQ未经标定，无ppm\n数据每5秒上报一次";
+  return s+"\n智联迷城每5秒上报\nThingsCloud 状态 "+cloud.status();
 }
 void render() {
   String title,body,foot="上下读  左右翻页",badge;
+  int focusSourceLine=-1;
   String key=String(int(view))+"/"+int(session.phase)+"/"+session.frame.type.c_str()+"/"+session.frame.qid.c_str()+"/"+session.frame.level+"/"+session.frame.seq;
   bool reset=key!=lastScreenKey;if(reset)lastScreenKey=key;
   if(view==View::Setup) {
@@ -74,19 +85,21 @@ void render() {
     body=String(fan.channelB() ? "选择 B" : "选择 A")+"  A "+String(fan.speedPercent(false))+
          "% / B "+String(fan.speedPercent(true))+"%\n"+
          "手柄输出就绪"+
-         (fan.pulseWidth() ? "\n舵机 "+String(fan.pulseWidth())+" us" : "\n舵机待命")+
+         (fan.pulseWidth() ? "\n舵机 "+String(fan.servoPosition())+"  "+String(fan.pulseWidth())+" us" : "\n舵机待命")+
          "\n测试切换 A/B，上下调速\n左右转向，确认停止";
     if(!fan.ready())body="PWM 未就绪，输出保持关闭。";
     foot="上下调速 左右转向";
   } else if(view==View::ConfirmStart) {
     title="开始 / 继续考试";
-    body="首次开始将进入第一关。\n已有进度会继续原题。\n每题最多计分一次，总分350分。\n断线后自动同步原进度。\n\nOK: 开始 / 继续\n左键: 返回";
+    body="首次开始从当前题库抽题。\n已有进度会继续原题。\n每题最多计分一次。\n断线后自动同步原进度。\n\nOK: 开始 / 继续\n左键: 返回";
     foot="OK确认  左键取消";
   } else if(view==View::ConfirmSetup) {
     title="打开配网设置？";body="配网保存会重启设备。\n相同组号重连后恢复服务器进度。\n建议在考试前设置。\n\nOK: 打开热点\n左键: 取消";foot="OK确认  左键取消";
   } else if(view==View::Sensor) {title="环境采样";body=sensorBody();foot="OK返回  上下滚动";}
   else if(view==View::Info) {
-    title="设备信息";body="固件 "+String(board::FirmwareVersion)+"\n组号 "+configuration.value.group+"\nWi-Fi MAC\n"+WiFi.macAddress()+"\nIP "+WiFi.localIP().toString()+"\nWi-Fi "+String(WiFi.status()==WL_CONNECTED?"已连接":"等待连接")+"\nMQTT "+String(session.ready?"就绪":"等待连接/握手")+"\n进度同步 "+String(session.statusKnown?"完成":"等待MQTT快照")+"\n屏幕 160x128 横屏\nMQ DO: 未接主控\n电脑烧录前先拔外接5V\n长按F2进入配网确认";foot="OK返回  长按F2设置";
+    title="设备信息";body="固件 "+String(board::FirmwareVersion)+"\n组号 "+configuration.value.group+"\nWi-Fi MAC\n"+WiFi.macAddress()+"\nIP "+WiFi.localIP().toString()+"\nWi-Fi "+String(WiFi.status()==WL_CONNECTED?"已连接":"等待连接")+"\n智联迷城 "+String(session.ready?"就绪":"等待连接")+"\n进度同步 "+String(session.statusKnown?"完成":"等待MQTT快照")+"\nThingsCloud "+cloud.status();
+    if(cloud.reportError())body+="\n云上报错误 "+String(cloud.reportError());
+    body+="\n长按F2进入配网设置";foot="OK返回  长F2设置";
   } else {
     badge=session.ready?(session.statusKnown?"在线":"同步"):"离线";
     auto& f=session.frame;
@@ -101,13 +114,17 @@ void render() {
       title="第"+String(f.level)+"关 · 剧情";body=String(f.text.c_str())+"\n\n[剧情 "+f.seq+"/"+f.total+"]";foot="OK继续  上下阅读";
     } else if(session.phase==exam::Phase::Question) {
       title="第"+String(f.level)+"关 "+String(f.questionType=="multi"?"多选":f.questionType=="bool"?"判断":"单选");
+      if(f.seq>0&&f.total>=f.seq)title+=" "+String(f.seq)+"/"+String(f.total);
       body=String(f.text.c_str())+"\n";
       for(unsigned i=0;i<f.options.size();i++) {
         body+="\n"+String(i==optionCursor?">":" ")+String((session.removed&(1U<<i))?"[-] ":(session.selected&(1U<<i))?"[x] ":"[ ] ")+f.options[i].key.c_str()+" "+f.options[i].text.c_str();
       }
-      body+="\n\n左右定位 A-D，测试键勾选。\nOK提交，长按OK锦囊。";
-      String choice=optionCursor<f.options.size()?f.options[optionCursor].key.c_str():"-";
-      foot="左右 "+choice+"  测试勾选 OK交";
+      body+="\n\nF1 勾选，F2 取消选择\nOK 提交，长按 OK 锦囊\n长按 F1 自动演示";
+      foot="F1选 F2消 OK交";
+      if(revealOption && optionCursor<f.options.size()) {
+        focusSourceLine=int(std::count(f.text.begin(),f.text.end(),'\n'))+2+optionCursor;
+        revealOption=false;
+      }
     } else if(session.phase==exam::Phase::Judge) {
       title=f.correct?"回答正确":"判题解析";body="正确答案 "+String(f.answer.c_str())+"\n本题 +"+f.gain+" 分 / 剩余生命 "+session.hp+"\n累计 "+session.score+" 分\n\n"+f.text.c_str();foot="OK读完继续  上下阅读";
     } else {
@@ -117,7 +134,7 @@ void render() {
     else if(demo.active())foot=demo.status().c_str();
     if(!feedback.isEmpty()&&uint32_t(millis()-feedbackAt)<3500)body+="\n\n"+feedback;
   }
-  screen.show(title,body,foot,badge,reset);
+  screen.show(title,body,foot,badge,reset,focusSourceLine);
   paintedRevision=session.revision;
 }
 void handleKey(board::Key key, Press press) {
@@ -130,7 +147,7 @@ void handleKey(board::Key key, Press press) {
   }
   if (view==View::Fan) {
     if (key==Back) switchView(View::Main);
-    else if (key==Confirm) fan.stop();
+    else if (key==Confirm) {fan.stop();cloudControlled=false;}
     else if (press==Press::Short && key==Test) fan.selectNextChannel();
     else if (press==Press::Short && key==Up) fan.changeSpeed(1);
     else if (press==Press::Short && key==Down) fan.changeSpeed(-1);
@@ -206,9 +223,13 @@ void handleKey(board::Key key, Press press) {
   if (session.phase==exam::Phase::Question) {
     const unsigned count=session.frame.options.size();
     if (key==Left || key==Right) {
-      if (count) optionCursor=(optionCursor+(key==Left?count-1:1))%count;
+      if (count) {optionCursor=(optionCursor+(key==Left?count-1:1))%count;revealOption=true;}
     } else if (key==Test) {
       if (!session.choose(optionCursor)) tell("该选项不可选");
+      revealOption=true;
+    } else if (key==Back) {
+      if (session.clearSelection()) tell("已取消选择");
+      revealOption=true;
     } else if (key==Confirm) {
       auto command=session.submit(millis());
       if(command.empty())tell("请先选择答案");
@@ -224,19 +245,69 @@ void handleKey(board::Key key, Press press) {
     }
   }
 }
+void tickCloud(uint32_t now) {
+  if (cloudControlled && !cloud.online()) {
+    fan.stop();
+    cloudControlled=false;
+  }
+  ActuatorCommand command;
+  bool received=false;
+  while (cloud.nextCommand(command)) {
+    received=true;
+    if (!configuration.portalActive && fan.apply(command)) {
+      cloudControlled=fan.speedPercent(false)||fan.speedPercent(true)||fan.pulseWidth();
+    }
+  }
+  if (!received && uint32_t(now-lastCloudSample)<250) return;
+  lastCloudSample=now;
+  thingscloud::Telemetry sample;
+  sample.temperature=sensors.temperature;
+  sample.humidity=sensors.humidity;
+  sample.dhtValid=sensors.dhtValid;
+  sample.mq2Mv=sensors.mq[0].outputMv();
+  sample.mq135Mv=sensors.mq[1].outputMv();
+  sample.mq2Valid=sensors.mq[0].valid();
+  sample.mq135Valid=sensors.mq[1].valid();
+  sample.motorAPct=fan.speedPercent(false);
+  sample.motorBPct=fan.speedPercent(true);
+  sample.servoPosition=fan.servoPosition();
+  sample.servoPulseUs=fan.pulseWidth();
+  sample.servoEnabled=fan.pulseWidth()!=0;
+  sample.outputsReady=fan.ready();
+  cloud.update(sample);
+  if (received) cloud.requestReport();
+}
 void setup() {
   fan.begin();
   Serial.begin(115200);for(auto pin:board::Keys)pinMode(pin,INPUT_PULLUP);
   char requestPrefix[25];snprintf(requestPrefix,sizeof(requestPrefix),"%08lx%08lx",(unsigned long)esp_random(),(unsigned long)esp_random());session.setRequestPrefix(requestPrefix);
   delay(35);bool forceSetup=digitalRead(board::Keys[board::Test])==LOW;
-  WiFi.mode(WIFI_STA);WiFi.setSleep(false);configuration.load();screen.begin(configuration.value);sensors.begin(configuration.value);
+  WiFi.mode(WIFI_STA);WiFi.setSleep(false);configuration.load();
+  screen.begin(configuration.value,remoteGlyphs.begin()?&remoteGlyphs:nullptr);
+  sensors.begin(configuration.value);
+  demo.loadAnswers(configuration.value.demoAnswers.c_str());
   Serial.printf("ZLC firmware %s; STA MAC %s; GPIO matched to R9\n",board::FirmwareVersion,WiFi.macAddress().c_str());
   if(forceSetup||!configuration.value.usable()){configuration.openPortal();switchView(View::Setup);}
-  else {networkStarted=network.begin(configuration.value);if(!networkStarted)session.fail("网络任务或队列创建失败，请重启");}
+  else {
+    WiFi.setAutoReconnect(true);
+    WiFi.begin(configuration.value.ssid.c_str(),configuration.value.wifiPassword.c_str());
+    configTime(0,0,"ntp.aliyun.com","pool.ntp.org");
+    if(configuration.value.examConfigured()) {
+      networkStarted=network.begin(configuration.value);
+      if(!networkStarted)session.fail("智联迷城网络任务创建失败，请重启");
+    }
+    if(configuration.value.cloud.configured())cloud.begin(configuration.value.cloud);
+  }
   render();
 }
 void loop() {
   configuration.tick();sensors.tick();
+  const uint32_t now=millis();
+  if (!configuration.portalActive && WiFi.status()!=WL_CONNECTED && uint32_t(now-lastWifiRetry)>=20000) {
+    lastWifiRetry=now;
+    WiFi.reconnect();
+  }
+  tickCloud(now);
   if(networkStarted){
     if(network.overflowed())session.fail("接收队列或内存不足，已暂停，未丢弃后继续答题");
     syncLinkState();
@@ -252,6 +323,7 @@ void loop() {
   if (cursorQuestion!=session.frame.qid) {
     cursorQuestion=session.frame.qid;
     optionCursor=0;
+    revealOption=false;
   }
   for (unsigned i=0;i<board::KeyCount;i++){
     auto press=buttons[i].update(digitalRead(board::Keys[i])==LOW,millis());

@@ -5,10 +5,12 @@
 #include <vector>
 #include "Config.h"
 #include "Board.h"
+#include "HanGlyph.h"
 class Display {
  public:
-  void begin(const DeviceConfig& cfg);
-  void show(const String& title,const String& body,const String& footer,const String& badge="",bool forceReset=false);
+  void begin(const DeviceConfig& cfg,glyph::Source* glyphs=nullptr);
+  void show(const String& title,const String& body,const String& footer,const String& badge="",bool forceReset=false,
+            int focusSourceLine=-1);
   void scroll(int lines);
   bool lastPage() const;
   void nextPage();
@@ -19,9 +21,16 @@ class Display {
   GFXcanvas16 canvas_{160,128};
   U8G2_FOR_ADAFRUIT_GFX font_;
   std::vector<String> lines_;
+  std::vector<int> sourceOffsets_;
+  glyph::Source* glyphs_=nullptr;
+  std::vector<uint32_t> missing_;
   String title_,body_,footer_,badge_;
   int offset_=0;
   bool dirty_=true;
+  uint32_t retriedAt_=0;
+  int localAdvance(uint32_t codepoint);
+  int textWidth(const String& text);
+  void drawText(int x,int baseline,const String& text,uint16_t color,uint16_t background);
   void wrap(const String& text);
   void draw();
 };

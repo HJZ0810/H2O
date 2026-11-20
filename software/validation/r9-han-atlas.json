@@ -1,0 +1,16 @@
+{
+  "unicode": "17.0.0",
+  "han_codepoints": 102999,
+  "glyph_size": [
+    12,
+    12
+  ],
+  "bytes_per_codepoint": 72,
+  "row_format": "six bytes per row, two 4-bit levels per byte, high nibble first",
+  "atlas_size_bytes": 15123024,
+  "sha256": "77a4026a1f9f5fbb5ee4585d8ed1253dc3e3306f35f9d23d7c1c0c0a4356e686",
+  "font": "Jigmo 2025-09-12",
+  "license": "CC0-1.0",
+  "font_archive_sha256": "5744c7386d129475d87607ca66d043c8793c65448adeaedc921b6931890e5d0b",
+  "unicode_data_sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+}

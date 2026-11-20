@@ -34,6 +34,7 @@ class Core {
   std::string submit(unsigned long now);
   std::string hint(unsigned long now);
   bool choose(unsigned index);
+  bool clearSelection();
   void tick(unsigned long now);
   void fail(const std::string& why);
   void setRequestPrefix(const std::string& prefix) {requestPrefix_=prefix;}
@@ -49,6 +50,7 @@ class Core {
   std::string lastJudge_;
   std::string requestPrefix_="boot",requestId_;
   uint32_t requestSequence_=0;
+  int v2StartHealth_=5;
   bool resumeWanted_=false;
   void apply(const Frame& f);
   std::string command(const char* type, Pending p, unsigned long now, const std::string& choice="");

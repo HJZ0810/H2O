@@ -44,9 +44,7 @@ void ExamNetwork::run() {
   mqtt.setCallback([this,&down](char* topic,uint8_t* payload,unsigned int length){
     if(down==topic)emit(NetKind::Message,reinterpret_cast<const char*>(payload),length);
   });
-  WiFi.setAutoReconnect(true);WiFi.begin(cfg_.ssid.c_str(),cfg_.wifiPassword.c_str());
-  configTime(0,0,"ntp.aliyun.com","pool.ntp.org");
-  uint32_t nextConnect=0,lastWifi=millis(),helloAt=0;
+  uint32_t nextConnect=millis(),helloAt=0;
   auto hello=[&]{JsonDocument d;d["type"]="hello";d["data"]["name"]=cfg_.name;
     d["data"]["firmware"]=board::FirmwareVersion;d["data"]["protocol"]=2;String s;serializeJson(d,s);
     return mqtt.publish(up.c_str(),s.c_str(),false);};
@@ -55,7 +53,6 @@ void ExamNetwork::run() {
     if(WiFi.status()!=WL_CONNECTED) {
       loseLink();
       if(mqtt.connected())mqtt.disconnect();
-      if(uint32_t(now-lastWifi)>20000){lastWifi=now;WiFi.reconnect();}
     } else if(!mqtt.connected()) {
       loseLink();
       if(int32_t(now-nextConnect)>=0) {

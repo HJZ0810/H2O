@@ -1,5 +1,8 @@
 #include "ExamCore.h"
 namespace exam {
+namespace {
+constexpr int MaxHealth = 5;
+}
 const char* phaseName(Phase p) {
   switch(p) {case Phase::Story:return "story"; case Phase::Question:return "question";
     case Phase::Judge:return "judge"; case Phase::Finished:return "finished";
@@ -78,6 +81,13 @@ bool Core::choose(unsigned index) {
   selected=frame.questionType=="multi" ? selected^bit : bit;
   notice.clear(); revision++; return true;
 }
+bool Core::clearSelection() {
+  if (phase!=Phase::Question || busy() || !selected) return false;
+  selected=0;
+  notice.clear();
+  revision++;
+  return true;
+}
 std::string Core::submit(unsigned long now) {
   if(!connected || !ready || phase!=Phase::Question || busy() || !selected) return {};
   std::string choice;
@@ -97,7 +107,7 @@ void Core::tick(unsigned long now) {
 }
 void Core::apply(const Frame& f) {
   frame=f; pending=Pending::None; selected=removed=0; notice.clear(); revision++;
-  if(f.type=="story") {phase=Phase::Story; if(f.seq==1) {hints=1;hp=3;}}
+  if(f.type=="story") {phase=Phase::Story; if(f.seq==1) {hints=1;hp=protocolV2?v2StartHealth_:3;}}
   else if(f.type=="question") phase=Phase::Question;
   else if(f.type=="game_over") {phase=Phase::Finished;score=f.score;}
   else if(f.type=="judge") {phase=Phase::Judge;hp=f.hp;}
@@ -118,6 +128,7 @@ static bool decodeV2(JsonObjectConst message,Frame& f) {
   if(f.type=="question"){
     if(!d["level"].is<int>()||!boundedText(d["qid"],64,true)||!boundedText(d["text"],4000,true)||!d["options"].is<JsonArrayConst>())return false;
     f.level=d["level"];f.qid=d["qid"].as<std::string>();f.text=d["text"].as<std::string>();f.questionType=d["type"]|std::string();
+    f.seq=d["seq"]|0;f.total=d["total"]|0;
     if(f.level<1||f.level>7||(f.questionType!="single"&&f.questionType!="multi"&&f.questionType!="bool"&&f.questionType!="scene"))return false;
     unsigned n=0;for(JsonObjectConst o:d["options"].as<JsonArrayConst>()){
       if(n>=4||!boundedText(o["key"],1,true)||o["key"].as<std::string>()!=std::string(1,'A'+n)||!boundedText(o["text"],1000,true))return false;
@@ -128,11 +139,11 @@ static bool decodeV2(JsonObjectConst message,Frame& f) {
     if(!boundedText(d["qid"],64,true)||!d["correct"].is<bool>()||!d["score"].is<int>()||!d["hp"].is<int>()||
        !boundedText(d["correct_answer"],16,true)||!boundedText(d["explain"],4000,true))return false;
     f.level=d["level"]|1;f.qid=d["qid"].as<std::string>();f.correct=d["correct"];f.gain=d["score"];f.hp=d["hp"];
-    f.answer=d["correct_answer"].as<std::string>();f.text=d["explain"].as<std::string>();return f.gain>=0&&f.gain<=10&&f.hp>=0&&f.hp<=3;
+    f.answer=d["correct_answer"].as<std::string>();f.text=d["explain"].as<std::string>();return f.gain>=0&&f.gain<=10&&f.hp>=0&&f.hp<=MaxHealth;
   }
   if(f.type=="game_over"){
     if(!d["total_score"].is<int>()||!boundedText(d["certificate"],128)||!boundedText(d["message"],1000))return false;
-    f.score=d["total_score"];f.rank=d["rank"]|0;f.certificate=d["certificate"]|std::string();f.text=d["message"]|std::string();return f.score>=0&&f.score<=350;
+    f.score=d["total_score"];f.rank=d["rank"]|0;f.certificate=d["certificate"]|std::string();f.text=d["message"]|std::string();return f.score>=0;
   }
   return false;
 }
@@ -156,12 +167,13 @@ bool Core::receive(const std::string& json) {
       if(pending!=Pending::Resume||!boundedText(d["exam_id"],80,true)||!d["revision"].is<uint64_t>()||
          !d["score"].is<int>()||!d["hp"].is<int>()||!d["started"].is<bool>()||!d["finished"].is<bool>()||
          !d["hints_left"].is<unsigned>()||!d["removed_options"].is<JsonArrayConst>()||
-         d["score"].as<int>()<0||d["score"].as<int>()>350||d["hp"].as<int>()<0||d["hp"].as<int>()>3){fail("同步数据异常");return false;}
+         d["score"].as<int>()<0||d["hp"].as<int>()<0||d["hp"].as<int>()>MaxHealth){fail("同步数据异常");return false;}
       Frame f;bool started=d["started"];
       if(started&&(!d["current"].is<JsonObjectConst>()||!decodeV2(d["current"],f))){fail("同步画面异常");return false;}
       examId=d["exam_id"].as<std::string>();serverRevision=d["revision"].as<uint64_t>();
       if(started)apply(f);else {phase=Phase::Menu;frame=Frame();selected=removed=0;}
       score=d["score"];hp=d["hp"];hints=d["hints_left"].as<unsigned>()>0?1:0;
+      if (!started && hp > 0) v2StartHealth_=hp;
       removed=0;for(JsonVariantConst key:d["removed_options"].as<JsonArrayConst>())
         for(unsigned i=0;i<frame.options.size();i++)if(key.as<std::string>()==frame.options[i].key)removed|=1U<<i;
       pending=Pending::None;hasFollow_=false;statusKnown=true;resumeWanted_=false;requestId_.clear();notice.clear();everActive_=started;revision++;return true;
@@ -173,7 +185,7 @@ bool Core::receive(const std::string& json) {
       for(JsonVariantConst key:d["remove_options"].as<JsonArrayConst>())for(unsigned i=0;i<frame.options.size();i++)if(key.as<std::string>()==frame.options[i].key)removed|=1U<<i;
       selected&=~removed;hints=d["remaining_hints"].as<unsigned>()>0?1:0;
     }else{
-      Frame f;if(!decodeV2(doc.as<JsonObjectConst>(),f)||!d["total_score"].is<int>()||d["total_score"].as<int>()<0||d["total_score"].as<int>()>350){fail("服务器画面异常");return false;}
+      Frame f;if(!decodeV2(doc.as<JsonObjectConst>(),f)||!d["total_score"].is<int>()||d["total_score"].as<int>()<0){fail("服务器画面异常");return false;}
       if(pending==Pending::Answer&&(t!="judge"||f.qid!=frame.qid)){fail("判题题号不一致");return false;}
       apply(f);score=d["total_score"];
     }
@@ -194,7 +206,7 @@ bool Core::receive(const std::string& json) {
     if(qid==lastJudge_ || phase!=Phase::Question || pending!=Pending::Answer || qid!=frame.qid) return true;
     if(!d["correct"].is<bool>() || !d["score"].is<int>() || !d["hp"].is<int>() ||
        !boundedText(d["explain"],4000,true) || !boundedText(d["correct_answer"],16,true) ||
-       d["hp"].as<int>()<0 || d["hp"].as<int>()>3 || d["score"].as<int>()<0 || d["score"].as<int>()>100) {
+       d["hp"].as<int>()<0 || d["hp"].as<int>()>MaxHealth || d["score"].as<int>()<0 || d["score"].as<int>()>100) {
       fail("判题数据异常，已暂停");return false;
     }
     f.qid=qid; f.level=frame.level;f.correct=d["correct"];f.gain=d["score"];f.hp=d["hp"];

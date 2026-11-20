@@ -1,0 +1,156 @@
+{
+  "name": "ESP32 手柄 R9",
+  "descr": "ESP32-S3 手柄与执行板。DHT11、MQ-2、MQ-135 采样，TB6612 双路电机和 MG996R 控制。",
+  "icon": "mdi-cube-outline",
+  "attributes": [
+    {
+      "identifier": "motor_a_pct",
+      "name": "电机 A 调速",
+      "descr": "A 路 PWM 设定占空比，范围 0 至 100%，0 为停止。",
+      "attributeType": "share",
+      "dataType": "number",
+      "options": {
+        "unit": "%",
+        "default": "0",
+        "min": "0",
+        "max": "100"
+      }
+    },
+    {
+      "identifier": "temperature",
+      "name": "温度",
+      "descr": "DHT11 温度。采样无效时只更新温湿度有效标志。",
+      "attributeType": "report",
+      "dataType": "number",
+      "options": {
+        "unit": "℃",
+        "min": "0",
+        "max": "50"
+      }
+    },
+    {
+      "identifier": "humidity",
+      "name": "相对湿度",
+      "descr": "DHT11 相对湿度。",
+      "attributeType": "report",
+      "dataType": "number",
+      "options": {
+        "unit": "%",
+        "min": "0",
+        "max": "100"
+      }
+    },
+    {
+      "identifier": "dht_valid",
+      "name": "温湿度采样有效",
+      "descr": "DHT11 最近一次采样有效。",
+      "attributeType": "report",
+      "dataType": "boolean",
+      "options": {
+        "valueType": "boolean"
+      }
+    },
+    {
+      "identifier": "mq2_mv",
+      "name": "MQ-2 输出电压",
+      "descr": "由 ADC 和板上分压比换算的 MQ-2 AO 电压。",
+      "attributeType": "report",
+      "dataType": "number",
+      "options": {
+        "unit": "mV",
+        "min": "0",
+        "max": "5100"
+      }
+    },
+    {
+      "identifier": "mq2_valid",
+      "name": "MQ-2 采样有效",
+      "descr": "MQ-2 已启用、已采样且未超量程。",
+      "attributeType": "report",
+      "dataType": "boolean",
+      "options": {
+        "valueType": "boolean"
+      }
+    },
+    {
+      "identifier": "mq135_mv",
+      "name": "MQ-135 输出电压",
+      "descr": "由 ADC 和板上分压比换算的 MQ-135 AO 电压。",
+      "attributeType": "report",
+      "dataType": "number",
+      "options": {
+        "unit": "mV",
+        "min": "0",
+        "max": "5100"
+      }
+    },
+    {
+      "identifier": "mq135_valid",
+      "name": "MQ-135 采样有效",
+      "descr": "MQ-135 已启用、已采样且未超量程。",
+      "attributeType": "report",
+      "dataType": "boolean",
+      "options": {
+        "valueType": "boolean"
+      }
+    },
+    {
+      "identifier": "motor_b_pct",
+      "name": "电机 B 调速",
+      "descr": "B 路 PWM 设定占空比，0 为停止。",
+      "attributeType": "share",
+      "dataType": "number",
+      "options": {
+        "unit": "%",
+        "min": "0",
+        "max": "100"
+      }
+    },
+    {
+      "identifier": "servo_position",
+      "name": "舵机目标朝向",
+      "descr": "-100 向左，0 居中，100 向右。",
+      "attributeType": "share",
+      "dataType": "number",
+      "options": {
+        "unit": "%",
+        "min": "-100",
+        "max": "100"
+      }
+    },
+    {
+      "identifier": "servo_enabled",
+      "name": "舵机 PWM 开关",
+      "descr": "关闭后停止发送舵机 PWM。",
+      "attributeType": "share",
+      "dataType": "boolean",
+      "options": {
+        "valueType": "boolean"
+      }
+    },
+    {
+      "identifier": "servo_pulse_us",
+      "name": "舵机脉宽",
+      "descr": "手柄当前输出脉宽，0 为无 PWM。",
+      "attributeType": "report",
+      "dataType": "number",
+      "options": {
+        "unit": "μs",
+        "min": "0",
+        "max": "1800"
+      }
+    },
+    {
+      "identifier": "outputs_ready",
+      "name": "驱动输出就绪",
+      "descr": "手柄 PWM 初始化及输出状态。",
+      "attributeType": "report",
+      "dataType": "boolean",
+      "options": {
+        "valueType": "boolean"
+      }
+    }
+  ],
+  "events": [],
+  "commands": []
+}

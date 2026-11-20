@@ -8,5 +8,6 @@ constexpr uint8_t Keys[KeyCount]={7,8,11,12,16,17,18};
 constexpr int ServoPwm=42, MotorPwm=41, MotorAin1=40, MotorAin2=39;
 constexpr int MotorPwmB=48, MotorBin1=38, MotorBin2=43;
 constexpr float MqDivider=33.0f/(22.0f+33.0f);
-constexpr const char* FirmwareVersion="1.2.2-r9-10p";
+constexpr const char* HanAtlasUrl="http://124.70.71.221/r9-font/v2/han-12.bin";
+constexpr const char* FirmwareVersion="1.3.0-r9-thingscloud";
 }

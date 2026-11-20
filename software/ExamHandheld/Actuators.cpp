@@ -10,13 +10,13 @@ struct BridgePins {
 constexpr BridgePins MotorA{board::MotorPwm, board::MotorAin1, board::MotorAin2};
 constexpr BridgePins MotorB{board::MotorPwmB, board::MotorBin1, board::MotorBin2};
 constexpr unsigned Speeds[] = {0, 40, 60, 80, 100};
-constexpr int MaxSpeedIndex = sizeof(Speeds) / sizeof(Speeds[0]) - 1;
 constexpr unsigned MotorBits = 8;
 constexpr unsigned FullDuty = (1U << MotorBits) - 1;
 constexpr unsigned ServoBits = 14;
 constexpr unsigned ServoPeriodUs = 20000;
-constexpr int ServoMinUs = 1200, ServoCenterUs = 1500, ServoMaxUs = 1800;
-constexpr int ServoStepUs = 50;
+constexpr int ServoCenterUs = 1500;
+constexpr int ServoUsPerPercent = 3;
+constexpr int ServoStep = 17;
 
 bool setMotor(const BridgePins& pins, unsigned speed) {
   digitalWrite(pins.in2, LOW);
@@ -45,11 +45,12 @@ void Actuators::begin() {
 }
 
 unsigned Actuators::speedPercent(bool channelB) const {
-  return Speeds[channelB ? speedB_ : speedA_];
+  return channelB ? speedB_ : speedA_;
 }
 
 void Actuators::stop() {
   speedA_ = speedB_ = 0;
+  servoPosition_ = 0;
   pulse_ = 0;
   digitalWrite(MotorA.in1, LOW);
   digitalWrite(MotorA.in2, LOW);
@@ -59,26 +60,77 @@ void Actuators::stop() {
     const bool aOk = setMotor(MotorA, 0);
     const bool bOk = setMotor(MotorB, 0);
     const bool servoOk = ledcWrite(board::ServoPwm, 0);
+    if (!servoOk) {
+      ledcDetach(board::ServoPwm);
+      pinMode(board::ServoPwm, OUTPUT);
+      digitalWrite(board::ServoPwm, LOW);
+    }
     ready_ = aOk && bOk && servoOk;
   }
 }
 
 void Actuators::changeSpeed(int step) {
-  if (!ready_) return;
-  auto& speed = channelB_ ? speedB_ : speedA_;
-  const int next = constrain(int(speed) + step, 0, MaxSpeedIndex);
-  if (!setMotor(channelB_ ? MotorB : MotorA, Speeds[next])) {
-    stop();
-    ready_ = false;
-    return;
+  const auto current = speedPercent(channelB_);
+  auto next = current;
+  if (step > 0) {
+    for (unsigned speed : Speeds) {
+      if (speed > current) { next = speed; break; }
+    }
+  } else if (step < 0) {
+    for (unsigned speed : Speeds) {
+      if (speed >= current) break;
+      next = speed;
+    }
   }
-  speed = next;
+  ActuatorCommand command;
+  if (channelB_) {
+    command.fields = ActuatorCommand::MotorB;
+    command.motorBPct = next;
+  } else {
+    command.fields = ActuatorCommand::MotorA;
+    command.motorAPct = next;
+  }
+  apply(command);
 }
 
 void Actuators::turn(int step) {
-  if (!ready_) return;
-  const int current = pulse_ ? pulse_ : ServoCenterUs;
-  const int next = constrain(current + step * ServoStepUs, ServoMinUs, ServoMaxUs);
-  const auto duty = (uint32_t(next) << ServoBits) / ServoPeriodUs;
-  if (ledcWrite(board::ServoPwm, duty)) pulse_ = next;
+  ActuatorCommand command;
+  command.fields = ActuatorCommand::ServoPosition;
+  command.servoPosition = constrain(servoPosition_ + step * ServoStep, -100, 100);
+  apply(command);
+}
+
+bool Actuators::fail() {
+  stop();
+  ready_ = false;
+  return false;
+}
+
+bool Actuators::setServo(int position, bool enabled) {
+  const int pulse = enabled ? ServoCenterUs + position * ServoUsPerPercent : 0;
+  const auto duty = (uint32_t(pulse) << ServoBits) / ServoPeriodUs;
+  if (!ledcWrite(board::ServoPwm, duty)) return false;
+  pulse_ = pulse;
+  servoPosition_ = position;
+  return true;
+}
+
+bool Actuators::apply(const ActuatorCommand& command) {
+  if (!ready_) return false;
+  if ((command.fields & ActuatorCommand::MotorA) && command.motorAPct != speedA_) {
+    if (!setMotor(MotorA, command.motorAPct)) return fail();
+    speedA_ = command.motorAPct;
+  }
+  if ((command.fields & ActuatorCommand::MotorB) && command.motorBPct != speedB_) {
+    if (!setMotor(MotorB, command.motorBPct)) return fail();
+    speedB_ = command.motorBPct;
+  }
+  const bool hasPosition = command.fields & ActuatorCommand::ServoPosition;
+  const bool hasEnable = command.fields & ActuatorCommand::ServoEnabled;
+  if (hasPosition || hasEnable) {
+    const int position = hasPosition ? command.servoPosition : servoPosition_;
+    const bool enabled = hasEnable ? command.servoEnabled : (hasPosition || pulse_ != 0);
+    if (!setServo(position, enabled)) return fail();
+  }
+  return true;
 }

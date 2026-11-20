@@ -10,7 +10,7 @@
 | 针序、器件与装配 | [启停接线、舵机孔位与逐图核对](docs/R9/十芯直连与直插装配.md) |
 | 制板文件 | [手柄 Gerber](hardware/R9-10P/PCB1-R9-10P-Gerber.zip) · [执行板 Gerber](hardware/R9-10P/PCB2-R9-10P-Gerber.zip) |
 | 保存后验证 | [手柄正面](hardware/R9-10P/PCB1-front.png) · [执行板正面](hardware/R9-10P/PCB2-front.png) · [DRC 和线序核对](hardware/R9-10P/validation.json) |
-| Arduino `1.2.2-r9-10p` | [手柄源码](software/ExamHandheld/ExamHandheld.ino) · [编译与烧录](software/README_先读我.md) · [烧录文件](software/binaries/) |
+| Arduino `1.3.0-r9-thingscloud` | [手柄源码](software/ExamHandheld/ExamHandheld.ino) · [编译、配网与操作](software/README_先读我.md) · [烧录文件](software/binaries/) · [版本对照与验证](software/validation/r9-thingscloud.md) |
 
 ## 历史初版 R9（67.056 × 50.292 mm 执行板）
 

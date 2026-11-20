@@ -1,0 +1,9 @@
+Connected to ThingsCloud using the R9 native PWM simulator
+TX attributes {"temperature": 24.6, "humidity": 51.5, "dht_valid": true, "mq2_mv": 1438, "mq2_valid": true, "mq135_mv": 1820, "mq135_valid": true, "motor_a_pct": 0, "motor_b_pct": 0, "servo_position": 0, "servo_enabled": false, "servo_pulse_us": 0, "outputs_ready": true}
+RX attributes/response {"result":1,"ts":1795158681891}
+RX attributes/push {"motor_a_pct":62,"motor_b_pct":45,"servo_position":-50,"servo_enabled":true}
+TX attributes {"temperature": 24.6, "humidity": 51.5, "dht_valid": true, "mq2_mv": 1438, "mq2_valid": true, "mq135_mv": 1820, "mq135_valid": true, "motor_a_pct": 62, "motor_b_pct": 45, "servo_position": -50, "servo_enabled": true, "servo_pulse_us": 1350, "outputs_ready": true}
+RX attributes/response {"result":1,"ts":1795158743691}
+RX attributes/push {"motor_a_pct":0,"motor_b_pct":0,"servo_position":0,"servo_enabled":false}
+TX attributes {"temperature": 24.6, "humidity": 51.5, "dht_valid": true, "mq2_mv": 1438, "mq2_valid": true, "mq135_mv": 1820, "mq135_valid": true, "motor_a_pct": 0, "motor_b_pct": 0, "servo_position": 0, "servo_enabled": false, "servo_pulse_us": 0, "outputs_ready": true}
+RX attributes/response {"result":1,"ts":1795158811556}

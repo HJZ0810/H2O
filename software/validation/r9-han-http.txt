@@ -1,0 +1,9 @@
+U+3007  206  72 B  99f3bc3fe8ecd10d
+U+867E  206  72 B  8130f00e4932b564
+U+9F98  206  72 B  6c0452357de93d5c
+U+20BB7  206  72 B  39260e91f91d0d19
+U+30EDE  206  72 B  baa9c7b9742ac308
+U+323B0  206  72 B  cf0baf2f33cace9f
+U+33479  206  72 B  98a73189f80325c5
+Public grayscale font readback and exam metadata: PASS
+ThingsCloud report schema matches all 13 console properties: PASS
