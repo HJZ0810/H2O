@@ -1,6 +1,6 @@
 {
-  "revision": "r9.1.2",
-  "scope": "PCB2 MG996R mounting-hole correction",
+  "revision": "r9.1.3",
+  "scope": "PCB2 MG996R mechanical envelope and M3 clearance-hole correction",
   "PCB1": {
     "native_drc": 0,
     "part_count": 29,
@@ -26,7 +26,7 @@
     ],
     "verified_pin_count": 41,
     "closed_gerber_contours": 12,
-    "gerber_sha256": "300bc2d476d1a1e1a97a0926fc958526cd50357a8681de0454961bd52f50ed5f",
+    "gerber_sha256": "cb02a5b1fae9c8a6c8446f347d17c92b41789a7ab1d3eb4586a5ac1aad67af8a",
     "servo_mount_centers_mm": [
       [
         29.75,
@@ -45,12 +45,21 @@
         22
       ]
     ],
-    "servo_mount_diameter_mm": 4.4,
+    "servo_mount_diameter_mm": 3.2,
     "servo_mount_spacing_mm": [
       48.5,
       10
     ],
-    "routed_adjustment": "MOTOR_A2 bottom-layer detour from Y=19.2 mm to Y=19.0 mm; no layer change or via"
+    "servo_body_envelope_mm": [
+      40.7,
+      19.7
+    ],
+    "servo_flange_envelope_mm": [
+      54.5,
+      20.0
+    ],
+    "servo_ear_opening_mm": 4.4,
+    "routed_adjustment": "Restored the original MOTOR_A2 bottom-layer route at Y=19.2 mm; no layer change or via"
   },
   "physical_paths_checked": [
     "hand:J22.2->J8.1",
@@ -61,6 +70,6 @@
     "fan:J10.7->SW20.1",
     "fan:J12.4->J4.2"
   ],
-  "project_sha256": "8c435c9226a477c7b5d161a29c4da29672edfd9c00ea0f9d2663af8e8ddf0c94",
+  "project_sha256": "8ff63ace1c8142e6b492f421f40425e29d90314579935ff19df021df73f5909a",
   "firmware_app_sha256": "8d6ff66cad5384820f28ba7640c227fd04ed13937aba1fb0c36d739c3d7105ef"
 }

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="86mm" height="64mm" viewBox="0 0 86 64">
+  <!-- TB6612 module envelope: 0.25 mm white line segments -->
+  <rect x="10.00" y="7.50" width="16.10" height="0.25" fill="#fff"/>
+  <rect x="10.00" y="29.85" width="16.10" height="0.25" fill="#fff"/>
+  <rect x="10.00" y="7.50" width="0.25" height="22.60" fill="#fff"/>
+  <rect x="25.85" y="7.50" width="0.25" height="22.60" fill="#fff"/>
+
+  <!-- MG996R full flange envelope: 54.5 x 20 mm -->
+  <rect x="26.75" y="7.00" width="54.50" height="0.25" fill="#fff"/>
+  <rect x="26.75" y="26.75" width="54.50" height="0.25" fill="#fff"/>
+  <rect x="26.75" y="7.00" width="0.25" height="20.00" fill="#fff"/>
+  <rect x="81.00" y="7.00" width="0.25" height="20.00" fill="#fff"/>
+
+  <!-- MG996R body envelope: 40.7 x 19.7 mm -->
+  <rect x="33.65" y="7.15" width="40.70" height="0.25" fill="#fff"/>
+  <rect x="33.65" y="26.60" width="40.70" height="0.25" fill="#fff"/>
+  <rect x="33.65" y="7.15" width="0.25" height="19.70" fill="#fff"/>
+  <rect x="74.10" y="7.15" width="0.25" height="19.70" fill="#fff"/>
+
+  <!-- Output shaft cross, mirrored to the mechanism side -->
+  <rect x="43.50" y="15.50" width="0.30" height="3.00" fill="#fff"/>
+  <rect x="42.15" y="16.85" width="3.00" height="0.30" fill="#fff"/>
+</svg>
