@@ -7,7 +7,6 @@ R9 包含两块板。手柄集成 ESP32-S3、横置 LCD、按键和传感器接�
 | 要找的内容 | 文件 |
 |---|---|
 | 这版改了什么、碰到的问题和处理结果 | [R9 变更与验收记录](docs/R9/CHANGELOG.md) |
-| 从采购提问开始的用户消息、助手回复及批注图 | [R9 逐条对话](docs/R9/CONVERSATION.md) |
 | 嘉立创 EDA 专业版工程、三页原理图 | [工程文件](hardware/ESP32-S3-handheld.epro2) · [原理图 PDF](hardware/ESP32-S3-schematic.pdf) |
 | 两板制造文件 | [手柄 Gerber](hardware/gerber/PCB1-手柄-Gerber.zip) · [执行器 Gerber](hardware/gerber/PCB2-执行器-Gerber.zip) |
 | 模块、按键、排针排母、排线与安装件 | [采购与装配](hardware/采购与装配.md) · [焊接 BOM](hardware/PCB焊接BOM.csv) · [1:1 对孔图](hardware/assembly/装配与对孔图.pdf) · [电机托架 DXF](hardware/assembly/电机托架分面孔位.dxf) |
