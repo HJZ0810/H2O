@@ -1,6 +1,6 @@
 # Arduino R9 固件 · ThingsCloud 与智联迷城
 
-`1.3.0-r9-thingscloud` 对应 [R9.1.3 双板工程](../hardware/R9-10P/ESP32-handheld-R9-10P.epro2)。只给手柄的 ESP32-S3 烧录，执行板的 TB6612 和 MG996R 由十芯排线上的控制信号驱动。电压检测已按本版需求取消。
+`1.4.0-r9-outline` 对应 [R9.1.3 双板工程](../hardware/R9-10P/ESP32-handheld-R9-10P.epro2)。只给手柄的 ESP32-S3 烧录，执行板的 TB6612 和 MG996R 由十芯排线上的控制信号驱动。电压检测已按本版需求取消。
 
 ## 编译、烧录和配网
 
@@ -29,13 +29,13 @@ IDC 红边对两端的 1 脚，完整针序见 [装配说明](../docs/R9/十芯�
 
 ## 中文显示
 
-固件将 UTF-8 解码成完整 Unicode 码点。常用字直接从板载压缩字库解码到画布。遇到缺字时，后台向服务器请求该码点的 72 字节字模，缓存最近使用的 96 个字。等待期间显示空框，字模到达后刷新当前页，折行位置保持稳定。
+固件将 UTF-8 解码成完整 Unicode 码点。常用字直接从板载压缩字库解码到画布。遇到缺字时，后台向服务器请求该码点的字形轮廓，由 ESP32-S3 实时生成点阵，缓存最近使用的 96 个字。等待期间显示空框，字模生成后刷新当前页，折行位置保持稳定。
 
-字模统一为 12 × 12 像素、16 级灰阶。数据逐行从上到下，每字节高四位对应左侧像素。屏幕驱动接收已绘好的 RGB565 帧，题库可以直接发原始 UTF-8 字符串。字模生成和像素布局遵守同一套位序。 [原取模记录](https://blog.csdn.net/hjz0810/article/details/159386848)
+生成的字模统一为 12 × 12 像素、16 级灰阶。数据逐行从上到下，每字节高四位对应左侧像素。屏幕驱动接收已绘好的 RGB565 帧，题库可以直接发原始 UTF-8 字符串。曲线、扫描填充、像素位序与代码见 [汉字实时取模与显示](汉字实时取模与显示.md)。 [原取模记录](https://blog.csdn.net/hjz0810/article/details/159386848)
 
-服务器字模覆盖 Unicode 17.0 的 102,998 个统一及兼容汉字，另含 `〇`。每个码点使用默认字形。字库取自 Jigmo 2025-09-12，使用 CC0 1.0。生成工具为 [generate_han_atlas.py](tools/generate_han_atlas.py)，覆盖和校验值见 [字库清单](validation/r9-han-atlas.json)。 [Jigmo 字库](https://kamichikoichi.github.io/jigmo/) · [Unicode 字符定义](https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt)
+服务器轮廓库覆盖 Unicode 17.0 的 102,998 个统一及兼容汉字，另含 `〇`。每个码点使用默认字形。字库取自 Jigmo 2025-09-12，使用 CC0 1.0。生成工具为 [generate_han_outlines.py](tools/generate_han_outlines.py)，覆盖和校验值见 [字库清单](validation/r9-han-outline-atlas.json)。 [Jigmo 字库](https://kamichikoichi.github.io/jigmo/) · [Unicode 字符定义](https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt)
 
-固件默认从 `Board.h` 中的 `HanAtlasUrl` 读取静态字库。服务器需要支持 HTTP Range，以 `72 × Unicode 码点` 为起始字节读取一条记录。可以通过 `test.ps1 -GlyphAtlas <han-12.bin>` 将同一字库用于无硬件屏幕测试。
+固件默认从 `Board.h` 中的 `HanOutlineUrl` 读取静态轮廓库。服务器需要支持 HTTP Range。固件先以 `8 × Unicode 码点` 读取索引，再读取索引指向的轮廓记录。可以通过 `test.ps1 -GlyphAtlas <han-outline.bin>` 将同一字库用于无硬件屏幕测试。
 
 ## ThingsCloud
 
@@ -61,4 +61,4 @@ IDC 红边对两端的 1 脚，完整针序见 [装配说明](../docs/R9/十芯�
 
 ## 验证
 
-详见 [版本对照与验证](validation/r9-thingscloud.md)。在支持 C++17 的 Windows 上运行 `software/tools/test.ps1` 可复现协议、按键、屏幕帧缓冲和执行板 PWM 模拟。提供只读取得的线上后端源码目录参数 `-ServerSource` 时，脚本同时运行抽题、判题和断线恢复。ThingsCloud 真云往返脚本为 [simulate_thingscloud.py](tools/simulate_thingscloud.py)，用专门的仿真设备连接参数执行。
+详见 [本版对照与验证](validation/r9-outline.md) 和 [ThingsCloud 图文联调记录](validation/r9-thingscloud.md)。在支持 C++17 的 Windows 上运行 `software/tools/test.ps1` 可复现协议、按键、屏幕帧缓冲和执行板 PWM 模拟。提供只读取得的线上后端源码目录参数 `-ServerSource` 时，脚本同时运行抽题、判题和断线恢复。ThingsCloud 真云往返脚本为 [simulate_thingscloud.py](tools/simulate_thingscloud.py)，用专门的仿真设备连接参数执行。

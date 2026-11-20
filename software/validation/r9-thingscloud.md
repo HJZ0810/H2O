@@ -1,5 +1,7 @@
 # R9 固件 1.3.0 · ThingsCloud 与随机题库
 
+本页保留 1.3.0 的实现与验证记录。1.4.0 将生僻字改为由手柄根据服务器轮廓实时取模，见 [新版本记录](r9-outline.md) 和 [算法说明](../汉字实时取模与显示.md)。
+
 适配 R9.1.3 的手柄板和执行板。编译选项、按键、IDC 及 GPIO 对照见 [固件说明](../README_先读我.md)。
 
 ## 相对 1.2.2-r9-10p 的变更
@@ -26,3 +28,27 @@
 ![按键定位并勾选选项](screenshots/r9-thingscloud-tft-options.png)
 
 ![常用字及服务器补字的像素输出](screenshots/r9-thingscloud-tft-han.png)
+
+## 云平台与配网高清记录
+
+图片为 2026-11-20 的联调画面。ThingsCloud 使用仿真设备和模拟传感器数据，实体设备等待配网。配网页使用本地示例 MAC，密钥输入框为空。
+
+**设备类型与部分属性**。控制台中的采样有效性、电机 B、舵机控制和输出就绪属性。
+
+![ThingsCloud 设备类型与属性](screenshots/r9-thingscloud-device-model.png)
+
+**仿真上报与控制回报**。属性画面显示电机 A 的 62% 设定和温湿度等模拟采样值。双路与舵机的完整往返见 [MQTT 日志](r9-thingscloud-mqtt.txt)。
+
+![仿真设备上报与控制回报](screenshots/r9-thingscloud-telemetry-control.png)
+
+**停止回报**。下发停止后，电机 A 的控制值显示为 0。
+
+![仿真设备停止回报](screenshots/r9-thingscloud-stop.png)
+
+**实物设备待配网**。ThingsCloud 中已创建实物设备，截图时尚未有硬件连接。
+
+![实物设备待配网](screenshots/r9-thingscloud-physical-device.png)
+
+**手柄配网页**。在本地渲染的真实配网页中配置 Wi-Fi、智联迷城、ThingsCloud、屏幕和演示答案文件。
+
+![手柄配网页](screenshots/r9-setup-portal.png)

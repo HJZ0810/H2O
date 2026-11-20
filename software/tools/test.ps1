@@ -27,13 +27,21 @@ $cloud=Join-Path $TestPath 'test_thingscloud.exe'
 Invoke-Checked $Cxx ($flags+@($jsonInclude,('-I'+(Join-Path $PSScriptRoot 'host')),(Join-Path $PSScriptRoot 'test_thingscloud.cpp'),(Join-Path $firmware 'ThingsCloudProtocol.cpp'),(Join-Path $firmware 'Actuators.cpp'),'-o',$cloud))
 Invoke-Checked $cloud @()
 $display=Join-Path $TestPath 'test_display.exe'
+$raster=Join-Path $TestPath 'test_han_raster.exe'
+Invoke-Checked $Cxx ($flags+@((Join-Path $PSScriptRoot 'test_han_raster.cpp'),(Join-Path $firmware 'HanRaster.cpp'),'-o',$raster))
+Invoke-Checked $raster @()
 $font=Join-Path $packageRoot 'libraries\U8g2_for_Adafruit_GFX-1.8.0\src'
 $fontObject=Join-Path $TestPath 'u8g2_fonts.o'
 Invoke-Checked $Cxx @('-x','c','-DU8G2_USE_LARGE_FONTS','-fdata-sections','-c',(Join-Path $font 'u8g2_fonts.c'),'-o',$fontObject)
-Invoke-Checked $Cxx ($flags+@('-Wl,--gc-sections',('-I'+(Join-Path $PSScriptRoot 'host')),('-I'+$font),(Join-Path $PSScriptRoot 'test_display.cpp'),(Join-Path $firmware 'Display.cpp'),(Join-Path $font 'U8g2_for_Adafruit_GFX.cpp'),$fontObject,'-o',$display))
+Invoke-Checked $Cxx ($flags+@('-Wl,--gc-sections',('-I'+(Join-Path $PSScriptRoot 'host')),('-I'+$font),(Join-Path $PSScriptRoot 'test_display.cpp'),(Join-Path $firmware 'Display.cpp'),(Join-Path $firmware 'HanRaster.cpp'),(Join-Path $font 'U8g2_for_Adafruit_GFX.cpp'),$fontObject,'-o',$display))
 $displayArgs=@($TestPath)
 if ($GlyphAtlas) { $displayArgs+= $GlyphAtlas }
 Invoke-Checked $display $displayArgs
+if ($GlyphAtlas -and (Get-Item -LiteralPath $GlyphAtlas).Length -eq 113590197) {
+  $corpus=Join-Path $TestPath 'test_outline_corpus.exe'
+  Invoke-Checked $Cxx ($flags+@((Join-Path $PSScriptRoot 'test_outline_corpus.cpp'),(Join-Path $firmware 'HanRaster.cpp'),'-o',$corpus))
+  Invoke-Checked $corpus @($GlyphAtlas)
+}
 if ($ServerSource) {
   Invoke-Checked 'node' @((Join-Path $PSScriptRoot 'replay_exam.cjs'),$harness,$ServerSource)
 }

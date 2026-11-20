@@ -1,8 +1,38 @@
 #include "RemoteGlyphs.h"
 #include "Board.h"
+#include "HanRaster.h"
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <algorithm>
+#include <vector>
+
+namespace {
+uint32_t read32(const uint8_t* bytes) {
+  return uint32_t(bytes[0]) | uint32_t(bytes[1]) << 8 |
+         uint32_t(bytes[2]) << 16 | uint32_t(bytes[3]) << 24;
+}
+
+bool readRange(uint32_t start, uint32_t length, uint8_t* output) {
+  if (!length || start >= glyph::OutlineAtlasSize ||
+      length > glyph::OutlineAtlasSize - start) return false;
+  WiFiClient socket;
+  HTTPClient http;
+  http.setConnectTimeout(1500);
+  http.setTimeout(3000);
+  if (!http.begin(socket, board::HanOutlineUrl)) return false;
+  const String range = String(start) + "-" + String(start + length - 1);
+  const char* headers[] = {"Content-Range"};
+  http.collectHeaders(headers, 1);
+  http.addHeader("Range", "bytes=" + range);
+  const int status = http.GET();
+  const bool valid = status == HTTP_CODE_PARTIAL_CONTENT &&
+      http.getSize() == int(length) &&
+      http.header("Content-Range") == "bytes " + range + "/" + String(glyph::OutlineAtlasSize) &&
+      http.getStream().readBytes(output, length) == length;
+  http.end();
+  return valid;
+}
+}
 
 bool RemoteGlyphs::begin() {
   requests_=xQueueCreate(16,sizeof(uint32_t));
@@ -72,24 +102,20 @@ void RemoteGlyphs::run() {
 RemoteGlyphs::Result RemoteGlyphs::fetch(uint32_t cp) {
   Result result{cp,Status::Retry};
   if (WiFi.status()!=WL_CONNECTED) return result;
-  WiFiClient socket;
-  HTTPClient http;
-  http.setConnectTimeout(1500);
-  http.setTimeout(1500);
-  if (!http.begin(socket,board::HanAtlasUrl)) return result;
-  const auto start=uint32_t(cp*glyph::Bytes);
-  const auto last=uint32_t(start+glyph::Bytes-1);
-  const String range=String(start)+"-"+String(last);
-  const char* headers[]={"Content-Range"};
-  http.collectHeaders(headers,1);
-  http.addHeader("Range","bytes="+range);
-  const int status=http.GET();
-  if (status==HTTP_CODE_PARTIAL_CONTENT && http.getSize()==int(glyph::Bytes) &&
-      http.header("Content-Range")=="bytes "+range+"/"+String(glyph::AtlasSize) &&
-      http.getStream().readBytes(result.bitmap.data(),glyph::Bytes)==glyph::Bytes) {
-    const bool present=std::any_of(result.bitmap.begin(),result.bitmap.end(),[](uint8_t value){return value!=0;});
-    result.status=present ? Status::Ready : Status::Missing;
+  uint8_t index[8]{};
+  if (!readRange(cp * 8, sizeof(index), index)) return result;
+  const uint32_t offset = read32(index);
+  const uint32_t length = read32(index + 4);
+  if (offset == 0 && length == 0) {
+    result.status = Status::Missing;
+    return result;
   }
-  http.end();
+  if (offset < glyph::OutlineIndexSize || offset >= glyph::OutlineAtlasSize || !length ||
+      length > glyph::MaxOutlineBytes || length > glyph::OutlineAtlasSize - offset) return result;
+  std::vector<uint8_t> outline(length);
+  if (readRange(offset, length, outline.data()) &&
+      glyph::rasterizeOutline(outline.data(), outline.size(), result.bitmap)) {
+    result.status = Status::Ready;
+  }
   return result;
 }

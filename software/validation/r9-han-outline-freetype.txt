@@ -1,0 +1,7 @@
+U+867E FreeType pixel cosine 0.995
+U+9F98 FreeType pixel cosine 0.995
+U+20BB7 FreeType pixel cosine 0.974
+U+30EDE FreeType pixel cosine 0.993
+U+323B0 FreeType pixel cosine 0.994
+U+33479 FreeType pixel cosine 0.978
+Six independent FreeType comparisons passed.

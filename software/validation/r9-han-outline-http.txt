@@ -1,0 +1,8 @@
+U+3007  index HTTP 206  outline HTTP 206  412 B  003524b57f005ae2  PASS
+U+867E  index HTTP 206  outline HTTP 206  566 B  9d9e6d3e54f672c1  PASS
+U+9F98  index HTTP 206  outline HTTP 206  2711 B  6becbff2e29100c6  PASS
+U+20BB7  index HTTP 206  outline HTTP 206  204 B  44c33dd569be4ca1  PASS
+U+30EDE  index HTTP 206  outline HTTP 206  5027 B  7d53f9acb4c9b8f8  PASS
+U+323B0  index HTTP 206  outline HTTP 206  125 B  267dced1d07c66d6  PASS
+U+33479  index HTTP 206  outline HTTP 206  1269 B  ada0a9ca337883d0  PASS
+Public outline records match the verified local atlas.

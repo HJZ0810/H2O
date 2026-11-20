@@ -9,6 +9,9 @@ constexpr uint32_t LastHan = 0x33479;
 constexpr int Side = 12;
 constexpr size_t Bytes = Side * Side / 2;
 constexpr uint32_t AtlasSize = (LastHan + 1) * Bytes;
+constexpr uint32_t OutlineIndexSize = (LastHan + 1) * 8;
+constexpr uint32_t OutlineAtlasSize = 113590197;
+constexpr uint32_t MaxOutlineBytes = 5252;
 using Bitmap = std::array<uint8_t, Bytes>;
 
 struct Scalar {

@@ -1,4 +1,5 @@
 #include "Display.h"
+#include "HanRaster.h"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
@@ -13,15 +14,34 @@ class TestGlyphs : public glyph::Source {
     if (!path.empty()) {
       atlas_.open(path,std::ios::binary);
       assert(atlas_.good());
+      outlines_ = std::filesystem::file_size(path) != glyph::AtlasSize;
     }
   }
   const glyph::Bitmap* lookup(uint32_t codepoint) override {
     requested.insert(codepoint);
     if (!ready) return nullptr;
     if (atlas_.is_open()) {
-      atlas_.seekg(codepoint*glyph::Bytes);
-      atlas_.read(reinterpret_cast<char*>(record_.data()),record_.size());
-      assert(atlas_.good());
+      if (outlines_) {
+        uint8_t index[8];
+        atlas_.seekg(codepoint * 8);
+        atlas_.read(reinterpret_cast<char*>(index), sizeof(index));
+        assert(atlas_.good());
+        const auto le32 = [](const uint8_t* p) {
+          return uint32_t(p[0]) | uint32_t(p[1]) << 8 |
+                 uint32_t(p[2]) << 16 | uint32_t(p[3]) << 24;
+        };
+        const uint32_t offset = le32(index), length = le32(index + 4);
+        assert(length > 8 && length < 30000);
+        std::vector<uint8_t> outline(length);
+        atlas_.seekg(offset);
+        atlas_.read(reinterpret_cast<char*>(outline.data()), outline.size());
+        assert(atlas_.good());
+        assert(glyph::rasterizeOutline(outline.data(), outline.size(), record_));
+      } else {
+        atlas_.seekg(codepoint*glyph::Bytes);
+        atlas_.read(reinterpret_cast<char*>(record_.data()),record_.size());
+        assert(atlas_.good());
+      }
     } else {
       record_.fill(0);
       record_[0]=0xF0;
@@ -36,6 +56,7 @@ class TestGlyphs : public glyph::Source {
  private:
   std::ifstream atlas_;
   glyph::Bitmap record_{};
+  bool outlines_=false;
 };
 
 void saveFrame(const std::filesystem::path& path) {
