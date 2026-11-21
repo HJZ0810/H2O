@@ -31,7 +31,7 @@ struct Theme {
     if (s <= 140) {
       // 1.8 寸 128x160：横屏 160x128，只保留一行信息层级
       pad = 4; gap = 3; radius = 4;
-      statusH = 14; titleH = 16; footerH = 13; rowH = 26;
+      statusH = 14; titleH = 16; footerH = 14; rowH = 26;
       bodyPx = 12; smallPx = 12; titlePx = 12; lineStep = 14;
     } else if (s < 200) {
       pad = 5; gap = 4; radius = 5;

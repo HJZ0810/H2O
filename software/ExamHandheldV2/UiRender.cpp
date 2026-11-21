@@ -125,8 +125,8 @@ void Painter::footerBar(const char* left, const char* right) {
   c_.fillRect(0, y, t_.W, 1, t_.stroke);
   c_.blendRect(0, y + 1, t_.W, t_.footerH - 1, Color::hex(0x060C12), 220);
   f_.useSize(t_.smallPx);
-  int th = f_.lineHeight();
-  int ty = y + (t_.footerH - th) / 2;
+  // 点阵字的最小行高达 14px，超过底栏高度；此处固定基线，避免被裁
+  int ty = y + 2;
   // 键帽
   int x = t_.pad;
   struct KeyCap { const char* k; const char* label; };
@@ -505,21 +505,22 @@ void Painter::setupPage(const char* ap, const char* pass, const char* url, const
   Rect r(x, y, w, t_.contentBottom() - t_.gap - y);
   cardBg(r);
   cornerBrackets(r, t_.accent);
+  // 96px 可视高度内只放 5 行：标签与值成对，地址与 MAC 合并到底部
+  int yy = y + t_.pad - 1;
+  int step = t_.compact ? 17 : 22;
   f_.useSize(t_.smallPx);
-  int lh = f_.lineHeight();
-  int yy = y + t_.pad;
-  f_.draw(c_, x + t_.pad, yy, "手机连接热点", t_.dim); yy += lh + 4;
+  f_.draw(c_, x + t_.pad, yy, "连接热点", t_.dim);
   f_.useSize(t_.bodyPx);
-  f_.draw(c_, x + t_.pad, yy, ap, t_.accent); yy += f_.lineHeight() + 6;
+  f_.draw(c_, x + t_.pad + (t_.compact ? 54 : 66), yy, ap, t_.accent);
+  yy += step;
   f_.useSize(t_.smallPx);
-  f_.draw(c_, x + t_.pad, yy, "密码", t_.dim); yy += lh + 2;
+  f_.draw(c_, x + t_.pad, yy, "密码", t_.dim);
   f_.useSize(t_.bodyPx);
-  f_.draw(c_, x + t_.pad, yy, pass, t_.text); yy += f_.lineHeight() + 6;
+  f_.draw(c_, x + t_.pad + (t_.compact ? 54 : 66), yy, pass, t_.text);
+  yy += step + 2;
   f_.useSize(t_.smallPx);
-  f_.draw(c_, x + t_.pad, yy, "浏览器打开", t_.dim); yy += lh + 2;
-  f_.useSize(t_.bodyPx);
-  f_.draw(c_, x + t_.pad, yy, url, t_.accent); yy += f_.lineHeight() + 6;
-  f_.useSize(t_.smallPx);
+  f_.draw(c_, x + t_.pad, yy, url, t_.accent);
+  yy += step - 2;
   f_.draw(c_, x + t_.pad, yy, mac, t_.dimmer);
 }
 

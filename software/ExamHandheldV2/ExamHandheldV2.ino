@@ -274,22 +274,33 @@ static void handleKey(board::Key key, Press press) {
 
 void setup() {
   Serial.begin(115200);
-  delay(50);
+  delay(200);
+  Serial.println("[boot] serial ok");
   for (auto pin : board::Keys) if (pin >= 0) pinMode(pin, INPUT_PULLUP);
+  Serial.println("[boot] keys ok");
 
   framebuf = static_cast<uint16_t*>(ps_malloc(size_t(board::TFT_DEFAULT_W) * board::TFT_DEFAULT_H * 2));
+  Serial.print("[boot] fb=");
+  Serial.println((unsigned long)framebuf, 16);
   if (!framebuf) {
-    Serial.println("framebuffer alloc failed");
+    Serial.println("[boot] framebuffer alloc failed");
     return;
   }
   panel.begin(board::TFT_SCK, board::TFT_MOSI, board::TFT_CS, board::TFT_DC,
               board::TFT_RST, board::TFT_BL, board::TFT_CTRL,
               board::TFT_DEFAULT_W, board::TFT_DEFAULT_H, board::TFT_DEFAULT_ROT);
+  Serial.print("[boot] panel ");
+  Serial.print(panel.width());
+  Serial.print("x");
+  Serial.println(panel.height());
   theme.layout(panel.width(), panel.height());
+  Serial.println("[boot] theme ok");
   canvas.attach(framebuf, panel.width(), panel.height());
   font.attach(&canvas);
   font.useSize(theme.bodyPx);
+  Serial.println("[boot] font ok");
   painter = new ui::Painter(canvas, theme, font);
+  Serial.println("[boot] painter ok");
 
   fan.begin();
   configuration.load();
@@ -304,7 +315,9 @@ void setup() {
   Serial.printf("R9 v2 firmware %s on %s; %dx%d\n", board::FirmwareVersion, board::BoardName,
                 panel.width(), panel.height());
 
+  Serial.println("[boot] first render");
   render();
+  Serial.println("[boot] render ok");
   if (!configuration.value.usable()) {
     configuration.openPortal();
     switchView(View::Setup);
