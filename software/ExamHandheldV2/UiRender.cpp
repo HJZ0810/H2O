@@ -66,7 +66,7 @@ void Painter::statusBar(const Status& s) {
   Color oc = s.online ? t_.ok : t_.danger;
   gfx::circle(c_, x + dot / 2, h / 2, dot / 2, oc, true);
   c_.blendRect(x, h / 2 - dot / 2 - 1, dot + 2, dot + 2, oc, 40);
-  f_.draw(c_, x + dot + 4, (h - f_.lineHeight()) / 2, s.online ? "在线" : "离线",
+  f_.draw(c_, x + dot + 4, (h - f_.lineHeight()) / 2, s.online ? "ON" : "OFF",
           s.online ? t_.ok : t_.danger);
 
   // 右侧：分数 + 电池
@@ -96,8 +96,14 @@ void Painter::pageTitle(const char* title, const char* badge, Color badgeCol) {
   f_.draw(c_, t_.pad + 9, y + (h - th) / 2 - 1, title, t_.text);
 
   if (badge && *badge) {
-    int pw = pillWidth(badge) + 0;
-    pill(t_.W - t_.pad - (pw - 12), y + (h - (t_.compact ? 16 : 20)) / 2, badge, badgeCol, Color::hex(0x0A1A22));
+    // 原来用 -12 的硬偏移，小屏上会把胶囊推到屏外被裁；改成右对齐并做避让
+    const int pw = pillWidth(badge);
+    const int ph = t_.compact ? 16 : 20;
+    const int px = t_.W - t_.pad - pw;
+    const int titleRight = t_.pad + 9 + f_.width(title);
+    if (px >= titleRight + 2) {
+      pill(px, y + (h - ph) / 2, badge, badgeCol, Color::hex(0x0A1A22));
+    }
   }
   c_.blendRect(t_.pad, y + h - 1, t_.W - 2 * t_.pad, 1, t_.stroke, 160);
 }

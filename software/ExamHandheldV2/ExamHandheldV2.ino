@@ -179,7 +179,7 @@ static void render() {
           if (demo.active()) items[menuIndex].label = "演示中…";
           painter->menu(items, 6, menuIndex);
           painter->statusBar(makeStatus());
-          painter->pageTitle("智联迷城", session.ready ? (session.statusKnown ? "在线" : "同步") : "离线",
+          painter->pageTitle("智联迷城", session.ready ? (session.statusKnown ? "ON" : "SYNC") : "OFF",
                              session.ready ? theme.ok : theme.danger);
         }
       }
@@ -262,7 +262,7 @@ static void handleKey(board::Key key, Press press) {
     }
     return;
   }
-  if (session.phase == exam::Phase::Menu && view == View::Menu) {
+  if (view == View::Menu) {  // 以界面为准：画的是菜单就必须响应菜单按键
     if (key == Up) menuIndex = (menuIndex + 5) % 6;
     else if (key == Down) menuIndex = (menuIndex + 1) % 6;
     else if (key == Test) {
@@ -382,8 +382,10 @@ void setup() {
   render();
 }
 
+#include "UiDebug.h"
+
 void loop() {
-  onenetcfg::poll(onenet, onenetActive);
+  pollUiDebug();
   configuration.tick();
   sensors.tick();
   if (onenetActive) onenet.tick(sensors, fan);
