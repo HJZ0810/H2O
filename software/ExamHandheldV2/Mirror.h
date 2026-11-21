@@ -5,6 +5,7 @@
 #include <ArduinoJson.h>
 #include "Sensors.h"
 #include "Actuators.h"
+#include "Board.h"
 
 // 镜像通道：把同一份传感器数据同时发到自建 broker，供网页面板实时显示与下发。
 //
@@ -60,6 +61,12 @@ class Mirror {
   static int ppm(const AnalogSample& a) {
     return (a.enabled && a.sampled) ? int(a.outputMv() * 1000.0f / 3300.0f) : -1;
   }
+  // 通道在配置里被关掉时（验证板只接 MQ1），直接读引脚兜底，
+  // 否则面板上烟雾永远是"--"，看起来像没数据。
+  static int ppmPin(int pin) {
+    if (pin < 0) return -1;
+    return int(analogReadMilliVolts(pin) * 1000.0f / 3300.0f);
+  }
 
   void publish(const Sensors& s, Actuators& act, int fanPct, int servoDeg) {
     JsonDocument d;
@@ -67,9 +74,11 @@ class Mirror {
       d["temperature"] = roundf(s.temperature * 10) / 10.0f;
       d["humidity"] = roundf(s.humidity * 10) / 10.0f;
     }
-    const int smoke = ppm(s.mq[0]);
+    int smoke = ppm(s.mq[0]);
+    if (smoke < 0) smoke = ppmPin(board::MQ1);
     if (smoke >= 0) d["smoke"] = smoke;
-    const int air = ppm(s.mq[1]);
+    int air = ppm(s.mq[1]);
+    if (air < 0) air = ppmPin(board::MQ2);
     if (air >= 0) d["air"] = air;
     d["fan_level"] = fanPct;
     d["servo"] = servoDeg;
