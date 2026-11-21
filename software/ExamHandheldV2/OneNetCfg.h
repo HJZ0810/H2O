@@ -58,7 +58,7 @@ inline void loadFromNvs(OneNet& n, bool& act, Actuators& actr) {
               prefs.getString("on_key", ""), prefs.getString("on_host", "mqtts.heclouds.com"));
   prefs.end();
   n.attach(&actr);
-  act = false;
+  act = n.configured();  // 默认就连，不需要用户去菜单里开
   Serial.print("[onenet] configured=");
   Serial.println(n.configured() ? 1 : 0);
 }

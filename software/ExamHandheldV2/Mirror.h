@@ -27,7 +27,7 @@ class Mirror {
 
   bool connected() { return mqtt_.connected(); }
 
-  void tick(const Sensors& s, Actuators& act, int fanPct, int servoDeg) {
+  void tick(const Sensors& s, Actuators& act, int fanPct, int servoDeg, bool onenetUp) {
     if (!ready_ || WiFi.status() != WL_CONNECTED) {
       if (mqtt_.connected()) mqtt_.disconnect();
       return;
@@ -45,7 +45,7 @@ class Mirror {
     }
     if (mqtt_.connected() && millis() - lastReport_ >= kIntervalMs) {
       lastReport_ = millis();
-      publish(s, act, fanPct, servoDeg);
+      publish(s, act, fanPct, servoDeg, onenetUp);
     }
   }
 
@@ -68,7 +68,7 @@ class Mirror {
     return int(analogReadMilliVolts(pin) * 1000.0f / 3300.0f);
   }
 
-  void publish(const Sensors& s, Actuators& act, int fanPct, int servoDeg) {
+  void publish(const Sensors& s, Actuators& act, int fanPct, int servoDeg, bool onenetUp) {
     JsonDocument d;
     if (s.dhtValid) {
       d["temperature"] = roundf(s.temperature * 10) / 10.0f;
@@ -83,6 +83,7 @@ class Mirror {
     d["fan_level"] = fanPct;
     d["servo"] = servoDeg;
     d["ts"] = millis();
+    d["onenet"] = onenetUp ? 1 : 0;
     String out;
     serializeJson(d, out);
     mqtt_.publish(topicTele_.c_str(), out.c_str(), false);

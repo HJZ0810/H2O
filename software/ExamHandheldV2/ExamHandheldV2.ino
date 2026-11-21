@@ -392,7 +392,7 @@ void loop() {
   configuration.tick();
   sensors.tick();
   if (onenetActive) onenet.tick(sensors, fan);
-  mirror.tick(sensors, fan, onenet.fanLevel(), onenet.servoAngle());
+  mirror.tick(sensors, fan, onenet.fanLevel(), onenet.servoAngle(), onenet.connected());
 
   if (networkStarted) {
     if (network.overflowed()) session.fail("接收队列溢出，已暂停");
