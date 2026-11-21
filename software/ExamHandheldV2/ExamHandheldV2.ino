@@ -13,6 +13,7 @@
 #include "AutoDemo.h"
 #include "ButtonLogic.h"
 #include "Config.h"
+#include "OneNetCfg.h"
 #include "ExamCore.h"
 #include "ExamNetwork.h"
 #include "Auth.h"
@@ -30,10 +31,12 @@ exam::Core session;
 ExamNetwork network;
 Sensors sensors;
 Actuators fan;
+OneNet onenet;
+bool onenetActive = false;   // 菜单第6项切换：开启后按10秒周期上报并跑联动
 exam::AutoDemo demo;
 ButtonLogic buttons[board::KeyCount];
 
-enum class View { Menu, Question, Story, Judge, Finished, Recovery, Sensor, Info, Setup, Fan };
+enum class View { Menu, Question, Story, Judge, Finished, Recovery, Sensor, Info, Setup, Fan, Monitor };
 View view = View::Menu;
 int menuIndex = 0;
 unsigned optionCursor = 0;
@@ -111,6 +114,7 @@ static void render() {
     painter->statusBar(makeStatus());
   } else {
     switch (view) {
+      case View::Monitor:
       case View::Sensor: {
         static char mq0v[16], mq1v[16];
         snprintf(mq0v, sizeof(mq0v), "%s", sensors.mq[0].enabled ? String(sensors.mq[0].raw).c_str() : "--");
@@ -169,11 +173,11 @@ static void render() {
           painter->statusBar(makeStatus());
           painter->pageTitle("剧情");
         } else {
-          ui::MenuEntry items[5] = {
+          ui::MenuEntry items[6] = {
               {"开始考试", nullptr, 0}, {"环境采样", nullptr, 1}, {"设备信息", nullptr, 2},
-              {"配网设置", nullptr, 3}, {"执行器", nullptr, 4}};
+              {"配网设置", nullptr, 3}, {"执行器", nullptr, 4}, {"云端监测", nullptr, 5}};
           if (demo.active()) items[menuIndex].label = "演示中…";
-          painter->menu(items, 5, menuIndex);
+          painter->menu(items, 6, menuIndex);
           painter->statusBar(makeStatus());
           painter->pageTitle("智联迷城", session.ready ? (session.statusKnown ? "在线" : "同步") : "离线",
                              session.ready ? theme.ok : theme.danger);
@@ -187,7 +191,8 @@ static void render() {
     else if (session.phase == exam::Phase::Question) hint = "左右选 F1勾 OK交";
     else if (session.phase == exam::Phase::Finished) hint = "长按返回采样";
     else if (session.phase == exam::Phase::Recovery) hint = "OK 重新同步";
-    if (view == View::Sensor || view == View::Info || view == View::Setup || view == View::Fan)
+    if (view == View::Sensor || view == View::Info || view == View::Setup || view == View::Fan ||
+        view == View::Monitor)
       hint = "OK/返回 退出";
     painter->footerBar(hint, "");
   }
@@ -258,16 +263,21 @@ static void handleKey(board::Key key, Press press) {
     return;
   }
   if (session.phase == exam::Phase::Menu && view == View::Menu) {
-    if (key == Up) menuIndex = (menuIndex + 4) % 5;
-    else if (key == Down) menuIndex = (menuIndex + 1) % 5;
+    if (key == Up) menuIndex = (menuIndex + 5) % 6;
+    else if (key == Down) menuIndex = (menuIndex + 1) % 6;
     else if (key == Test) {
       if (!demo.start(session, millis())) tell("需先同步进度");
     } else if (key == Confirm) {
-      const View views[] = {View::Menu, View::Sensor, View::Info, View::Setup, View::Fan};
+      const View views[] = {View::Menu, View::Sensor, View::Info, View::Setup, View::Fan, View::Monitor};
       if (menuIndex == 0) {
         if (!session.ready || !session.statusKnown) { tell("连接未就绪"); return; }
         sendCommand(session.start(millis()));
         switchView(View::Menu);
+      } else if (menuIndex == 5) {
+        if (!onenet.configured()) { tell("未配置 OneNET"); return; }
+        onenetActive = !onenetActive;
+        tell(onenetActive ? "云端监测已开" : "云端监测已关");
+        switchView(View::Monitor);
       } else {
         switchView(views[menuIndex]);
       }
@@ -347,8 +357,10 @@ void setup() {
     }
   }
   sensors.begin(configuration.value);
+  onenetcfg::loadFromNvs(onenet, onenetActive, fan);
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
+  configTime(0, 0, "ntp.aliyun.com", "cn.pool.ntp.org");
 
   char prefix[25];
   snprintf(prefix, sizeof(prefix), "%08lx%08lx", (unsigned long)esp_random(), (unsigned long)esp_random());
@@ -371,8 +383,10 @@ void setup() {
 }
 
 void loop() {
+  onenetcfg::poll(onenet, onenetActive);
   configuration.tick();
   sensors.tick();
+  if (onenetActive) onenet.tick(sensors, fan);
 
   if (networkStarted) {
     if (network.overflowed()) session.fail("接收队列溢出，已暂停");
