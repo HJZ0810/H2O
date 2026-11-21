@@ -15,6 +15,7 @@
 #include "Config.h"
 #include "ExamCore.h"
 #include "ExamNetwork.h"
+#include "Auth.h"
 #include "Sensors.h"
 
 static dev::Panel panel;
@@ -85,7 +86,9 @@ static void render() {
   painter->background();
 
   const auto& f = session.frame;
-  if (view == View::Question && session.phase == exam::Phase::Question) {
+  // 以 phase 为准渲染题目：开始考试后 view 仍是 Menu，若要求 view==Question 会永远进不去。
+  if (session.phase == exam::Phase::Question &&
+      (view == View::Menu || view == View::Question)) {
     static ui::OptionView opts[8];
     int n = int(f.options.size());
     if (n > 8) n = 8;
@@ -177,7 +180,16 @@ static void render() {
         }
       }
     }
-    painter->footerBar("上下选 OK进入", "");
+    // 底栏提示按当前阶段给出，避免把「上下选择」写到只认 OK 的页面
+    const char* hint = "上下选 OK进入";
+    if (session.phase == exam::Phase::Story) hint = "OK 继续";
+    else if (session.phase == exam::Phase::Judge) hint = "OK 继续";
+    else if (session.phase == exam::Phase::Question) hint = "左右选 F1勾 OK交";
+    else if (session.phase == exam::Phase::Finished) hint = "长按返回采样";
+    else if (session.phase == exam::Phase::Recovery) hint = "OK 重新同步";
+    if (view == View::Sensor || view == View::Info || view == View::Setup || view == View::Fan)
+      hint = "OK/返回 退出";
+    painter->footerBar(hint, "");
   }
 
   if (!feedback.isEmpty() && uint32_t(millis() - feedbackAt) < 2500) painter->toast(feedback.c_str());
@@ -195,6 +207,20 @@ static void switchView(View v) {
 static void handleKey(board::Key key, Press press) {
   using namespace board;
   if (press == Press::None) return;
+  Serial.print("[key] k=");
+  Serial.print(int(key));
+  Serial.print(" p=");
+  Serial.print(int(press));
+  Serial.print(" phase=");
+  Serial.print(int(session.phase));
+  Serial.print(" view=");
+  Serial.print(int(view));
+  Serial.print(" menu=");
+  Serial.print(menuIndex);
+  Serial.print(" rev=");
+  Serial.print(session.revision);
+  Serial.print("/");
+  Serial.println(paintedRevision);
   if (demo.active()) {
     demo.stop();
     tell("已停止演示，可手动作答");
@@ -304,6 +330,22 @@ void setup() {
 
   fan.begin();
   configuration.load();
+  // 接入密码由固件按“组号 + MAC”算出（任务 A 硬性要求，不得手填）。
+  // 放在 usable() 判断之前，组号有效时即使配置页没填密码也能直接联网。
+  {
+    String derived = auth::derivePassword(configuration.value.group, auth::deviceMac());
+    if (!derived.isEmpty()) {
+      configuration.value.mqttPassword = derived;
+      Serial.print("[auth] group=");
+      Serial.print(configuration.value.group);
+      Serial.print(" mac=");
+      Serial.print(auth::deviceMac());
+      Serial.print(" pass=");
+      Serial.println(derived);
+    } else {
+      Serial.println("[auth] group not numeric, using stored password");
+    }
+  }
   sensors.begin(configuration.value);
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
@@ -372,6 +414,30 @@ void loop() {
     lastReport = millis();
     network.telemetry(sensors.json());
   }
+  static uint32_t lastDiag = 0;
+  if (uint32_t(millis() - lastDiag) >= 3000) {
+    lastDiag = millis();
+    String ip = WiFi.localIP().toString();
+    Serial.print("[net] wifi=");
+    Serial.print(int(WiFi.status()));
+    Serial.print(" ip=");
+    Serial.print(ip);
+    Serial.print(" rssi=");
+    Serial.print(WiFi.RSSI());
+    Serial.print(" online=");
+    Serial.print(network.online() ? 1 : 0);
+    Serial.print(" ready=");
+    Serial.print(session.ready ? 1 : 0);
+    Serial.print(" grp=");
+    Serial.print(configuration.value.group);
+    Serial.print(" phase=");
+    Serial.print(int(session.phase));
+    Serial.print(" busy=");
+    Serial.print(session.busy() ? 1 : 0);
+    Serial.print(" notice=");
+    Serial.println(session.notice.c_str());
+  }
+
   if (uint32_t(millis() - lastPaint) >= 80) {
     lastPaint = millis();
     render();

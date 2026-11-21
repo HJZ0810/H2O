@@ -24,8 +24,11 @@ constexpr bool kHasMq = false;
 constexpr float MqDivider = 1.0f;
 
 // 6 个轻触键 + BOOT 键。BOOT(IO0) 补足第 7 个功能键，上电时不要按住。
+// 物理布局：板中部四键为方向键（上/左/下/右），右侧两键为 OK / 返回。
+// 2026-11-21 实测：方向键的 IO 顺序与丝印排列不一致，按实测结果绑定——
+//   上=IO17  左=IO15  下=IO18  右=IO16  OK=IO13  返回=IO14
 enum Key : uint8_t { Test, Back, Up, Down, Left, Right, Confirm, KeyCount };
-constexpr uint8_t Keys[KeyCount] = {0, 14, 15, 16, 17, 18, 13};
+constexpr uint8_t Keys[KeyCount] = {0, 14, 17, 18, 15, 16, 13};
 
 // 无功率级：A/B 与舵机映射到板载 LED，亮度随占空比变化，用于直观确认输出
 constexpr int ServoPwm = 6, MotorPwm = 4, MotorAin1 = -1, MotorAin2 = -1;

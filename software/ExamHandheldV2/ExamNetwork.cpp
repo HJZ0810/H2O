@@ -7,7 +7,13 @@
 bool ExamNetwork::begin(const DeviceConfig& cfg) {
   cfg_=cfg;rx_=xQueueCreate(8,sizeof(NetEvent*));tx_=xQueueCreate(3,sizeof(Tx));sensor_=xQueueCreate(1,sizeof(Tx));
   if(!rx_||!tx_||!sensor_) return false;
-  return xTaskCreatePinnedToCore(task,"exam-network",10240,this,1,nullptr,0)==pdPASS;
+  // Wi-Fi 必须在主任务上下文启动：在自建任务里调用 WiFi.begin() 会静默失败，
+  // 表现为 wifi=6、IP 0.0.0.0，而 setup 内直接调用可正常连上。
+  WiFi.mode(WIFI_STA);
+  WiFi.setSleep(false);
+  WiFi.setAutoReconnect(true);
+  WiFi.begin(cfg_.ssid.c_str(), cfg_.wifiPassword.c_str());
+  return xTaskCreatePinnedToCore(task,"exam-network",16384,this,1,nullptr,0)==pdPASS;
 }
 void ExamNetwork::emit(NetKind kind,const char* payload,size_t size) {
   if(!size)size=strlen(payload);
@@ -40,7 +46,8 @@ void ExamNetwork::run() {
   mqtt.setKeepAlive(30);mqtt.setSocketTimeout(2);
   if(!mqtt.setBufferSize(8320)){emit(NetKind::Error,"MQTT缓冲区分配失败");return;}
   String up="/iot/game/"+cfg_.group+"/up",down="/iot/game/"+cfg_.group+"/down";
-  String clientId="zlc-"+cfg_.group+"-"+WiFi.macAddress();clientId.replace(":","");
+  // 课程规范：Client ID 必须为 esp32-<组号>，组号唯一即满足唯一性要求
+  String clientId="esp32-"+cfg_.group;
   mqtt.setCallback([this,&down](char* topic,uint8_t* payload,unsigned int length){
     if(down==topic)emit(NetKind::Message,reinterpret_cast<const char*>(payload),length);
   });

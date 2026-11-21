@@ -12,7 +12,8 @@ struct DeviceConfig {
   bool mq1=true,mq2=true;
   CloudConfig cloud;
   String demoAnswers;
-  bool examConfigured() const {return !group.isEmpty() && !mqttPassword.isEmpty();}
+  // 密码由 Auth.h 按组号+MAC 派生，配置里只需组号
+  bool examConfigured() const {return !group.isEmpty();}
   bool usable() const {return !ssid.isEmpty() && (examConfigured() || cloud.configured());}
 };
 class Configuration {
