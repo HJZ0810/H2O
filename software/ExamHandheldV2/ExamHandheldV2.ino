@@ -90,8 +90,7 @@ static void render() {
 
   const auto& f = session.frame;
   // 以 phase 为准渲染题目：开始考试后 view 仍是 Menu，若要求 view==Question 会永远进不去。
-  if (session.phase == exam::Phase::Question &&
-      (view == View::Menu || view == View::Question)) {
+  if (session.phase == exam::Phase::Question && view == View::Question) {
     static ui::OptionView opts[8];
     int n = int(f.options.size());
     if (n > 8) n = 8;
@@ -272,7 +271,7 @@ static void handleKey(board::Key key, Press press) {
       if (menuIndex == 0) {
         if (!session.ready || !session.statusKnown) { tell("连接未就绪"); return; }
         sendCommand(session.start(millis()));
-        switchView(View::Menu);
+        switchView(View::Question);
       } else if (menuIndex == 5) {
         if (!onenet.configured()) { tell("未配置 OneNET"); return; }
         onenetActive = !onenetActive;
