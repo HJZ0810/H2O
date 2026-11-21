@@ -4,68 +4,66 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>一氧化二氢 · 环境监测面板</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 <style>
   :root{
     --bg:#f7f9fc; --line:#e4e9f2; --text:#1b2333; --dim:#6b7891;
-    --blue:#4d6bfe; --blue2:#6b86ff; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+    --blue:#4d6bfe; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
   }
   *{box-sizing:border-box}
-  body{margin:0;color:var(--text);min-height:100vh;padding:18px;
+  body{margin:0;color:var(--text);min-height:100vh;padding:16px;
        background:
          radial-gradient(900px 420px at 12% -8%, #e8efff 0%, rgba(232,239,255,0) 60%),
          radial-gradient(700px 360px at 92% 0%, #e6f8f1 0%, rgba(230,248,241,0) 55%),
          var(--bg);
        font:14px/1.5 "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
-  header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-  h1{font-size:19px;margin:0;font-weight:600;letter-spacing:.5px}
+  header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  h1{font-size:18px;margin:0;font-weight:600}
   .pills{display:flex;gap:8px;flex-wrap:wrap}
-  .pill{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;
-        background:#fff;border:1px solid var(--line);font-size:12px;color:var(--dim);
-        box-shadow:0 1px 2px rgba(27,35,51,.04);white-space:nowrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+        background:#fff;border:1px solid var(--line);font-size:12px;color:var(--dim);white-space:nowrap}
   .pill b{color:var(--text);font-weight:600}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex:0 0 auto}
   .dot.on{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.7)}
   .dot.wait{background:var(--amber)}
   .spacer{flex:1}
   .fresh{font-size:12px;color:var(--dim)}
-  .grid{display:grid;gap:14px}
-  .cards{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+  .grid{display:grid;gap:12px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;
         position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(27,35,51,.05)}
   .card::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;
         background:linear-gradient(90deg,rgba(77,107,254,0),var(--blue),var(--green))}
   .card .k{font-size:12px;color:var(--dim);display:flex;justify-content:space-between}
-  .card .v{font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:6px;color:var(--blue)}
-  .card .v small{font-size:13px;color:var(--dim);font-weight:400;margin-left:4px}
+  .card .v{font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:4px;color:var(--blue)}
+  .card .v small{font-size:13px;color:var(--dim);font-weight:400;margin-left:3px}
   .card.warn .v{color:var(--amber)} .card.bad .v{color:var(--red)} .card.ok .v{color:var(--green)}
-  .row{grid-template-columns:1.35fr .9fr}
-  @media(max-width:900px){.row{grid-template-columns:1fr}}
-  .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+  .row{grid-template-columns:1.4fr .9fr}
+  @media(max-width:860px){.row{grid-template-columns:1fr}}
+  .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;
        box-shadow:0 2px 10px rgba(27,35,51,.05)}
-  .box h2{font-size:14px;margin:0 0 12px;color:var(--dim);font-weight:500;letter-spacing:.4px}
-  #chart{width:100%;height:250px}
-  .ctrl{margin-bottom:16px}
-  .ctrl .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:6px}
+  .box h2{font-size:13px;margin:0 0 10px;color:var(--dim);font-weight:500}
+  .chart-wrap{position:relative;height:240px}
+  #chart{width:100%;height:100%}
+  .ctrl{margin-bottom:14px}
+  .ctrl .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:5px}
   input[type=range]{width:100%;accent-color:var(--blue)}
   .btns{display:flex;gap:8px;margin-top:8px}
   .btns button{flex:1}
   button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--text);
-         padding:7px 14px;border-radius:8px;font-size:13px;transition:.15s}
+         padding:7px 12px;border-radius:8px;font-size:13px;transition:.15s}
   button:hover{border-color:var(--blue);color:var(--blue)}
-  button:disabled{opacity:.45;cursor:not-allowed}
   details{margin-top:4px;font-size:12px;color:var(--dim)}
   details summary{cursor:pointer}
-  .cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px}
+  .cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
   .cfg label{font-size:12px;color:var(--dim);display:block;margin-bottom:4px}
   .cfg input{width:100%;background:#fbfcfe;border:1px solid var(--line);color:var(--text);
              padding:8px 10px;border-radius:8px;font-size:13px}
-  footer{margin-top:18px;color:var(--dim);font-size:12px;text-align:center}
+  footer{margin-top:16px;color:var(--dim);font-size:12px;text-align:center}
 </style>
 </head>
 <body>
 <header>
-  <h1>一氧化二氢 · 环境监测面板</h1>
+  <h1>一氧化二氢 · 环境监测</h1>
   <div class="pills">
     <span class="pill"><span class="dot wait" id="dotOne"></span>OneNET <b id="stOne">检测中</b></span>
     <span class="pill"><span class="dot wait" id="dotSrv"></span>服务器 <b id="stSrv">检测中</b></span>
@@ -74,25 +72,25 @@
   <span class="fresh" id="fresh">等待数据…</span>
 </header>
 
-<section class="grid cards" style="margin-bottom:14px">
+<section class="grid cards" style="margin-bottom:12px">
   <div class="card"><div class="k"><span>温度</span><span id="tTime"></span></div>
     <div class="v" id="vTemp">--<small>°C</small></div></div>
   <div class="card"><div class="k"><span>湿度</span><span id="hTime"></span></div>
     <div class="v" id="vHumi">--<small>%RH</small></div></div>
-  <div class="card"><div class="k"><span>烟雾浓度</span><span id="sTime"></span></div>
+  <div class="card"><div class="k"><span>烟雾</span><span id="sTime"></span></div>
     <div class="v" id="vSmoke">--<small>ppm</small></div></div>
   <div class="card"><div class="k"><span>空气质量</span><span id="aTime"></span></div>
     <div class="v" id="vAir">--<small>ppm</small></div></div>
-  <div class="card"><div class="k"><span>风扇档位</span><span id="fTime"></span></div>
+  <div class="card"><div class="k"><span>风扇</span><span id="fTime"></span></div>
     <div class="v" id="vFan">--<small>%</small></div></div>
-  <div class="card"><div class="k"><span>舵机角度</span><span id="gTime"></span></div>
+  <div class="card"><div class="k"><span>舵机</span><span id="gTime"></span></div>
     <div class="v" id="vServo">--<small>°</small></div></div>
 </section>
 
-<section class="grid row" style="margin-bottom:14px">
+<section class="grid row" style="margin-bottom:12px">
   <div class="box">
-    <h2>历史曲线（服务器已存 <b id="ptCount">0</b> 点）</h2>
-    <div id="chart"></div>
+    <h2>历史曲线 · 已存 <b id="ptCount">0</b> 点</h2>
+    <div class="chart-wrap"><canvas id="chart"></canvas></div>
   </div>
   <div class="box">
     <h2>控制</h2>
@@ -100,17 +98,14 @@
       <div class="lab"><span>风扇</span><span><b id="fanVal">0</b> %</span></div>
       <input type="range" id="fan" min="0" max="100" step="5" value="0" />
       <div class="btns">
-        <button data-fan="0">停转</button>
-        <button data-fan="50">半速</button>
-        <button data-fan="100">全速</button>
+        <button data-fan="0">停转</button><button data-fan="50">半速</button><button data-fan="100">全速</button>
       </div>
     </div>
     <div class="ctrl">
       <div class="lab"><span>舵机</span><span><b id="servoVal">0</b> °</span></div>
       <input type="range" id="servo" min="0" max="180" step="5" value="0" />
       <div class="btns">
-        <button data-servo="0">关窗 0°</button>
-        <button data-servo="90">开窗 90°</button>
+        <button data-servo="0">关窗 0°</button><button data-servo="90">开窗 90°</button>
       </div>
     </div>
   </div>
@@ -130,62 +125,76 @@
 
 <footer>打开即连 · 历史来自服务器 · 实时来自 WebSocket</footer>
 
+<script src="/h2o/lib/chart.umd.min.js" defer></script>
 <script>
 const $ = (id) => document.getElementById(id);
-const MAXP = 300;
+const MAXP = 180;
 const series = {temperature:[], humidity:[], smoke:[]};
 const times = [];
 let ws = null, chart = null, devId = 'yhyegj-01';
 let apiBase = '/h2o/api', wsUrl = 'wss://air-quality.luo-jin-ai.com/mqtt';
-let lastMsgAt = 0, lastOnenet = null;
+let lastMsgAt = 0, lastOnenet = null, dirty = false;
 
 function initChart(){
-  chart = echarts.init($('chart'));
-  chart.setOption({
-    backgroundColor:'transparent',
-    grid:{left:38,right:12,top:26,bottom:24},
-    tooltip:{trigger:'axis',backgroundColor:'#fff',borderColor:'#e4e9f2',
-             textStyle:{color:'#1b2333',fontSize:12},
-             extraCssText:'box-shadow:0 6px 20px rgba(27,35,51,.12);border-radius:10px'},
-    legend:{data:['温度','湿度','烟雾'],textStyle:{color:'#6b7891',fontSize:11},
-            top:0,itemWidth:12,itemHeight:8},
-    xAxis:{type:'category',show:false,data:[]},
-    yAxis:[{type:'value',axisLine:{lineStyle:{color:'#e4e9f2'}},
-            splitLine:{lineStyle:{color:'#eef2f8'}},axisLabel:{color:'#6b7891',fontSize:10}},
-           {type:'value',show:false}],
-    series:[
-      {name:'温度',type:'line',smooth:true,symbol:'none',data:[],
-       lineStyle:{width:2.5,color:'#4d6bfe'},areaStyle:{color:'rgba(77,107,254,.10)'}},
-      {name:'湿度',type:'line',smooth:true,symbol:'none',data:[],
-       lineStyle:{width:2.5,color:'#10b981'},areaStyle:{color:'rgba(16,185,129,.10)'}},
-      {name:'烟雾',type:'line',smooth:true,symbol:'none',yAxisIndex:1,data:[],
-       lineStyle:{width:2.5,color:'#f59e0b'}}
-    ]
+  if (typeof Chart === 'undefined') return false;
+  chart = new Chart($('chart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {label:'温度', data:[], borderColor:'#4d6bfe', backgroundColor:'rgba(77,107,254,.10)',
+         borderWidth:2.5, tension:.35, pointRadius:0, fill:true, yAxisID:'y'},
+        {label:'湿度', data:[], borderColor:'#10b981', backgroundColor:'rgba(16,185,129,.10)',
+         borderWidth:2.5, tension:.35, pointRadius:0, fill:true, yAxisID:'y'},
+        {label:'烟雾', data:[], borderColor:'#f59e0b', borderWidth:2.5, tension:.35,
+         pointRadius:0, fill:false, yAxisID:'y1'}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:false, normalized:true,
+      interaction:{mode:'index', intersect:false},
+      plugins:{
+        legend:{labels:{color:'#6b7891', boxWidth:10, boxHeight:8, font:{size:11}}},
+        tooltip:{backgroundColor:'#fff', borderColor:'#e4e9f2', borderWidth:1,
+                 titleColor:'#1b2333', bodyColor:'#1b2333', padding:10, cornerRadius:10}
+      },
+      scales:{
+        x:{display:false, grid:{display:false}},
+        y:{position:'left', grid:{color:'#eef2f8'}, border:{display:false},
+           ticks:{color:'#6b7891', font:{size:10}, maxTicksLimit:5}},
+        y1:{position:'right', display:false, grid:{display:false}}
+      }
+    }
   });
-  addEventListener('resize', () => chart.resize());
+  return true;
+}
+
+function flushChart(){
+  if (!chart || !dirty) return;
+  chart.data.labels = times;
+  chart.data.datasets[0].data = series.temperature;
+  chart.data.datasets[1].data = series.humidity;
+  chart.data.datasets[2].data = series.smoke;
+  chart.update('none');
+  dirty = false;
 }
 
 const UNITS = {vTemp:'°C', vHumi:'%RH', vSmoke:'ppm', vAir:'ppm', vFan:'%', vServo:'°'};
 function setCard(id, value){
   const el = $(id);
   el.innerHTML = (value === null || value === undefined || value === '' || Number.isNaN(value))
-    ? `--<small>${UNITS[id]}</small>`
-    : `${value}<small>${UNITS[id]}</small>`;
+    ? `--<small>${UNITS[id]}</small>` : `${value}<small>${UNITS[id]}</small>`;
 }
 
 function appendPoint(d){
-  const label = d.label || new Date().toLocaleTimeString('zh-CN',{hour12:false});
-  times.push(label);
+  times.push(d.label || new Date().toLocaleTimeString('zh-CN',{hour12:false}));
   series.temperature.push(d.temperature ?? null);
   series.humidity.push(d.humidity ?? null);
   series.smoke.push(d.smoke ?? null);
   while (times.length > MAXP) {
     times.shift(); series.temperature.shift(); series.humidity.shift(); series.smoke.shift();
   }
-  chart.setOption({
-    xAxis:{data:times},
-    series:[{data:series.temperature},{data:series.humidity},{data:series.smoke}]
-  });
+  dirty = true;
 }
 
 function render(d){
@@ -204,7 +213,9 @@ function render(d){
   }
   if (d.onenet !== undefined) lastOnenet = Number(d.onenet) === 1;
   const now = new Date().toLocaleTimeString('zh-CN',{hour12:false});
-  ['tTime','hTime','sTime','aTime','fTime','gTime'].forEach(id => { const e = $(id); if (e) e.textContent = now; });
+  ['tTime','hTime','sTime','aTime','fTime','gTime'].forEach(id => {
+    const e = $(id); if (e) e.textContent = now;
+  });
 }
 
 function paintStatus(){
@@ -212,13 +223,10 @@ function paintStatus(){
   const srvOn = !!(ws && ws.readyState === WebSocket.OPEN) && age < 20;
   $('dotSrv').className = 'dot ' + (srvOn ? 'on' : age < 60 ? 'wait' : '');
   $('stSrv').textContent = srvOn ? '在线' : (age < 60 ? '间歇' : '离线');
-
   $('dotOne').className = 'dot ' + (lastOnenet === true ? 'on' : lastOnenet === false ? '' : 'wait');
   $('stOne').textContent = lastOnenet === true ? '在线' : lastOnenet === false ? '离线' : '检测中';
-
   $('fresh').textContent = lastMsgAt
-    ? `最后更新 ${age < 1 ? '刚刚' : age.toFixed(0) + ' 秒前'}`
-    : '等待数据…';
+    ? `最后更新 ${age < 1 ? '刚刚' : age.toFixed(0) + ' 秒前'}` : '等待数据…';
 }
 
 async function loadHistory(){
@@ -235,6 +243,7 @@ async function loadHistory(){
       const t = new Date(sec * 1000);
       appendPoint({...p, label: isNaN(t) ? '' : t.toLocaleTimeString('zh-CN',{hour12:false})});
     });
+    flushChart();
     if (j.latest) { render(j.latest); lastMsgAt = Date.now(); }
     paintStatus();
   } catch (e) {
@@ -244,17 +253,14 @@ async function loadHistory(){
 
 function connect(){
   ws = new WebSocket(wsUrl);
-  ws.onopen = () => {
-    ws.send(JSON.stringify({sub: `h2o/${devId}/#`}));
-    paintStatus();
-  };
+  ws.onopen = () => { ws.send(JSON.stringify({sub: `h2o/${devId}/#`})); paintStatus(); };
   ws.onmessage = (ev) => {
     let m; try { m = JSON.parse(ev.data); } catch { return; }
     if (m.t !== 'msg') return;
     let d; try { d = JSON.parse(m.data); } catch { return; }
     if (m.topic.endsWith('/telemetry')) {
       lastMsgAt = Date.now();
-      render(d); appendPoint(d); paintStatus();
+      render(d); appendPoint(d); flushChart(); paintStatus();
     }
   };
   ws.onclose = () => { paintStatus(); setTimeout(connect, 3000); };
@@ -266,7 +272,7 @@ function publishCmd(obj){
   ws.send(JSON.stringify({pub: `h2o/${devId}/cmd`, data: JSON.stringify(obj)}));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function boot(){
   initChart();
   const saved = JSON.parse(localStorage.getItem('h2o-cfg') || '{}');
   if (saved.dev) devId = saved.dev;
@@ -291,7 +297,13 @@ document.addEventListener('DOMContentLoaded', () => {
   connect();
   setInterval(loadHistory, 60000);
   setInterval(paintStatus, 1000);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
 </script>
 </body>
 </html>
