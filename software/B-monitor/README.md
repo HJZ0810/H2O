@@ -48,6 +48,35 @@ ADC 只用 GPIO1~10（ADC1）。ADC2（GPIO11~20）与 Wi-Fi 冲突，联网后�
 | 下发 | `$sys/{pid}/{dev}/thing/property/set` |
 | 应答 | `$sys/{pid}/{dev}/thing/property/set_reply` |
 
+
+## OneNET 鉴权：密码是 token 不是密钥
+
+实测踩到的坑：把「设备密钥」直接当 MQTT 密码填，服务端一律回 `CONNACK 4`
+（用户名或密码错误），很容易误判成设备名/产品 ID 填错。
+
+OneNET 要求的是用设备密钥算出的 **token**：
+
+```
+resource           = products/{pid}/devices/{dev}
+stringForSignature = et + "
+" + method + "
+" + resource + "
+" + "2018-10-31"
+sign               = base64( HMAC-SHA1( base64decode(设备密钥), stringForSignature ) )
+password           = version=2018-10-31&res={resource}&et={et}&method=sha1&sign={sign}
+```
+
+`et` 是绝对过期时间，所以**设备必须先 NTP 对时**；时钟不对时算出的 token 必然过期，
+报错同样是 CONNACK 4。固件里 `OneNetAuth.h` 实现该算法，开机对时后再算。
+
+PC 端可用 `software/tools/onenet_token.py` 复算校验，用 `mqtt_probe.py` 只发 CONNECT
+看 CONNACK 返回码，能把「凭据错」和「网络不通」区分开。
+
+## 物模型导入模板
+
+物模型用平台「导入物模型」的 JSON 模板一次性写入，模板与本次使用的文件见
+`software/tools/thingmodel-h2o.json`。导入会覆盖产品原有全部功能点，导入后须点「保存」才生效。
+
 ## 凭据配置
 
 凭据不写进代码，全部放 NVS。串口 115200 下依次输入：

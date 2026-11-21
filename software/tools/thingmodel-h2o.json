@@ -1,0 +1,102 @@
+{
+  "properties": [
+    {
+      "identifier": "temperature",
+      "name": "温度",
+      "functionType": "u",
+      "accessMode": "r",
+      "desc": "DHT11 实测温度",
+      "dataType": {
+        "type": "float",
+        "specs": {
+          "min": "-20",
+          "max": "60",
+          "unit": "°C",
+          "step": "0.1"
+        }
+      }
+    },
+    {
+      "identifier": "humidity",
+      "name": "湿度",
+      "functionType": "u",
+      "accessMode": "r",
+      "desc": "DHT11 实测相对湿度",
+      "dataType": {
+        "type": "float",
+        "specs": {
+          "min": "0",
+          "max": "100",
+          "unit": "%RH",
+          "step": "0.1"
+        }
+      }
+    },
+    {
+      "identifier": "smoke",
+      "name": "烟雾浓度",
+      "functionType": "u",
+      "accessMode": "r",
+      "desc": "MQ-2 折算浓度，未做温湿度补偿",
+      "dataType": {
+        "type": "int32",
+        "specs": {
+          "min": "0",
+          "max": "1000",
+          "unit": "ppm",
+          "step": "1"
+        }
+      }
+    },
+    {
+      "identifier": "air",
+      "name": "空气质量",
+      "functionType": "u",
+      "accessMode": "r",
+      "desc": "MQ-135 折算浓度，未做温湿度补偿",
+      "dataType": {
+        "type": "int32",
+        "specs": {
+          "min": "0",
+          "max": "1000",
+          "unit": "ppm",
+          "step": "1"
+        }
+      }
+    },
+    {
+      "identifier": "fan_level",
+      "name": "风扇档位",
+      "functionType": "u",
+      "accessMode": "r",
+      "desc": "当前风扇占空比，0 表示停转",
+      "dataType": {
+        "type": "int32",
+        "specs": {
+          "min": "0",
+          "max": "100",
+          "unit": "%",
+          "step": "1"
+        }
+      }
+    },
+    {
+      "identifier": "servo",
+      "name": "舵机角度",
+      "functionType": "u",
+      "accessMode": "rw",
+      "desc": "可云端下发，0 关窗 90 开窗",
+      "dataType": {
+        "type": "int32",
+        "specs": {
+          "min": "0",
+          "max": "180",
+          "unit": "°",
+          "step": "1"
+        }
+      }
+    }
+  ],
+  "events": [],
+  "services": []
+}

@@ -20,6 +20,7 @@
 #include <ArduinoJson.h>
 #include <Preferences.h>
 #include <DHT.h>
+#include "OneNetAuth.h"
 #include "BCfg.h"
 
 // ---------------- 配置存储 ----------------
@@ -270,11 +271,13 @@ static void ensureMqtt() {
   if (int32_t(now - nextConnectAt) < 0) return;
   nextConnectAt = now + 5000;
   // OneNET：clientId = 设备名称，username = 产品ID，password = 设备密钥
-  if (mqtt.connect(creds.dev.c_str(), creds.pid.c_str(), creds.key.c_str())) {
+  String token = onenetMakeToken(creds.pid, creds.dev, creds.key);
+  if (token.isEmpty()) { nextConnectAt = now + 3000; return; }
+  if (mqtt.connect(creds.dev.c_str(), creds.pid.c_str(), token.c_str())) {
     Serial.println("[mqtt] connected to OneNET");
     mqtt.subscribe(topicSet.c_str(), 1);
   } else {
-    Serial.printf("[mqtt] connect FAIL state=%d (check pid/dev/key)\n", mqtt.state());
+    Serial.printf("[mqtt] connect FAIL state=%d (state 4 = wrong username/password)\n", mqtt.state());
   }
 }
 
@@ -305,6 +308,9 @@ void setup() {
   if (WiFi.status() == WL_CONNECTED) {
     Serial.print("[wifi] IP=");
     Serial.println(WiFi.localIP());
+    configTime(0, 0, "ntp.aliyun.com", "cn.pool.ntp.org", "pool.ntp.org");
+    for (int i = 0; i < 20 && time(nullptr) < 1700000000; i++) delay(500);
+    Serial.print("[time] "); Serial.println((unsigned long)time(nullptr));
     if (!creds.ready()) {
       Serial.println("[mqtt] 缺 pid/dev/key：联网正常，云端待配置");
       return;
