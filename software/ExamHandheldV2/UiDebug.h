@@ -65,6 +65,17 @@ static void dumpShot() {
   Serial.println("END");
 }
 
+static unsigned long fbChecksum() {
+  const uint16_t* p = framebuf;
+  const size_t n = size_t(panel.width()) * size_t(panel.height());
+  unsigned long h = 2166136261UL;
+  for (size_t i = 0; i < n; i++) {
+    h ^= uint16_t(p[i]);
+    h *= 16777619UL;
+  }
+  return h;
+}
+
 static void pollUiDebug() {
   static String buf;
   while (Serial.available()) {
@@ -105,7 +116,9 @@ static void pollUiDebug() {
       Serial.print(" menu=");
       Serial.print(menuIndex);
       Serial.print(" list=");
-      Serial.println(view == View::Menu ? 6 : 0);
+      Serial.print(view == View::Menu ? 6 : 0);
+      Serial.print(" fb=");
+      Serial.println(fbChecksum());
       continue;
     }
     if (cmd == "shot") { dumpShot(); continue; }

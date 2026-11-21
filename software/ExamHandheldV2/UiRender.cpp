@@ -66,8 +66,10 @@ void Painter::statusBar(const Status& s) {
   Color oc = s.online ? t_.ok : t_.danger;
   gfx::circle(c_, x + dot / 2, h / 2, dot / 2, oc, true);
   c_.blendRect(x, h / 2 - dot / 2 - 1, dot + 2, dot + 2, oc, 40);
-  f_.draw(c_, x + dot + 4, (h - f_.lineHeight()) / 2, s.online ? "ON" : "OFF",
-          s.online ? t_.ok : t_.danger);
+  if (!t_.compact) {
+    f_.draw(c_, x + dot + 4, (h - f_.lineHeight()) / 2, s.online ? "ON" : "OFF",
+            s.online ? t_.ok : t_.danger);
+  }
 
   // 右侧：分数 + 电池
   int rx = t_.W - t_.pad;
