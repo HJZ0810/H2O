@@ -4,48 +4,43 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>一氧化二氢 · 环境监测面板</title>
-<script src="https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 <style>
   :root{
-    --bg:#f7f9fc; --panel:#ffffff; --panel2:#ffffff; --line:#e4e9f2;
-    --text:#1b2333; --dim:#6b7891; --accent:#10b981; --accent2:#4d6bfe;
-    --warn:#f59e0b; --danger:#ef4444; --soft:#eef3ff;
+    --bg:#f7f9fc; --line:#e4e9f2; --text:#1b2333; --dim:#6b7891;
+    --blue:#4d6bfe; --blue2:#6b86ff; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
   }
   *{box-sizing:border-box}
-  body{margin:0;color:var(--text);
+  body{margin:0;color:var(--text);min-height:100vh;padding:18px;
        background:
          radial-gradient(900px 420px at 12% -8%, #e8efff 0%, rgba(232,239,255,0) 60%),
          radial-gradient(700px 360px at 92% 0%, #e6f8f1 0%, rgba(230,248,241,0) 55%),
          var(--bg);
-       font:14px/1.5 "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
-       min-height:100vh;padding:18px}
+       font:14px/1.5 "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
   header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
   h1{font-size:19px;margin:0;font-weight:600;letter-spacing:.5px}
   .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
          background:#fff;border:1px solid var(--line);font-size:12px;color:var(--dim);
          box-shadow:0 1px 2px rgba(27,35,51,.04)}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--danger);box-shadow:0 0 8px currentColor}
-  .dot.on{background:var(--accent);color:var(--accent)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+  .dot.on{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.7)}
   .spacer{flex:1}
   button{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--text);
          padding:7px 14px;border-radius:8px;font-size:13px;transition:.15s}
-  button:hover{border-color:var(--accent);color:var(--accent)}
-  button.primary{background:linear-gradient(135deg,#4d6bfe,#6b86ff);border:0;color:#fff;font-weight:600;
-                  box-shadow:0 4px 12px rgba(77,107,254,.25)}
-  button.primary:hover{filter:brightness(1.08)}
+  button:hover{border-color:var(--blue);color:var(--blue)}
+  button.primary{background:linear-gradient(135deg,var(--blue),var(--blue2));border:0;color:#fff;
+                 font-weight:600;box-shadow:0 4px 12px rgba(77,107,254,.25)}
   button:disabled{opacity:.45;cursor:not-allowed}
   .grid{display:grid;gap:14px}
   .cards{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;
         position:relative;overflow:hidden;box-shadow:0 2px 10px rgba(27,35,51,.05)}
   .card::after{content:"";position:absolute;inset:0 0 auto 0;height:3px;
-        background:linear-gradient(90deg,rgba(77,107,254,0),var(--accent2),var(--accent))}
+        background:linear-gradient(90deg,rgba(77,107,254,0),var(--blue),var(--green))}
   .card .k{font-size:12px;color:var(--dim);display:flex;justify-content:space-between}
-  .card .v{font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:6px}
+  .card .v{font-size:30px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:6px;color:var(--blue)}
   .card .v small{font-size:13px;color:var(--dim);font-weight:400;margin-left:4px}
-  .card .v{color:var(--accent2)}
-  .card.warn .v{color:var(--warn)} .card.bad .v{color:var(--danger)} .card.ok .v{color:var(--accent)}
+  .card.warn .v{color:var(--amber)} .card.bad .v{color:var(--red)} .card.ok .v{color:var(--green)}
   .row{grid-template-columns:1.35fr .9fr}
   @media(max-width:900px){.row{grid-template-columns:1fr}}
   .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;
@@ -54,17 +49,17 @@
   #chart{width:100%;height:230px}
   .ctrl{margin-bottom:16px}
   .ctrl .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:6px}
-  input[type=range]{width:100%;accent-color:var(--accent)}
+  input[type=range]{width:100%;accent-color:var(--blue)}
   .btns{display:flex;gap:8px;margin-top:8px}
   .btns button{flex:1}
-  .cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+  .cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
   .cfg label{font-size:12px;color:var(--dim);display:block;margin-bottom:4px}
   .cfg input{width:100%;background:#fbfcfe;border:1px solid var(--line);color:var(--text);
              padding:8px 10px;border-radius:8px;font-size:13px}
-  .cfg input:focus{outline:0;border-color:var(--accent2)}
+  .cfg input:focus{outline:0;border-color:var(--blue)}
   .log{max-height:120px;overflow:auto;font:12px/1.6 ui-monospace,Consolas,monospace;color:var(--dim);
-       background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-  .log b{color:var(--accent2)}
+       background:#fbfcfe;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:12px}
+  .log b{color:var(--blue)}
   footer{margin-top:18px;color:var(--dim);font-size:12px;text-align:center}
 </style>
 </head>
@@ -120,62 +115,32 @@
   </div>
 </section>
 
-<section class="box" style="margin-bottom:14px">
-  <h2>连接参数（只存在本机浏览器）</h2>
+<section class="box">
+  <h2>连接参数</h2>
   <div class="cfg">
-    <div><label>产品 ID</label><input id="pid" value="UAN4hdnSC1" /></div>
+    <div><label>WebSocket 地址</label><input id="url" value="wss://air-quality.luo-jin-ai.com/mqtt" /></div>
     <div><label>设备名称</label><input id="dev" value="yhyegj-01" /></div>
-    <div><label>设备密钥</label><input id="key" type="password" placeholder="控制台里那串 44 位" /></div>
-    <div><label>WebSocket 地址</label><input id="url" value="wss://mqtts.heclouds.com:8084/mqtt" /></div>
   </div>
-  <div class="log" id="log" style="margin-top:12px"></div>
+  <div class="log" id="log"></div>
 </section>
 
-<footer>路线二 + 路线三 合体：单文件 · MQTT over WebSocket · ECharts · 零后端</footer>
+<footer>实时遥测 · WebSocket 直连 · 数据来自设备镜像通道</footer>
 
 <script>
 const $ = (id) => document.getElementById(id);
-const params = ['temperature','humidity','smoke','air','fan_level','servo'];
-const series = {temperature:[],humidity:[],smoke:[],air:[]};
+const series = {temperature:[], humidity:[], smoke:[]};
 const MAXP = 60;
-let client = null, chart = null;
+let ws = null, chart = null, devId = 'yhyegj-01';
 
-function log(msg, cls){
+function log(msg){
   const el = $('log');
   const t = new Date().toLocaleTimeString('zh-CN',{hour12:false});
   el.insertAdjacentHTML('afterbegin', `<div><b>${t}</b> ${msg}</div>`);
   while (el.childElementCount > 60) el.lastElementChild.remove();
 }
 
-// ---------- OneNET token：浏览器端现算，密钥不落盘、不发服务器 ----------
-function b64ToBytes(b64){
-  const bin = atob(b64);
-  const out = new Uint8Array(bin.length);
-  for (let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
-  return out;
-}
-function bytesToB64(bytes){
-  let s = '';
-  const arr = new Uint8Array(bytes);
-  for (let i=0;i<arr.length;i++) s += String.fromCharCode(arr[i]);
-  return btoa(s);
-}
-async function makeToken(pid, dev, keyB64, ttlSec = 86400*30){
-  const keyBytes = b64ToBytes(keyB64);
-  const et = Math.floor(Date.now()/1000) + ttlSec;
-  const res = `products/${pid}/devices/${dev}`;
-  const forSign = `${et}\nsha1\n${res}\n2018-10-31`;
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw', keyBytes, {name:'HMAC', hash:'SHA-1'}, false, ['sign']);
-  const sigBuf = await crypto.subtle.sign('HMAC', cryptoKey,
-    new TextEncoder().encode(forSign));
-  const sign = bytesToB64(sigBuf);
-  return `version=2018-10-31&res=${res}&et=${et}&method=sha1&sign=${sign}`;
-}
-
-// ---------- 图表 ----------
 function initChart(){
-  chart = echarts.init($('chart'), null, {renderer:'canvas'});
+  chart = echarts.init($('chart'));
   chart.setOption({
     backgroundColor:'transparent',
     grid:{left:38,right:12,top:24,bottom:24},
@@ -199,87 +164,73 @@ function initChart(){
   });
   addEventListener('resize', () => chart.resize());
 }
+
 function pushPoint(name, value){
-  if (!chart || value === null || value === undefined) return;
-  const idx = {temperature:0,humidity:1,smoke:2}[name];
-  if (idx === undefined) return;
+  if (value === null || value === undefined || Number.isNaN(value)) return;
   series[name].push(value);
   if (series[name].length > MAXP) series[name].shift();
   chart.setOption({series:[{data:series.temperature},{data:series.humidity},{data:series.smoke}]});
 }
 
-// ---------- 数值渲染 ----------
-function setCard(id, value, unitEl){
+const UNITS = {vTemp:'°C', vHumi:'%RH', vSmoke:'ppm', vAir:'ppm', vFan:'%', vServo:'°'};
+const STAMPS = {temperature:'tTime', humidity:'hTime', smoke:'sTime', air:'aTime',
+                fan_level:'fTime', servo:'gTime'};
+function setCard(id, value){
   const el = $(id);
-  if (value === null || value === undefined || Number.isNaN(value)) {
-    el.innerHTML = `--<small>${unitEl}</small>`; return;
-  }
-  el.innerHTML = `${value}<small>${unitEl}</small>`;
-}
-function stamp(prop){
-  const map = {temperature:'tTime',humidity:'hTime',smoke:'sTime',air:'aTime',
-               fan_level:'fTime',servo:'gTime'};
-  const el = $(map[prop]);
-  if (el) el.textContent = new Date().toLocaleTimeString('zh-CN',{hour12:false});
-}
-function applyParams(p){
-  if (p.temperature !== undefined){ setCard('vTemp', p.temperature.value, '°C'); stamp('temperature'); pushPoint('temperature', p.temperature.value); }
-  if (p.humidity !== undefined){ setCard('vHumi', p.humidity.value, '%RH'); stamp('humidity'); pushPoint('humidity', p.humidity.value); }
-  if (p.smoke !== undefined){ setCard('vSmoke', p.smoke.value, 'ppm'); stamp('smoke'); pushPoint('smoke', p.smoke.value); }
-  if (p.air !== undefined){ setCard('vAir', p.air.value, 'ppm'); stamp('air'); }
-  if (p.fan_level !== undefined){
-    const v = p.fan_level.value;
-    setCard('vFan', v, '%'); stamp('fan_level');
-    $('vFan').parentElement.className = 'card ' + (v >= 80 ? 'bad' : v > 0 ? 'warn' : '');
-    $('fan').value = v; $('fanVal').textContent = v;
-  }
-  if (p.servo !== undefined){
-    const v = p.servo.value;
-    setCard('vServo', v, '°'); stamp('servo');
-    $('servo').value = v; $('servoVal').textContent = v;
-  }
+  el.innerHTML = (value === null || value === undefined || Number.isNaN(value))
+    ? `--<small>${UNITS[id]}</small>`
+    : `${value}<small>${UNITS[id]}</small>`;
 }
 
-// ---------- 连接 ----------
-async function connect(){
-  const pid = $('pid').value.trim(), dev = $('dev').value.trim();
-  const key = $('key').value.trim(), url = $('url').value.trim();
-  if (!pid || !dev || !key) { log('产品 ID / 设备名称 / 设备密钥都不能为空'); return; }
+function applyTelemetry(d){
+  if (d.temperature !== undefined){ setCard('vTemp', d.temperature); pushPoint('temperature', d.temperature); }
+  if (d.humidity !== undefined){ setCard('vHumi', d.humidity); pushPoint('humidity', d.humidity); }
+  if (d.smoke !== undefined){ setCard('vSmoke', d.smoke); pushPoint('smoke', d.smoke); }
+  if (d.air !== undefined && d.air >= 0) setCard('vAir', d.air);
+  if (d.fan_level !== undefined){
+    setCard('vFan', d.fan_level);
+    $('vFan').parentElement.className = 'card ' + (d.fan_level >= 80 ? 'bad' : d.fan_level > 0 ? 'warn' : '');
+    $('fan').value = d.fan_level; $('fanVal').textContent = d.fan_level;
+  }
+  if (d.servo !== undefined){
+    setCard('vServo', d.servo);
+    $('servo').value = d.servo; $('servoVal').textContent = d.servo;
+  }
+  const now = new Date().toLocaleTimeString('zh-CN',{hour12:false});
+  Object.values(STAMPS).forEach(id => { const el = $(id); if (el) el.textContent = now; });
+}
 
+function connect(){
+  const url = $('url').value.trim();
+  devId = $('dev').value.trim() || 'yhyegj-01';
+  if (!url) { log('WebSocket 地址不能为空'); return; }
   $('btnConnect').disabled = true;
-  let token;
-  try { token = await makeToken(pid, dev, key); }
-  catch (e) { log('token 计算失败：' + e.message); $('btnConnect').disabled = false; return; }
-  log('token 已生成，开始连接 ' + url);
+  log('连接 ' + url);
+  ws = new WebSocket(url);
 
-  client = mqtt.connect(url, {
-    clientId: dev, username: pid, password: token,
-    protocolVersion: 4, clean: true, keepalive: 60,
-    reconnectPeriod: 5000, connectTimeout: 10000
-  });
-
-  const base = `$sys/${pid}/${dev}`;
-  client.on('connect', () => {
-    $('dot').classList.add('on'); $('state').textContent = '在线';
-    $('devTag').textContent = dev + ' · ' + pid;
+  ws.onopen = () => {
+    $('dot').classList.add('on'); $('state').textContent = '已连接';
+    $('devTag').textContent = devId;
     $('btnDisconnect').disabled = false;
     enableControls(true);
-    client.subscribe(`${base}/thing/property/post`, {qos:0}, (err) =>
-      log(err ? '订阅失败：' + err.message : '已订阅属性上报'));
-    client.subscribe(`${base}/thing/property/set_reply`, {qos:0});
-    log('已连接 OneNET', 'ok');
-  });
-  client.on('message', (topic, payload) => {
-    let msg; try { msg = JSON.parse(payload.toString()); } catch { return; }
-    if (topic.endsWith('/property/post')) applyParams(msg.params || {});
-    else if (topic.endsWith('/set_reply')) log('下发回执 code=' + msg.code);
-  });
-  client.on('reconnect', () => { $('state').textContent = '重连中'; $('dot').classList.remove('on'); });
-  client.on('error', (e) => { log('错误：' + e.message); });
-  client.on('close', () => {
+    ws.send(JSON.stringify({sub: `h2o/${devId}/#`}));
+    log('已订阅 h2o/' + devId + '/#');
+  };
+  ws.onmessage = (ev) => {
+    let m; try { m = JSON.parse(ev.data); } catch { return; }
+    if (m.t === 'ready') { log('通道就绪'); return; }
+    if (m.t === 'error') { log('服务端提示：' + m.msg); return; }
+    if (m.t !== 'msg') return;
+    let d; try { d = JSON.parse(m.data); } catch { return; }
+    if (m.topic.endsWith('/telemetry')) applyTelemetry(d);
+    else if (m.topic.endsWith('/cmd')) log('下发被回显：' + m.data);
+  };
+  ws.onclose = () => {
     $('dot').classList.remove('on'); $('state').textContent = '已断开';
-    $('btnDisconnect').disabled = true; enableControls(false);
-  });
+    $('btnConnect').disabled = false; $('btnDisconnect').disabled = true;
+    enableControls(false);
+  };
+  ws.onerror = () => log('连接出错');
 }
 
 function enableControls(on){
@@ -287,36 +238,27 @@ function enableControls(on){
   document.querySelectorAll('[data-fan],[data-servo]').forEach(b => b.disabled = !on);
 }
 
-function publishSet(obj){
-  if (!client || !client.connected) { log('未连接，无法下发'); return; }
-  const pid = $('pid').value.trim(), dev = $('dev').value.trim();
-  const msg = {id: String(Date.now()), version:'1.0', params:{}};
-  for (const [k,v] of Object.entries(obj)) msg.params[k] = {value: v};
-  client.publish(`$sys/${pid}/${dev}/thing/property/set`, JSON.stringify(msg), {qos:1});
+function publishCmd(obj){
+  if (!ws || ws.readyState !== WebSocket.OPEN) { log('未连接，无法下发'); return; }
+  ws.send(JSON.stringify({pub: `h2o/${devId}/cmd`, data: JSON.stringify(obj)}));
   log('下发 ' + JSON.stringify(obj));
 }
 
-// ---------- 交互 ----------
 document.addEventListener('DOMContentLoaded', () => {
   initChart();
-  const saved = JSON.parse(localStorage.getItem('onenet-cfg') || '{}');
-  ['pid','dev','url'].forEach(k => { if (saved[k]) $(k).value = saved[k]; });
-  if (saved.key) $('key').value = saved.key;
-
+  const saved = JSON.parse(localStorage.getItem('h2o-cfg') || '{}');
+  if (saved.url) $('url').value = saved.url;
+  if (saved.dev) $('dev').value = saved.dev;
   $('btnConnect').onclick = connect;
-  $('btnDisconnect').onclick = () => { if (client) client.end(true); };
+  $('btnDisconnect').onclick = () => { if (ws) ws.close(); };
   $('fan').oninput = (e) => { $('fanVal').textContent = e.target.value; };
   $('servo').oninput = (e) => { $('servoVal').textContent = e.target.value; };
   document.querySelectorAll('[data-fan]').forEach(b =>
-    b.onclick = () => publishSet({fan_level: Number(b.dataset.fan)}));
+    b.onclick = () => publishCmd({fan_level: Number(b.dataset.fan)}));
   document.querySelectorAll('[data-servo]').forEach(b =>
-    b.onclick = () => publishSet({servo: Number(b.dataset.servo)}));
-
-  const persist = () => localStorage.setItem('onenet-cfg', JSON.stringify({
-    pid: $('pid').value, dev: $('dev').value,
-    url: $('url').value, key: $('key').value
-  }));
-  ['pid','dev','url','key'].forEach(k => $(k).addEventListener('change', persist));
+    b.onclick = () => publishCmd({servo: Number(b.dataset.servo)}));
+  ['url','dev'].forEach(id => $(id).addEventListener('change', () =>
+    localStorage.setItem('h2o-cfg', JSON.stringify({url: $('url').value, dev: $('dev').value}))));
 });
 </script>
 </body>

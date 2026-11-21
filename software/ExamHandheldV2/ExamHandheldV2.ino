@@ -14,6 +14,7 @@
 #include "ButtonLogic.h"
 #include "Config.h"
 #include "OneNetCfg.h"
+#include "Mirror.h"
 #include "ExamCore.h"
 #include "ExamNetwork.h"
 #include "Auth.h"
@@ -32,6 +33,7 @@ ExamNetwork network;
 Sensors sensors;
 Actuators fan;
 OneNet onenet;
+Mirror mirror;
 bool onenetActive = false;   // 菜单第6项切换：开启后按10秒周期上报并跑联动
 exam::AutoDemo demo;
 ButtonLogic buttons[board::KeyCount];
@@ -357,6 +359,8 @@ void setup() {
   }
   sensors.begin(configuration.value);
   onenetcfg::loadFromNvs(onenet, onenetActive, fan);
+  mirror.configure("yhyegj-01", "186.241.90.115", 1884, "h2o", "H2oDemo2026");
+  mirror.attach(&fan);
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
   configTime(0, 0, "ntp.aliyun.com", "cn.pool.ntp.org");
@@ -388,6 +392,7 @@ void loop() {
   configuration.tick();
   sensors.tick();
   if (onenetActive) onenet.tick(sensors, fan);
+  mirror.tick(sensors, fan, onenet.fanLevel(), onenet.servoAngle());
 
   if (networkStarted) {
     if (network.overflowed()) session.fail("接收队列溢出，已暂停");
