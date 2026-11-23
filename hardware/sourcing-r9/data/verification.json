@@ -1,0 +1,15 @@
+{
+  "hardware_tag": "r9.1.4-rc.1",
+  "hardware_commit": "42079e3f5be6a80ee0af7317daeb7367563620ae",
+  "easyeda_project_sha256": "43d7dce986439bf3068e9f61bdc7d4c9eeb8e57a0de46f89ccb0e7b6bd577c8f",
+  "pcb_component_records": 38,
+  "physical_pcb_parts": 33,
+  "purchase_bom_lines": 12,
+  "pcb_integrated_solder_land_groups": 5,
+  "pcb_pads": 167,
+  "off_board_catalog_lines": 22,
+  "esp32_socket_row_spacing_mm": 25.4,
+  "idc_pin_count": 10,
+  "idc_continuity_source": "PCB1 and PCB2 EasyEDA readback, compared by pin number; physical cable continuity is pending.",
+  "purchase_validation": "Documentation and PCB data cross-check; no order placed or physical fit and load test performed for this release."
+}

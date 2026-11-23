@@ -1,0 +1,4 @@
+# Preserve release archive bytes when checking out the SHA-256 manifest.
+* -text
+*.csv whitespace=cr-at-eol
+*.json whitespace=cr-at-eol

@@ -1,0 +1,13 @@
+﻿品牌,型号,立创编号,每套数量,板与位号,采购核对,规格入口
+Samtec,SSW-122-01-F-S,C7372682,2,PCB1.J1 / PCB1.J2,1×22，脚距 2.54 mm，两排中心距 25.40 mm，PCB1 背面,https://www.lcsc.com/zh-CN/product-detail/C7372682.html
+Samtec,SSW-108-01-F-S,C7321585,1,PCB1.J3,1×8，脚距 2.54 mm，TFT 插座,https://www.lcsc.com/zh-CN/product-detail/C7321585.html
+Samtec,SSW-103-01-F-S,C5247900,1,PCB1.J5,1×3，脚距 2.54 mm，DHT11 插座,https://www.lcsc.com/zh-CN/product-detail/C5247900.html
+Kinghelm,KH-2.54FH-1X4P-H8.5,C2905415,2,PCB1.J6 / PCB1.J7,1×4，脚距 2.54 mm，高 8.5 mm，两个 MQ 模块插座,https://www.lcsc.com/zh-CN/product-detail/C2905415.html
+按对应料号,KF301-5.0-2P,C474881,9,PCB1.J15 / PCB1.J16 / PCB1.J17 / PCB1.J18 / PCB1.J19 / PCB1.J20 / PCB2.J11 / PCB2.J23 / PCB2.J24,2 位、5.00 mm，侧进线，顶部拧螺丝,https://www.lcsc.com/zh-CN/product-detail/C474881.html
+XFCN,BH254R-10P,C492448,2,PCB1.J8 / PCB2.J10,2×5，横纵均 2.54 mm，弯脚防呆简牛公座,https://www.lcsc.com/zh-CN/product-detail/C492448.html
+Alps Alpine,SKPMAME010,C115348,7,PCB1.SW1 / PCB1.SW2 / PCB1.SW5 / PCB1.SW6 / PCB1.SW7 / PCB1.SW8 / PCB1.SW9,七颗瞬时操作键，按原贴装封装,https://www.lcsc.com/zh-CN/product-detail/C115348.html
+XKB Connection,XKB8585-Z-150,C318850,2,PCB1.SW10 / PCB2.SW20,8.5×8.5×15 mm，六脚直插自锁，100 mA，仅作启停控制,https://www.lcsc.com/zh-CN/product-detail/C318850.html
+Yageo,MFR-25FTE52-22K,C172986,2,PCB1.R12 / PCB1.R17,22 kΩ，1%，1/4 W，轴向直插，MQ AO 串联,https://www.lcsc.com/zh-CN/product-detail/C172986.html
+Yageo,MFR-25FBF52-33K,C1369843,2,PCB1.R13 / PCB1.R18,33 kΩ，1%，1/4 W，轴向直插，MQ AO 下拉,https://www.lcsc.com/zh-CN/product-detail/C1369843.html
+Samtec,SSW-108-01-T-S,C6236331,2,PCB2.J12 / PCB2.J13,1×8，脚距 2.54 mm，两排中心距 12.70 mm，驱动模块插座,https://www.lcsc.com/zh-CN/product-detail/C6236331.html
+Ckmtw,B-2100S03P-A110,C124376,1,PCB2.J3,1×3，脚距 2.54 mm，舵机排针,https://www.lcsc.com/zh-CN/product-detail/C124376.html

@@ -1,0 +1,1226 @@
+{
+  "PCB1": {
+    "gerber_sha256": "089cf31f89c419ed8cd3067d74a506e77d94b495093f1bb25493f21abb3f107c",
+    "components": 29,
+    "pads": 124,
+    "native_drc": 0,
+    "profiles": [
+      [
+        0.0,
+        0.0,
+        99.6,
+        99.6
+      ]
+    ],
+    "closed_contours": 1,
+    "probe_net_aliases_proved_by_pin_membership": {
+      "NET_9": "MOTOR_B_PWM",
+      "NET_1": "J1.13 (unconnected)",
+      "NET_2": "J1.14 (unconnected)",
+      "NET_3": "J2.3 (unconnected)",
+      "NET_4": "J2.11 (unconnected)",
+      "NET_5": "J2.12 (unconnected)",
+      "NET_6": "J2.13 (unconnected)",
+      "NET_7": "J2.14 (unconnected)",
+      "NET_8": "J2.15 (unconnected)",
+      "NET_10": "J6.4 (unconnected)",
+      "NET_11": "J7.4 (unconnected)",
+      "NET_12": "SW10.1 (unconnected)",
+      "NET_15": "SW10.6 (unconnected)",
+      "NET_14": "SW10.5 (unconnected)",
+      "NET_13": "SW10.4 (unconnected)"
+    },
+    "pcb_sch_drill_mismatches": [],
+    "additional_dfm": {
+      "summary": {
+        "danglingEnds": 1,
+        "acuteAngles": 3,
+        "nonOrthogonal": 0,
+        "trackOverPad": 0,
+        "clearance": 0,
+        "silkscreenFlipped": 17,
+        "overlappingVias": 0,
+        "singleLayerVias": 1,
+        "widthMismatches": 5,
+        "duplicateSegments": 0,
+        "parallelCoupling": 9,
+        "antennaKeepout": 0,
+        "netlessPours": 0,
+        "viaCrossesPlane": 0,
+        "floatingIslands": 0,
+        "powerNotPoured": 4,
+        "netlessViaInPad": 0,
+        "widthUnderSpec": 1,
+        "silkOverPad": 2,
+        "silkOffBoard": 0,
+        "decapTooFar": 0,
+        "viaInPad": 3,
+        "copperNearEdge": 0,
+        "fiducialMissing": 0,
+        "zoneViolation": 0,
+        "internalOnEdge": 0,
+        "connectorPlugClearance": 1,
+        "connectorMatingBlocked": 0,
+        "connectorOpeningInward": 0,
+        "errors": 0,
+        "warnings": 42,
+        "total": 47
+      },
+      "limitations": [
+        "91 pad(s) have captured source shapes unsupported by exact pad-contact inspection"
+      ],
+      "findings": [
+        {
+          "type": "dangling-end",
+          "level": "WARN",
+          "net": "GND",
+          "layer": 2,
+          "primitives": [
+            "efbe1f7e81e7fc18"
+          ],
+          "message": "track end connects to nothing (no pad/via/track) — unfinished or floating copper",
+          "at": {
+            "x": 2165.35,
+            "y": -885.83
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "+3V3",
+          "layer": 1,
+          "primitives": [
+            "6983a6043904c6c3",
+            "b1f681490ac01df6"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 2060.6,
+            "y": -238.61
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "GND",
+          "layer": 2,
+          "primitives": [
+            "c52dddc1c4cf0f74",
+            "a7ed4efe0a2a8030"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 3055.12,
+            "y": -1047.24
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "MQ2_AO_ADC",
+          "layer": 2,
+          "primitives": [
+            "0aac2962b57b2b64",
+            "a914d439092f0fb4"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 2078.74,
+            "y": -826.77
+          }
+        },
+        {
+          "type": "single-layer-via",
+          "level": "WARN",
+          "net": "MQ2_AO_5V",
+          "primitives": [
+            "5c475f254e454bba"
+          ],
+          "message": "signal via touches tracks on 1 layer(s) — no layer transition (pointless or dangling) [规范 §2 过孔设计 — pcb-design-rules.md]",
+          "at": {
+            "x": 716.54,
+            "y": -1346.46
+          }
+        },
+        {
+          "type": "width-mismatch",
+          "level": "INFO",
+          "net": "GPIO9_EXT",
+          "designator": "J16",
+          "widths": [
+            11.02,
+            17.72
+          ],
+          "message": "2-pin part J16: entering track widths differ (11.0 vs 17.7 mil) [规范 §1.2 推荐线宽 — pcb-design-rules.md]"
+        },
+        {
+          "type": "width-mismatch",
+          "level": "INFO",
+          "net": "+5V_BACKUP",
+          "designator": "J21",
+          "widths": [
+            45.28,
+            17.72
+          ],
+          "message": "2-pin part J21: entering track widths differ (45.3 vs 17.7 mil) [规范 §1.2 推荐线宽 — pcb-design-rules.md]"
+        },
+        {
+          "type": "width-mismatch",
+          "level": "INFO",
+          "net": "GND",
+          "designator": "SW5",
+          "widths": [
+            17.72,
+            11.02
+          ],
+          "message": "2-pin part SW5: entering track widths differ (17.7 vs 11.0 mil) [规范 §1.2 推荐线宽 — pcb-design-rules.md]"
+        },
+        {
+          "type": "width-mismatch",
+          "level": "INFO",
+          "net": "GND",
+          "designator": "SW6",
+          "widths": [
+            17.72,
+            11.02
+          ],
+          "message": "2-pin part SW6: entering track widths differ (17.7 vs 11.0 mil) [规范 §1.2 推荐线宽 — pcb-design-rules.md]"
+        },
+        {
+          "type": "width-mismatch",
+          "level": "INFO",
+          "net": "GND",
+          "designator": "SW9",
+          "widths": [
+            17.72,
+            11.42
+          ],
+          "message": "2-pin part SW9: entering track widths differ (17.7 vs 11.4 mil) [规范 §1.2 推荐线宽 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_OK",
+            "KEY_RIGHT"
+          ],
+          "layer": 1,
+          "primitives": [
+            "6695ef70a783c18c",
+            "e9b34b704b8bb87e"
+          ],
+          "message": "parallel traces 25.1 mil apart over 560 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_OK",
+            "SERVO_PWM"
+          ],
+          "layer": 1,
+          "primitives": [
+            "80fd681cc744b3bc",
+            "18f56124d7129438"
+          ],
+          "message": "parallel traces 26.4 mil apart over 592 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "MOTOR_BIN1",
+            "SERVO_PWM"
+          ],
+          "layer": 1,
+          "primitives": [
+            "72fdcd70cdcf517d",
+            "afdc4464be271322"
+          ],
+          "message": "parallel traces 31.9 mil apart over 128 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_LEFT",
+            "MQ2_AO_5V"
+          ],
+          "layer": 1,
+          "primitives": [
+            "b37728ef10d0c82f",
+            "bae42d0aaf20364d"
+          ],
+          "message": "parallel traces 23.6 mil apart over 228 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_F2",
+            "MOTOR_BIN1"
+          ],
+          "layer": 2,
+          "primitives": [
+            "87fded3ce598d364",
+            "2932bd2fa98c3e47"
+          ],
+          "message": "parallel traces 31.5 mil apart over 31 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_DOWN",
+            "KEY_UP"
+          ],
+          "layer": 1,
+          "primitives": [
+            "a306ab253e6cafee",
+            "791c5666924fbd22"
+          ],
+          "message": "parallel traces 23.6 mil apart over 323 mil (< 33.1 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "GPIO10_EXT",
+            "GPIO9_EXT"
+          ],
+          "layer": 1,
+          "primitives": [
+            "1d1561625a5d3b94",
+            "5b39b72c0d37ad7b"
+          ],
+          "message": "parallel traces 23.6 mil apart over 1252 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_F1",
+            "TFT_CS"
+          ],
+          "layer": 2,
+          "primitives": [
+            "8413e4feca76f699",
+            "bea298fe4741c263"
+          ],
+          "message": "parallel traces 22.3 mil apart over 256 mil (< 33.1 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "KEY_F1",
+            "TFT_DC"
+          ],
+          "layer": 2,
+          "primitives": [
+            "db887ed54e41c915",
+            "aae04f3650864018"
+          ],
+          "message": "parallel traces 23.7 mil apart over 68 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J5",
+          "primitives": [
+            "586dd488dde6ed7fe15"
+          ],
+          "message": "designator 'J5' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 805.29,
+            "y": -308.26
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "R12",
+          "primitives": [
+            "8c6d187ea249b0b0e2"
+          ],
+          "message": "designator 'R12' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 1887.65,
+            "y": -964.39
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "R13",
+          "primitives": [
+            "915b5f8b48d9460de14"
+          ],
+          "message": "designator 'R13' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 2281.67,
+            "y": -1013.63
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "R18",
+          "primitives": [
+            "ce48c6e11f4a7a5de14"
+          ],
+          "message": "designator 'R18' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 2478.52,
+            "y": -1013.63
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J8",
+          "primitives": [
+            "67f589330e6987b9e48"
+          ],
+          "message": "designator 'J8' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 2368.63,
+            "y": -240.43
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J1",
+          "primitives": [
+            "823fa2cbb97120d8e53"
+          ],
+          "message": "designator 'J1' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 791.46,
+            "y": -595.12
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J2",
+          "primitives": [
+            "f5eb588869ddfdc7e53"
+          ],
+          "message": "designator 'J2' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 791.46,
+            "y": -1495.12
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J7",
+          "primitives": [
+            "4f80cb66a18f380de17"
+          ],
+          "message": "designator 'J7' is rotated 270° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 776.54,
+            "y": -743.42
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J15",
+          "primitives": [
+            "906793883c82a1dae17"
+          ],
+          "message": "designator 'J15' is rotated 270° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 334.8,
+            "y": -328.75
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J16",
+          "primitives": [
+            "064e2b6330a42f9fe17"
+          ],
+          "message": "designator 'J16' is rotated 270° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 334.8,
+            "y": -894.5
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J17",
+          "primitives": [
+            "34ef6e4ceba95143e17"
+          ],
+          "message": "designator 'J17' is rotated 270° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 334.8,
+            "y": -1460.64
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J18",
+          "primitives": [
+            "d308761a433f9115e17"
+          ],
+          "message": "designator 'J18' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3586.46,
+            "y": -737.39
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J19",
+          "primitives": [
+            "c04f44a310ce6b85e17"
+          ],
+          "message": "designator 'J19' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3586.46,
+            "y": -1303.13
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J20",
+          "primitives": [
+            "4364f45338aad207e17"
+          ],
+          "message": "designator 'J20' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3586.46,
+            "y": -1869.28
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J14",
+          "primitives": [
+            "f47aa242f7cfe1b8ee0"
+          ],
+          "message": "designator 'J14' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3146.53,
+            "y": -2320.36
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J21",
+          "primitives": [
+            "e37dde3bbd83b9aaee0"
+          ],
+          "message": "designator 'J21' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 327.71,
+            "y": -3102.49
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J22",
+          "primitives": [
+            "f9fc17f168be0d3aee0"
+          ],
+          "message": "designator 'J22' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 314.96,
+            "y": -2603.43
+          }
+        },
+        {
+          "type": "silk-over-pad",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J22",
+          "primitives": [
+            "f9fc17f168be0d3aee0"
+          ],
+          "message": "silk text Designator \"J22\" overlaps pad J22.1 — fab clips silk on exposed copper; move it (`pcb silk-align` / `pcb silk-set`) [规范 §11.2 丝印不压焊盘 — pcb-design-rules.md]",
+          "at": {
+            "x": 393.7,
+            "y": -2519.7
+          }
+        },
+        {
+          "type": "silk-over-pad",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J6",
+          "primitives": [
+            "9b1be462ca044aa3"
+          ],
+          "message": "silk text H₂O overlaps pad J6.3 — fab clips silk on exposed copper; move it (`pcb silk-align` / `pcb silk-set`) [规范 §11.2 丝印不压焊盘 — pcb-design-rules.md]",
+          "at": {
+            "x": 2947.6,
+            "y": -291.3
+          }
+        },
+        {
+          "type": "via-in-pad",
+          "level": "WARN",
+          "net": "GND",
+          "designator": "J21",
+          "primitives": [
+            "3e717e0f1e1eb6ca"
+          ],
+          "message": "via sits ON pad J21.2 (net GND) — solder wicks down the barrel; offset the via and enter with a short stub (dog-bone) [规范 §2.3 禁止过孔打在焊盘上 — pcb-design-rules.md]",
+          "at": {
+            "x": 669.29,
+            "y": -2992.13
+          }
+        },
+        {
+          "type": "via-in-pad",
+          "level": "WARN",
+          "net": "GND",
+          "designator": "SW6",
+          "primitives": [
+            "fd24d9d3fa22d6dd"
+          ],
+          "message": "via sits ON pad SW6.2 (net GND) — solder wicks down the barrel; offset the via and enter with a short stub (dog-bone) [规范 §2.3 禁止过孔打在焊盘上 — pcb-design-rules.md]",
+          "at": {
+            "x": 708.66,
+            "y": -3086.61
+          }
+        },
+        {
+          "type": "via-in-pad",
+          "level": "WARN",
+          "net": "GND",
+          "designator": "SW5",
+          "primitives": [
+            "4c8182ae82f75ccd"
+          ],
+          "message": "via sits ON pad SW5.2 (net GND) — solder wicks down the barrel; offset the via and enter with a short stub (dog-bone) [规范 §2.3 禁止过孔打在焊盘上 — pcb-design-rules.md]",
+          "at": {
+            "x": 708.66,
+            "y": -2299.21
+          }
+        },
+        {
+          "type": "connector-plug-clearance",
+          "level": "WARN",
+          "designator": "J1",
+          "primitives": [
+            "823fa2cbb97120d8",
+            "f5eb588869ddfdc7"
+          ],
+          "message": "J1 ↔ J2 center distance 22.86mm (900mil) < 58.37mm required by their plug envelopes (J1 58.37mm[fallback], J2 58.37mm[fallback]) — the receptacle footprints may clear, but the plugs/overmolds will collide [plug-width=fallback — no envelope table entry, estimated from the rendered bbox] [规范 §3.5 插头护套包络 ≠ 母座本体宽 — pcb-design-rules.md]",
+          "at": {
+            "x": 1901.18,
+            "y": -985.9
+          }
+        },
+        {
+          "type": "power-not-poured",
+          "level": "WARN",
+          "net": "+3V3",
+          "message": "power net +3V3 (6 pads) has no copper pour/plane — power should be poured, not carried by thin tracks: `pcb pour-fit --net +3V3` (2-layer) or `pcb power-planes` (4-layer) [规范 §5.2 铺铜策略 — pcb-design-rules.md]"
+        },
+        {
+          "type": "power-not-poured",
+          "level": "WARN",
+          "net": "+5V",
+          "message": "power net +5V (5 pads) has no copper pour/plane — power should be poured, not carried by thin tracks: `pcb pour-fit --net +5V` (2-layer) or `pcb power-planes` (4-layer) [规范 §5.2 铺铜策略 — pcb-design-rules.md]"
+        },
+        {
+          "type": "power-not-poured",
+          "level": "WARN",
+          "net": "+5V_BACKUP",
+          "message": "power net +5V_BACKUP (2 pads) has no copper pour/plane — power should be poured, not carried by thin tracks: `pcb pour-fit --net +5V_BACKUP` (2-layer) or `pcb power-planes` (4-layer) [规范 §5.2 铺铜策略 — pcb-design-rules.md]"
+        },
+        {
+          "type": "power-not-poured",
+          "level": "WARN",
+          "net": "+5V_PRIM",
+          "message": "power net +5V_PRIM (4 pads) has no copper pour/plane — power should be poured, not carried by thin tracks: `pcb pour-fit --net +5V_PRIM` (2-layer) or `pcb power-planes` (4-layer) [规范 §5.2 铺铜策略 — pcb-design-rules.md]"
+        },
+        {
+          "type": "width-under-spec",
+          "level": "WARN",
+          "net": "GND",
+          "primitives": [
+            "e0aefaa1d2f7fb6d"
+          ],
+          "widths": [
+            9.84,
+            19.69
+          ],
+          "message": "power net GND: 34 track(s) below the gnd spec width 19.7 mil (thinnest 9.84 mil) — widen for current capacity (route-short sizes by role; pour it instead, or --width-power to override) [规范 §1.2 推荐线宽 — pcb-design-rules.md]",
+          "at": {
+            "x": 2504.97,
+            "y": -835.63
+          }
+        }
+      ]
+    }
+  },
+  "PCB2": {
+    "gerber_sha256": "cb02a5b1fae9c8a6c8446f347d17c92b41789a7ab1d3eb4586a5ac1aad67af8a",
+    "components": 9,
+    "pads": 43,
+    "native_drc": 0,
+    "profiles": [
+      [
+        0.0,
+        0.0,
+        86.0,
+        64.0
+      ],
+      [
+        2.2,
+        2.3,
+        5.4,
+        5.5
+      ],
+      [
+        2.2,
+        58.5,
+        5.4,
+        61.7
+      ],
+      [
+        80.6,
+        2.3,
+        83.8,
+        5.5
+      ],
+      [
+        80.6,
+        58.5,
+        83.8,
+        61.7
+      ],
+      [
+        41.0,
+        33.5,
+        47.0,
+        36.5
+      ],
+      [
+        37.25,
+        35.25,
+        39.75,
+        37.75
+      ],
+      [
+        48.25,
+        35.25,
+        50.75,
+        37.75
+      ],
+      [
+        28.15,
+        10.4,
+        31.35,
+        13.6
+      ],
+      [
+        28.15,
+        20.4,
+        31.35,
+        23.6
+      ],
+      [
+        76.65,
+        10.4,
+        79.85,
+        13.6
+      ],
+      [
+        76.65,
+        20.4,
+        79.85,
+        23.6
+      ]
+    ],
+    "closed_contours": 12,
+    "probe_net_aliases_proved_by_pin_membership": {
+      "NET_2": "MOTOR_B_PWM",
+      "NET_1": "SERVO_PWM_SW",
+      "NET_3": "SW20.3 (unconnected)",
+      "NET_4": "SW20.4 (unconnected)"
+    },
+    "pcb_sch_drill_mismatches": [],
+    "additional_dfm": {
+      "summary": {
+        "danglingEnds": 0,
+        "acuteAngles": 5,
+        "nonOrthogonal": 0,
+        "trackOverPad": 0,
+        "clearance": 0,
+        "silkscreenFlipped": 6,
+        "overlappingVias": 0,
+        "singleLayerVias": 0,
+        "widthMismatches": 1,
+        "duplicateSegments": 1,
+        "parallelCoupling": 1,
+        "antennaKeepout": 0,
+        "netlessPours": 0,
+        "viaCrossesPlane": 0,
+        "floatingIslands": 0,
+        "powerNotPoured": 2,
+        "netlessViaInPad": 0,
+        "widthUnderSpec": 0,
+        "silkOverPad": 0,
+        "silkOffBoard": 0,
+        "decapTooFar": 0,
+        "viaInPad": 0,
+        "copperNearEdge": 0,
+        "fiducialMissing": 0,
+        "zoneViolation": 0,
+        "internalOnEdge": 0,
+        "connectorPlugClearance": 0,
+        "connectorMatingBlocked": 0,
+        "connectorOpeningInward": 0,
+        "errors": 0,
+        "warnings": 15,
+        "total": 16
+      },
+      "limitations": [
+        "36 pad(s) have captured source shapes unsupported by exact pad-contact inspection"
+      ],
+      "findings": [
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "+3V3",
+          "layer": 2,
+          "primitives": [
+            "1ee69dfb4f091683",
+            "dbe4270803747af0"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 529.9,
+            "y": -1454.35
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "GND",
+          "layer": 1,
+          "primitives": [
+            "1d442d1674fddf7c",
+            "42705e0845f39202"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 834.65,
+            "y": -764.65
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "GND",
+          "layer": 2,
+          "primitives": [
+            "7b8b60e725849f5a",
+            "4fdd57cdddab7fbe"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 629.9,
+            "y": -1755.93
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "GND",
+          "layer": 2,
+          "primitives": [
+            "c362eb558b7a55ac",
+            "9a0741a22e27901d"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 876.77,
+            "y": -1173.23
+          }
+        },
+        {
+          "type": "acute-angle",
+          "level": "WARN",
+          "net": "MOTOR_BIN2",
+          "layer": 1,
+          "primitives": [
+            "2830da33333375aa",
+            "aaa96c6c6631a2a0"
+          ],
+          "angleDeg": 45,
+          "message": "trace bends 45° (<90°) — acid-trap acute angle [规范 §4.1 转角禁直角/锐角 — pcb-design-rules.md]",
+          "at": {
+            "x": 511.81,
+            "y": -1895.69
+          }
+        },
+        {
+          "type": "width-mismatch",
+          "level": "INFO",
+          "net": "MOTOR_B_PWM",
+          "designator": "J24",
+          "widths": [
+            11.42,
+            25.59
+          ],
+          "message": "2-pin part J24: entering track widths differ (11.4 vs 25.6 mil) [规范 §1.2 推荐线宽 — pcb-design-rules.md]"
+        },
+        {
+          "type": "duplicate-segment",
+          "level": "WARN",
+          "net": "MOTOR_BIN2",
+          "layer": 1,
+          "primitives": [
+            "9f17eb6697897c39",
+            "5a91eb09254e8ab1"
+          ],
+          "message": "collinear overlapping copper (113 mil overlap) — redundant/mergeable"
+        },
+        {
+          "type": "parallel-coupling",
+          "level": "WARN",
+          "nets": [
+            "MOTOR_AIN2",
+            "MOTOR_PWM"
+          ],
+          "layer": 1,
+          "primitives": [
+            "293dbffff0d21b93",
+            "def56ba3ed89e648"
+          ],
+          "message": "parallel traces 27.8 mil apart over 56 mil (< 34.3 mil = 3×W) — crosstalk/3W risk [规范 §4.2 减少串扰 — pcb-design-rules.md]"
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J13",
+          "primitives": [
+            "608155814ab2e255e24"
+          ],
+          "message": "designator 'J13' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 492.5,
+            "y": -1187.54
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J12",
+          "primitives": [
+            "341f7975c3aec1e4e24"
+          ],
+          "message": "designator 'J12' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 902.56,
+            "y": -1155.04
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 4,
+          "designator": "J4",
+          "primitives": [
+            "78ce52c3ee8b19f8ee0"
+          ],
+          "message": "designator 'J4' is rotated 180° (upside-down (上下颠倒)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 1721.65,
+            "y": -1882.91
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J11",
+          "primitives": [
+            "759493c20c1dc6ede17"
+          ],
+          "message": "designator 'J11' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3059.87,
+            "y": -1499.59
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J23",
+          "primitives": [
+            "d3fe3227da259104e24"
+          ],
+          "message": "designator 'J23' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3060.87,
+            "y": -1912.98
+          }
+        },
+        {
+          "type": "silkscreen-flipped",
+          "level": "WARN",
+          "layer": 3,
+          "designator": "J24",
+          "primitives": [
+            "6457ac2f64088c66e24"
+          ],
+          "message": "designator 'J24' is rotated 90° (sideways (侧向)) — not upright (放反/朝向不正) [规范 §11.2 位号清晰可辨 — pcb-design-rules.md]",
+          "at": {
+            "x": 3060.87,
+            "y": -2326.36
+          }
+        },
+        {
+          "type": "power-not-poured",
+          "level": "WARN",
+          "net": "+3V3",
+          "message": "power net +3V3 (3 pads) has no copper pour/plane — power should be poured, not carried by thin tracks: `pcb pour-fit --net +3V3` (2-layer) or `pcb power-planes` (4-layer) [规范 §5.2 铺铜策略 — pcb-design-rules.md]"
+        },
+        {
+          "type": "power-not-poured",
+          "level": "WARN",
+          "net": "+5V",
+          "message": "power net +5V (3 pads) has no copper pour/plane — power should be poured, not carried by thin tracks: `pcb pour-fit --net +5V` (2-layer) or `pcb power-planes` (4-layer) [规范 §5.2 铺铜策略 — pcb-design-rules.md]"
+        }
+      ]
+    }
+  },
+  "IDC_pins": [
+    [
+      1,
+      "+5V",
+      "+5V"
+    ],
+    [
+      2,
+      "SERVO_PWM",
+      "SERVO_PWM"
+    ],
+    [
+      3,
+      "MOTOR_BIN1",
+      "MOTOR_BIN1"
+    ],
+    [
+      4,
+      "MOTOR_PWM",
+      "MOTOR_PWM"
+    ],
+    [
+      5,
+      "GND",
+      "GND"
+    ],
+    [
+      6,
+      "MOTOR_AIN1",
+      "MOTOR_AIN1"
+    ],
+    [
+      7,
+      "+3V3",
+      "+3V3"
+    ],
+    [
+      8,
+      "MOTOR_AIN2",
+      "MOTOR_AIN2"
+    ],
+    [
+      9,
+      "MOTOR_BIN2",
+      "MOTOR_BIN2"
+    ],
+    [
+      10,
+      "MOTOR_B_PWM",
+      "MOTOR_B_PWM"
+    ]
+  ],
+  "ESP32": {
+    "pitch_mm": 2.54,
+    "points": 44,
+    "old_spacing_mm": 22.86,
+    "original_Espressif_spacing_from_DXF_mm": 22.86,
+    "YD_OEM_spacing_labeled_mm": 25.4,
+    "YD_OEM_spacing_from_pdf_vectors_mm": 25.3776
+  },
+  "firmware": {
+    "pins": 22,
+    "mismatches": [],
+    "pin_map": {
+      "15": "TFT_CS",
+      "2": "TFT_DC",
+      "21": "TFT_RST",
+      "13": "TFT_MOSI",
+      "14": "TFT_SCK",
+      "5": "DHT_DATA",
+      "1": "MQ1_AO_ADC",
+      "4": "MQ2_AO_ADC",
+      "42": "SERVO_PWM",
+      "41": "MOTOR_PWM",
+      "40": "MOTOR_AIN1",
+      "39": "MOTOR_AIN2",
+      "48": "MOTOR_B_PWM",
+      "38": "MOTOR_BIN1",
+      "43": "MOTOR_BIN2",
+      "7": "KEY_F1",
+      "8": "KEY_F2",
+      "11": "KEY_UP",
+      "12": "KEY_DOWN",
+      "16": "KEY_LEFT",
+      "17": "KEY_RIGHT",
+      "18": "KEY_OK"
+    }
+  },
+  "wide_candidate": {
+    "1": {
+      "drc_violations": 0,
+      "pads": 124,
+      "moved_pads": 22,
+      "traceable_gerber_sha256": "1d4010d25c921d38d75148f8ecd77090f798640e4ec95834bc01e1b451ce433a",
+      "profile_loops": 1,
+      "verified_esp32_drills": 44,
+      "row_spacing_mm": 25.4,
+      "silk_items_repositioned": [
+        "J22",
+        "H₂O"
+      ],
+      "candidate_dfm_summary": {
+        "danglingEnds": 1,
+        "acuteAngles": 3,
+        "nonOrthogonal": 0,
+        "trackOverPad": 0,
+        "clearance": 0,
+        "silkscreenFlipped": 17,
+        "overlappingVias": 0,
+        "singleLayerVias": 0,
+        "widthMismatches": 5,
+        "duplicateSegments": 0,
+        "parallelCoupling": 9,
+        "antennaKeepout": 0,
+        "netlessPours": 0,
+        "viaCrossesPlane": 0,
+        "floatingIslands": 0,
+        "powerNotPoured": 4,
+        "netlessViaInPad": 0,
+        "widthUnderSpec": 1,
+        "silkOverPad": 0,
+        "silkOffBoard": 0,
+        "decapTooFar": 0,
+        "viaInPad": 3,
+        "copperNearEdge": 0,
+        "fiducialMissing": 0,
+        "zoneViolation": 0,
+        "internalOnEdge": 0,
+        "connectorPlugClearance": 1,
+        "connectorMatingBlocked": 0,
+        "connectorOpeningInward": 0,
+        "errors": 0,
+        "warnings": 39,
+        "total": 44
+      }
+    },
+    "2": {
+      "drc_violations": 0,
+      "pads": 43,
+      "moved_pads": 0,
+      "traceable_gerber_sha256": "5a540d226174f2f6017a8be30fa01b1aac0a0c3709ccea8bb15519832761d3a7",
+      "profile_loops": 12,
+      "support_hole_changes": [
+        {
+          "before_mm": [
+            3.8,
+            60.1
+          ],
+          "after_mm": [
+            3.8,
+            45.0
+          ],
+          "before": {
+            "nearest_component": "J10",
+            "hole_edge_to_body_mm": 0.2368,
+            "washer_to_body_mm": -1.6632,
+            "bore_to_tracks_vias_pads_mm": 6.3867
+          },
+          "after": {
+            "nearest_component": "J10",
+            "hole_edge_to_body_mm": 3.1035,
+            "washer_to_body_mm": 1.2035,
+            "bore_to_tracks_vias_pads_mm": 1.855
+          }
+        },
+        {
+          "before_mm": [
+            82.2,
+            60.1
+          ],
+          "after_mm": [
+            73.8,
+            53.2
+          ],
+          "before": {
+            "nearest_component": "J24",
+            "hole_edge_to_body_mm": -0.5896,
+            "washer_to_body_mm": -2.4896,
+            "bore_to_tracks_vias_pads_mm": 1.0049
+          },
+          "after": {
+            "nearest_component": "J24",
+            "hole_edge_to_body_mm": 2.473,
+            "washer_to_body_mm": 0.573,
+            "bore_to_tracks_vias_pads_mm": 2.455
+          }
+        }
+      ]
+    }
+  }
+}
