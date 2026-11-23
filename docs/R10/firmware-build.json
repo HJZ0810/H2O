@@ -1,0 +1,22 @@
+{
+  "handheld": {
+    "board": "YD-ESP32-S3 25.40 mm",
+    "core": "3.3.12",
+    "compile": [
+      "Sketch uses 1708450 bytes (54%) of program storage space. Maximum is 3145728 bytes.",
+      "Global variables use 52884 bytes (16%) of dynamic memory, leaving 274796 bytes for local variables. Maximum is 327680 bytes."
+    ],
+    "sha256_app": "0929f17ffc5454edcd613c16203720519d694d4779281e38919617d3a4a26200",
+    "bytes": 1708592
+  },
+  "monitor": {
+    "board": "YD-ESP32-S3 25.40 mm",
+    "core": "3.3.12",
+    "compile": [
+      "Sketch uses 942390 bytes (29%) of program storage space. Maximum is 3145728 bytes.",
+      "Global variables use 47572 bytes (14%) of dynamic memory, leaving 280108 bytes for local variables. Maximum is 327680 bytes."
+    ],
+    "sha256_app": "255099b226fa6814f3d80dfe482768a2d4efc5a11363782fbd1bdd4bf5027788",
+    "bytes": 942544
+  }
+}
