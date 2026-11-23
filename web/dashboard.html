@@ -203,14 +203,17 @@ function render(d, at){
   const fan = reading(d,'fan_level');
   $('vFan').parentElement.className = 'card' + (fan >= 80 ? ' bad' : fan > 0 ? ' warn' : '');
 }
+function isLive(){
+  return socketReceived && ws?.readyState === WebSocket.OPEN && Date.now()-lastMsgAt < 20000;
+}
 function paintStatus(){
-  const live = socketReceived && ws?.readyState === WebSocket.OPEN && lastMsgAt && Date.now()-lastMsgAt < 20000;
+  const live = isLive();
   $('dotSrv').className = 'dot ' + (live ? 'on' : 'wait');
   $('stSrv').textContent = live ? '在线' : lastMsgAt ? '已中断' : '待上报';
   const one = live ? lastOnenet : null;
   $('dotOne').className = 'dot ' + (one === 1 ? 'on' : one === 0 ? '' : 'wait');
   $('stOne').textContent = one === 1 ? '在线' : one === 0 ? '离线' : '未知';
-  $('fresh').textContent = lastMsgAt ? `${live ? '实时' : '最后实时上报'} · ${clock(lastMsgAt)}` :
+  $('fresh').textContent = lastMsgAt && lastMsgAt >= historyAt ? `${live ? '实时' : '最后实时上报'} · ${clock(lastMsgAt)}` :
     historyAt ? `历史快照 · ${new Date(historyAt).toLocaleString('zh-CN',{hour12:false})}` : historyFailed ? '历史暂不可用' : '等待设备数据';
 }
 function clearChart(){times.length=0; Object.values(series).forEach(a=>a.length=0); dirty=true;}
@@ -218,19 +221,31 @@ function unixMs(sec){return Number.isFinite(sec) && sec >= 1577836800 && sec <= 
 async function loadHistory(){
   const selected = generation;
   try {
-    const r = await fetch(`${apiBase}/history?dev=${encodeURIComponent(devId)}&n=${MAXP}`, {cache:'no-store'});
+    const r = await fetch(`${apiBase}/history?dev=${encodeURIComponent(devId)}&n=${MAXP}`, {cache:'no-store',signal:AbortSignal.timeout(12000)});
     if (!r.ok) throw Error();
     const j = await r.json();
     if (selected !== generation || j.dev !== devId) return;
     historyFailed = false;
     clearChart();
-    for (const p of (Array.isArray(j.points) ? j.points : [])){
-      if (!p || typeof p !== 'object') continue;
-      const at = unixMs(p.at ?? p.ts);
-      if (!livePoints.length || (at && at < livePoints[0].at - 1000)) appendPoint(p, at);
+    // The recorder keeps receiving samples even when this browser loses its socket.
+    const merged = [...livePoints];
+    for (const d of (Array.isArray(j.points) ? j.points : [])){
+      if (!d || typeof d !== 'object') continue;
+      const at = unixMs(d.at ?? d.ts);
+      if (!at) continue;
+      const duplicate = livePoints.some(p => Math.abs(at - p.at) < 1000 &&
+        fields.every(([key]) => reading(p.d,key) === reading(d,key)));
+      if (!duplicate) merged.push({d,at});
     }
-    for (const p of livePoints) appendPoint(p.d, p.at);
-    if (!lastMsgAt && j.latest){historyAt = unixMs(j.at ?? j.latest.ts); render(j.latest,historyAt);}
+    merged.sort((a,b) => a.at - b.at);
+    for (const p of merged.slice(-MAXP)) appendPoint(p.d,p.at);
+    if (j.latest){
+      const at = unixMs(j.at ?? j.latest.ts);
+      if (at && !isLive() && at >= historyAt && at > lastMsgAt){
+        historyAt = at;
+        render(j.latest,at);
+      }
+    }
     flushChart(); $('ptCount').textContent = times.length;
   } catch { if (selected === generation) historyFailed = true; }
   paintStatus();
@@ -248,7 +263,7 @@ function connect(){
       const d = JSON.parse(m.data);
       if (!d || typeof d !== 'object' || Array.isArray(d) ||
           !fields.some(([k]) => Number.isFinite(d[k])) && ![0,1].includes(d.onenet)) return;
-      socketReceived=true; lastMsgAt = Date.now(); lastOnenet = d.onenet;
+      socketReceived=true; historyAt=0; lastMsgAt = Date.now(); lastOnenet = d.onenet;
       livePoints.push({d,at:lastMsgAt}); if (livePoints.length > MAXP) livePoints.shift();
       render(d,lastMsgAt); appendPoint(d,lastMsgAt); flushChart(); paintStatus(); $('ptCount').textContent=times.length;
     } catch {return;}
@@ -266,14 +281,21 @@ function controls(){
 }
 async function capability(){
   const selected=generation;
-  let allowed=false;
+  let allowed=false, message='无法查询控制权限，请重新切换设备以重试。';
   try {
-    const r=await fetch(`${apiBase}/control/status?dev=${encodeURIComponent(devId)}`,{cache:'no-store',mode:'same-origin'});
-    allowed=window.isSecureContext && r.ok && (await r.json()).enabled===true;
+    const r=await fetch(`${apiBase}/control/status?dev=${encodeURIComponent(devId)}`,{cache:'no-store',mode:'same-origin',signal:AbortSignal.timeout(12000)});
+    if (r.ok){
+      const status=await r.json();
+      if (status.enabled===false) message='当前设备未开放网页控制。';
+      if (status.enabled===true){
+        allowed=window.isSecureContext;
+        message=allowed?'输入本次操作令牌及目标值。':'请通过 HTTPS 访问以控制设备。';
+      }
+    }
   } catch {}
   if (selected!==generation) return;
   enabled=allowed; $('mode').textContent=allowed?'需要令牌':'只读';
-  $('receipt').textContent=allowed?'输入本次操作令牌及目标值。':'当前设备未开放网页控制。'; controls();
+  $('receipt').textContent=message; controls();
 }
 async function command(key){
   if ($('dev').value !== devId || !enabled || sending || !$('token').value || !Number.isInteger($(key).valueAsNumber) || !$(key).validity.valid) return;

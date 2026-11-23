@@ -47,7 +47,6 @@ inline bool handleLine(const String& cmd, OneNet& n, bool& act) {
     return true;
   }
   if (cmd == "onon") { act = true; Serial.println("[onenet] monitor on"); return true; }
-  if (cmd == "onoff") { act = false; Serial.println("[onenet] monitor off"); return true; }
   return false;
 }
 

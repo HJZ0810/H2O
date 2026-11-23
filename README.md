@@ -1,8 +1,8 @@
 # 一氧化二氢 · H₂O R10
 
-物联网工程 4 班 24014 组。ESP32-S3 手柄通过 MQTT 接入「智联迷城」，环境监测任务通过 OneNET 上报传感器数据、控制风扇和舵机。R10 面向 **25.40 mm 排距**的双板系统，版本为 **`r10.0.0-rc.1` 装配及实机验收候选**。
+物联网工程 4 班 24014 组。ESP32-S3 手柄通过 MQTT 接入「智联迷城」，环境监测任务通过 OneNET 上报传感器数据、控制风扇和舵机。R10 面向 **25.40 mm 排距**的双板系统，当前发布为 **`r10.0.0-rc.2` 装配及实机验收候选**。
 
-[下载 R10](https://gitee.com/hjz0810/H2O/releases/tag/r10.0.0-rc.1) · [工程复核与使用说明](docs/R10/README.md) · [官方评分逐项对照](docs/R10/requirements.md) · [关联项目范围](docs/R10/scope.md)
+[下载 R10](https://gitee.com/hjz0810/H2O/releases/tag/r10.0.0-rc.2) · [工程复核与使用说明](docs/R10/README.md) · [官方评分逐项对照](docs/R10/requirements.md) · [关联项目范围](docs/R10/scope.md)
 
 | 你要做的事 | 入口 | 选用依据 |
 |---|---|---|

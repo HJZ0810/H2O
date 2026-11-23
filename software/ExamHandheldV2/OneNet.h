@@ -33,12 +33,19 @@ static String onenetEscape(const String& text) {
 }
 class OneNet {
  public:
-  void suspend() { if (mqtt_.connected()) mqtt_.disconnect(); nextConnect_ = 0; }
-  bool connected() { return mqtt_.connected(); }
+  void suspend() {
+    closeSession();
+    manualHold_ = false;
+    manualAt_ = 0;
+    lastAttempt_ = millis() - kRetryMs;
+  }
+  bool connected() { return mqtt_.connected() && net_.subscriptionAck() == Ack::Accepted; }
   uint32_t lastReportMs() const { return lastReport_; }
   uint32_t downlinkCount() const { return downlinkCount_; }
-  int fanLevel() const { return fanLevel_; }
-  int servoAngle() const { return servoAngle_; }
+  int fanLevel() const { return act_ ? act_->speedPercent(false) : 0; }
+  int servoAngle() const {
+    return act_ && act_->pulseWidth() ? (act_->servoPosition() + 100) * 180 / 200 : 0;
+  }
   bool manualHold() const { return manualHold_ && millis() - manualAt_ < kManualHoldMs; }
 
   void configure(const String& pid, const String& dev, const String& key,
@@ -64,39 +71,75 @@ class OneNet {
   void tick(const Sensors& s, Actuators& act) {
     if (!ready_) return;
     linkage(s, act);
-    if (WiFi.status() != WL_CONNECTED) { if (mqtt_.connected()) mqtt_.disconnect(); return; }
-    if (mqtt_.connected()) { mqtt_.loop(); }
-    else if (int32_t(millis() - nextConnect_) >= 0) {
-      nextConnect_ = millis() + 5000;
+    if (WiFi.status() != WL_CONNECTED) {
+      if (net_.subscriptionAck() != Ack::Idle) closeSession();
+      return;
+    }
+    if (mqtt_.connected()) {
+      if (net_.subscriptionAck() == Ack::Pending && millis() - subscribeAt_ >= kSubscribeTimeoutMs) {
+        subscriptionFailed("timeout");
+        return;
+      }
+      const auto previous = net_.subscriptionAck();
+      mqtt_.loop();
+      const auto ack = net_.subscriptionAck();
+      if (ack == Ack::Rejected) {
+        subscriptionFailed("SUBACK rejected");
+        return;
+      }
+      if (ack == Ack::Accepted && previous != Ack::Accepted) Serial.println("[onenet] subscribed");
+    } else if (millis() - lastAttempt_ >= kRetryMs) {
+      net_.resetSubscription();
+      lastAttempt_ = millis();
       const String token = makeToken();
       if (token.isEmpty()) return;  // 未对时或签名失败，下一轮再试
-      if (mqtt_.connect(dev_.c_str(), pid_.c_str(), token.c_str())) {
-        Serial.println("[onenet] connected");
-        mqtt_.subscribe(topicSet_.c_str(), 1);
-      } else {
+      if (!mqtt_.connect(dev_.c_str(), pid_.c_str(), token.c_str())) {
+        lastAttempt_ = millis();
         Serial.printf("[onenet] connect fail state=%d\n", mqtt_.state());
+        return;
       }
+      net_.expectSubscription();
+      if (!mqtt_.subscribe(topicSet_.c_str(), 1) || net_.subscriptionAck() != Ack::Pending) {
+        subscriptionFailed("SUBSCRIBE send failed");
+        return;
+      }
+      subscribeAt_ = millis();
     }
-    if (mqtt_.connected() && millis() - lastReport_ >= kReportIntervalMs) {
+    if (connected() && millis() - lastReport_ >= kReportIntervalMs) {
       lastReport_ = millis();
       report(s);
     }
   }
 
  private:
+  using Ack = onetransport::SubscriptionClient::Ack;
   static constexpr uint32_t kReportIntervalMs = 10000;
   static constexpr uint32_t kManualHoldMs = 30000;
-  // 联动阈值，与 BCfg.h 保持一致
+  static constexpr uint32_t kRetryMs = 5000;
+  static constexpr uint32_t kSubscribeTimeoutMs = 5000;
 
-  onetransport::Client net_;
+  onetransport::SubscriptionClient net_;
   PubSubClient mqtt_{net_};
   String pid_, dev_, key_, host_ = "mqtts.heclouds.com", topicUp_, topicSet_, topicReply_;
   uint16_t port_ = onetransport::Port;
   bool ready_ = false;
-  uint32_t nextConnect_ = 0, lastReport_ = 0, msgSeq_ = 0, downlinkCount_ = 0;
-  int fanLevel_ = 0, servoAngle_ = 0;
+  uint32_t lastAttempt_ = 0, subscribeAt_ = 0, lastReport_ = 0, msgSeq_ = 0, downlinkCount_ = 0;
   bool manualHold_ = false;
   uint32_t manualAt_ = 0;
+  int tempDemand_ = 0, smokeDemand_ = 0;
+
+  void closeSession() {
+    // Clean sessions need no MQTT DISCONNECT write on a lost or stopped link.
+    net_.stop();
+    net_.resetSubscription();
+    mqtt_.connected();  // Let PubSubClient invalidate its internal connection state.
+  }
+
+  void subscriptionFailed(const char* reason) {
+    closeSession();
+    lastAttempt_ = millis();
+    Serial.printf("[onenet] subscribe fail: %s\n", reason);
+  }
 
   String makeToken(uint32_t ttlSec = 3600u) {
     unsigned char keyBuf[192];
@@ -136,29 +179,32 @@ class OneNet {
   }
 
   void linkage(const Sensors& s, Actuators& act) {
-    const bool hold = manualHold_ && millis() - manualAt_ < kManualHoldMs;
-    if (hold) return;
+    // Preserve each last valid demand through transient sensor faults.
+    const int smoke = smokePpm(s);
+    const int air = airPpm(s);
+    if (s.dhtValid) tempDemand_ = linkage::decide(true, s.temperature, -1, -1, 0).fanPct;
+    if (smoke >= 0) smokeDemand_ = linkage::decide(false, 0, smoke, -1, 0).fanPct;
+    if (manualHold()) return;
     manualHold_ = false;
 
-    // 决策逻辑抽在 LinkageCore.h，主机侧用同一份头文件做模拟验证
-    const linkage::Output want = linkage::decide(s.dhtValid, s.temperature, smokePpm(s),
-                                                 airPpm(s), servoAngle_);
-    if (want.fanPct != fanLevel_) {
+    const int fan = tempDemand_ > smokeDemand_ ? tempDemand_ : smokeDemand_;
+    const int window = linkage::decide(false, 0, -1, air, servoAngle()).servoDeg;
+    if (fan != int(act.speedPercent(false))) {
       ActuatorCommand c;
       c.fields = ActuatorCommand::MotorA;
-      c.motorAPct = want.fanPct;
+      c.motorAPct = fan;
       if (!act.apply(c)) return;
-      Serial.printf("[link] fan %d%% (temp %.1f smoke %d)\n", want.fanPct, s.temperature, smokePpm(s));
-      fanLevel_ = want.fanPct;
+      Serial.printf("[link] fan %d%% (temp %.1f smoke %d)\n", fan, s.temperature, smoke);
     }
-    if (want.servoDeg != servoAngle_) {
+    // With no valid air sample, leave the servo alone, including a stopped PWM.
+    const int position = cloudset::normalizedPosition(window);
+    if (air >= 0 && (!act.pulseWidth() || act.servoPosition() != position)) {
       ActuatorCommand c;
       c.fields = ActuatorCommand::ServoPosition | ActuatorCommand::ServoEnabled;
-      c.servoPosition = cloudset::normalizedPosition(want.servoDeg);
+      c.servoPosition = position;
       c.servoEnabled = true;
       if (!act.apply(c)) return;
-      Serial.printf("[link] servo %d deg (air %d)\n", want.servoDeg, airPpm(s));
-      servoAngle_ = want.servoDeg;
+      Serial.printf("[link] servo %d deg (air %d)\n", window, air);
     }
   }
 
@@ -186,7 +232,7 @@ class OneNet {
 
   // 云端下发：{"id":"1","params":{"servo":{"value":90}}}
   void onMessage(char* topic, uint8_t* payload, unsigned int len) {
-    if (topicSet_ != String(topic)) return;
+    if (net_.subscriptionAck() != Ack::Accepted || topicSet_ != String(topic)) return;
     JsonDocument d;
     if (deserializeJson(d, payload, len)) return;
     cloudset::Command request;
@@ -200,8 +246,6 @@ class OneNet {
     }
     bool applied = valid && act_ && act_->apply(c);
     if (applied) {
-      if (request.fan >= 0) fanLevel_ = request.fan;
-      if (request.servo >= 0) servoAngle_ = request.servo;
       manualHold_ = true;
       manualAt_ = millis();
       ++downlinkCount_;

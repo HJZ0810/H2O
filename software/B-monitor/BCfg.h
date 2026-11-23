@@ -42,8 +42,7 @@ namespace bmon {
 // ---- 量程与阈值 ----
 // MQ 系列在 3.3V 量程下按线性近似折算，只用于趋势与阈值判断，
 // 不是标定过的 ppm。报告里必须写明这一点（老师明确要求标定说明）。
-constexpr float MqFullScalePpm2 = 1000.0f;   // MQ-2 量程近似 200~10000ppm，取演示段
-constexpr float MqFullScalePpm135 = 1000.0f; // MQ-135 同类处理
+constexpr const char* FirmwareVersion = "10.0.0-rc.2";
 
 // 联动阈值（ESP32 端执行）
 constexpr float TempFanOn = 30.0f;    // 温度 ≥30°C 开风扇

@@ -55,6 +55,23 @@ class Control:
     def post(self, handler):
         def reply(code, message):
             return handler._json({"message": message}, code)
+        lengths = handler.headers.get_all("Content-Length", [])
+        if (len(lengths) != 1 or not re.fullmatch(r"[0-9]{1,3}", lengths[0])
+                or not 0 < int(lengths[0]) <= 512 or "Transfer-Encoding" in handler.headers):
+            return reply(400, "请求长度无效")
+        length = int(lengths[0])
+        # Consume the bounded body before responding. Closing with unread bytes can
+        # reset the connection and prevent the browser from seeing a rejection.
+        previous_timeout = handler.connection.gettimeout()
+        handler.connection.settimeout(2)
+        try:
+            body = handler.rfile.read(length)
+        except TimeoutError:
+            return reply(408, "请求体读取超时")
+        finally:
+            handler.connection.settimeout(previous_timeout)
+        if len(body) != length:
+            return reply(400, "请求体不完整")
         if not self.enabled:
             return reply(503, "网关处于只读模式")
         if handler.headers.get("Origin") != self.origin:
@@ -65,11 +82,8 @@ class Control:
             return reply(401, "操作令牌无效")
         if handler.headers.get_content_type() != "application/json":
             return reply(415, "需要 JSON 请求")
-        length = handler.headers.get("Content-Length", "")
-        if not re.fullmatch(r"[0-9]{1,4}", length) or not 0 < int(length) <= 512 or 'Transfer-Encoding' in handler.headers:
-            return reply(400, "请求长度无效")
         try:
-            msg = json.loads(handler.rfile.read(int(length)))
+            msg = json.loads(body)
         except (ValueError, RecursionError):
             return reply(400, "JSON 格式无效")
         if not isinstance(msg, dict) or set(msg) != {"dev", "key", "value"}:

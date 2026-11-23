@@ -206,8 +206,8 @@ static void render() {
 // Taking local control releases the automatic and remote writer first.
 static void localStop() {
   onenetActive = false;
-  onenet.suspend();
   fan.stop();
+  onenet.suspend();
 }
 
 static void switchView(View v) {
@@ -347,12 +347,7 @@ void setup() {
     String derived = auth::derivePassword(configuration.value.group, auth::deviceMac());
     if (!derived.isEmpty()) {
       configuration.value.mqttPassword = derived;
-      Serial.print("[auth] group=");
-      Serial.print(configuration.value.group);
-      Serial.print(" mac=");
-      Serial.print(auth::deviceMac());
-      Serial.print(" pass=");
-      Serial.println(derived);
+      Serial.println("[auth] group credential derived");
     } else {
       Serial.println("[auth] group not numeric, using stored password");
     }
@@ -370,7 +365,7 @@ void setup() {
   snprintf(prefix, sizeof(prefix), "%08lx%08lx", (unsigned long)esp_random(), (unsigned long)esp_random());
   session.setRequestPrefix(prefix);
 
-  Serial.printf("R9 v2 firmware %s on %s; %dx%d\n", board::FirmwareVersion, board::BoardName,
+  Serial.printf("H2O firmware %s on %s; %dx%d\n", board::FirmwareVersion, board::BoardName,
                 panel.width(), panel.height());
 
   Serial.println("[boot] first render");

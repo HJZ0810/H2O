@@ -1,6 +1,6 @@
 # H2O R10 · 硬件装配审查
 
-**工程入口**　[source/H2O-R10-YD254.epro2](source/H2O-R10-YD254.epro2) 包含原理图、PCB1 手柄和 PCB2 执行器。以源地 YD-ESP32-S3 的 25.40 mm 宽版为基础。状态为离线修订、待原生重开。
+**工程入口**　[source/H2O-R10-YD254.epro2](source/H2O-R10-YD254.epro2) 包含原理图、PCB1 手柄和 PCB2 执行器。以源地 YD-ESP32-S3 的 25.40 mm 宽版为基础。RC2 维持 RC1 的工程源与制造基线。离线重建可回读，待原生重开。
 
 **制造资料**　[PCB1 原始宽版 Gerber](gerber-baseline/wide-PCB1-after-silk-gerber.zip) 与 [PCB2 原始宽版 Gerber](gerber-baseline/wide-PCB2-probe-gerber.zip) 是 11 月 20 日的制造基线，两包均通过 ZIP CRC 和 SHA-256 检查。**这两包仍含原丝印。R10 新丝印待重新导出，目前不能据此下单 R10。**
 
@@ -42,4 +42,4 @@
 
 ## 复核入口
 
-依次运行 `python audit/source_candidate.py`、`python audit/measure.py`、`python audit/adapter.py`、`python audit/board_views.py`。脚本从自身位置定位输入，DXF / 图表生成使用 ezdxf 与 matplotlib。原始 zip SHA 来自上级 [wide_candidate](../R9-1-4-RC1/verification.json)。[typed EasyEDA 状态](evidence/easyeda-health.json) 显示 CLI/daemon v1.16.0，连接器窗口为零。本次没有 R10 原生 DRC、DFM、样机或带载结果。
+依次运行 `python audit/source_candidate.py`、`python audit/measure.py`、`python audit/adapter.py`、`python audit/board_views.py`。脚本从自身位置定位输入，DXF / 图表生成使用 ezdxf 与 matplotlib。原始 zip SHA 来自上级 [wide_candidate](../R9-1-4-RC1/verification.json)。[typed EasyEDA 状态](evidence/easyeda-health.json) 显示 CLI/daemon v1.16.0，连接器窗口为零。RC2 在独立目录复跑工程对象、制造文件、SG90 DXF 和板图检查。[原生重开记录](evidence/native-recheck/v4-open-archive.txt) 显示桌面桥可见，但编辑器命令空间未就绪。R10 原生 DRC、DFM、新丝印 Gerber、样机及带载实测尚待完成。

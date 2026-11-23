@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>一氧化二氢 R10 RC1 · 装配及实机验收候选</title>
-<meta name="description" content="R10 RC1 装配及实机验收候选。按任务查阅宽板排距、SG90 选型、首件验收表和历史档案。">
+<title>一氧化二氢 R10 RC2 · 装配及实机验收候选</title>
+<meta name="description" content="R10 RC2 装配及实机验收候选。按任务查阅宽板排距、SG90 选型、首件验收表和历史档案。">
 <meta name="theme-color" content="#F1F4F5">
 <meta property="og:type" content="website">
-<meta property="og:title" content="一氧化二氢 R10 RC1 · 装配及实机验收候选">
+<meta property="og:title" content="一氧化二氢 R10 RC2 · 装配及实机验收候选">
 <meta property="og:description" content="25.40 mm 宽板选型、任务 A/B、首件验收与历史档案。">
 <meta property="og:url" content="https://esp32.luo-jin-ai.com/h2o/">
 <meta property="og:image" content="https://esp32.luo-jin-ai.com/h2o/assets/assembly.webp">
@@ -30,7 +30,7 @@
       <a href="#boards">两块板</a>
       <a href="https://gitee.com/hjz0810/H2O" target="_blank" rel="noopener">Gitee ↗</a>
     </nav>
-    <span class="pill live"><i class="dot" aria-hidden="true"></i>r10.0.0-rc.1</span>
+    <span class="pill live"><i class="dot" aria-hidden="true"></i>r10.0.0-rc.2</span>
     <a class="totop" href="#top" id="totop" aria-label="回到顶部" hidden>↑</a>
   </div>
 </header>
@@ -38,13 +38,13 @@
 <main>
   <div class="wrap">
 
-<section class="rc" aria-labelledby="rc-title" id="r10.0.0-rc.1">
-<div class="rc-cover"><div class="rc-intro"><p class="rc-meta">H2O ENGINEERING &nbsp; / &nbsp; 2026.11.23</p><h1 id="rc-title">一氧化二氢 <span>R10</span></h1><p class="rc-status">装配及实机验收候选</p><p class="rc-lead">先量排距，再做首件试装。按任务核对手柄、执行板和云端回执，把实测结果填入验收表。</p><div class="rc-actions"><a href="#rc-check">查看验收项目 ↓</a><a href="#rc-download">下载资料 ↓</a></div></div><figure class="rc-plate"><span>PCB 01 &nbsp; / &nbsp; 手柄板正面</span><img src="./assets/hand-front.webp" alt="历史手柄板正面渲染，用于识别板形与器件位置" width="676" height="677"><figcaption>R9 工程图 · 装配参考</figcaption></figure></div>
+<section class="rc" aria-labelledby="rc-title" id="r10.0.0-rc.2">
+<div class="rc-cover"><div class="rc-intro"><p class="rc-meta">H2O ENGINEERING &nbsp; / &nbsp; 2026.11.23</p><h1 id="rc-title">一氧化二氢 <span>R10</span></h1><p class="rc-status">RC2 · 装配及实机验收候选</p><p class="rc-lead">下载 25.40 mm 手柄或独立监测固件。装配前核对排距、IDC 针序及 SG90 固定方式，首件通电后记录读数与云端回执。</p><div class="rc-actions"><a href="https://gitee.com/hjz0810/H2O/releases/tag/r10.0.0-rc.2">下载 RC2 固件与工程 ↗</a><a href="#rc-check">查看首件验收 ↓</a></div></div><figure class="rc-plate"><span>PCB 01 &nbsp; / &nbsp; 手柄板正面</span><img src="./assets/hand-front.webp" alt="历史手柄板正面渲染，用于识别板形与器件位置" width="676" height="677"><figcaption>R9 工程图 · 装配参考</figcaption></figure></div>
 <nav class="rc-nav" aria-label="R10 资料导航"><a href="#rc-tasks">按任务</a><a href="#rc-wide">宽板选型</a><a href="#rc-download">下载</a><a href="#rc-check">实机验收</a><a href="#archive">历史档案 ↗</a></nav>
 <section id="rc-tasks" class="rc-section"><p class="rc-meta">TASKS</p><h2>按任务核对</h2><div class="rc-pair"><article><small>任务 A</small><h3>智联迷城闯关终端</h3><p>在手柄上接题、作答并取得回执，再到网页核对本组成绩和排名。</p><a href="https://www.kdocs.cn/l/ciQuPNcQKjfA">课程任务 A 原文 ↗</a></article><article><small>任务 B</small><h3>物联监测控制系统</h3><p>DHT11、MQ-2、MQ-135 负责采集，SG90 和直流风扇负责执行。通过 OneNET 核对上报与下发。</p><a href="https://www.kdocs.cn/l/csLkV4v6YSG5">查看官方抽签表 ↗</a></article></div></section>
 <section id="rc-wide" class="rc-section"><p class="rc-meta">ASSEMBLY</p><h2>量两排针的中心距</h2><div class="rc-pair"><article><small>源地 YD 双 Type-C 宽板</small><h3 class="measure">25.40 <em>mm</em></h3><p>两排各 22 针，单排节距 2.54 mm。沿板宽方向测两排对应针的中心，再核对针序和 USB 侧朝向。</p></article><article><small>乐鑫 DevKitC-1 v1.1 对照</small><h3 class="measure">22.86 <em>mm</em></h3><p>比宽板窄 2.54 mm。乐鑫机械图中的 25.40 mm 指板身宽度。仅凭 N16R8 标识无法选定排母。</p></article></div><aside><b>执行机构也要对型号</b><p>任务 B 官方抽签指定 A04 SG90。旧版图文、支架与负载记录使用 MG996R，保留作历史对照。首件需按 SG90 实物复核固定方式、舵臂行程和带载供电。</p></aside></section>
-<section id="rc-download" class="rc-section"><p class="rc-meta">DOWNLOADS</p><h2>下载资料</h2><div class="rc-files"><a download href="./r10-rc1/acceptance.csv"><b>R10 RC1 首件验收记录表</b><span>CSV ↓</span></a><a download href="./r10-rc1/yd-wide-metric.pdf"><b>源地 YD 宽板厂家尺寸图</b><span>PDF ↓</span></a><a download href="./downloads/H2O-R9-1-4-RC1-assembly-review.zip"><b>R9.1.4 RC1 历史装配复核包</b><span>ZIP ↓</span></a></div></section>
-<section id="rc-check" class="rc-section"><p class="rc-meta">ACCEPTANCE &nbsp; / &nbsp; r10.0.0-rc.1</p><h2>首件实机验收</h2><p>以下项目待在 R10 首件上逐项记录。保留测量值、照片或平台回执，再填写结论。</p><ol><li><b>板型与针序</b><p>记录开发板型号和照片，测量两排针中心距、单排节距，核对 2×22 针和针序。</p></li><li><b>断电试装</b><p>记录排母、板边、USB 插头、执行板支撑孔与线束的实际净空。</p></li><li><b>任务 A 闯关</b><p>在手柄完成登录、接题、答题与回执，将组内成绩与网页显示核对。</p></li><li><b>任务 B 采集</b><p>记录 DHT11、MQ-2、MQ-135 的实物读数和 OneNET 上报时间。</p></li><li><b>执行器与供电</b><p>记录 SG90 动作、风扇启停及带载 5 V 电压，核对云端控制和设备反馈。</p></li></ol><a download href="./r10-rc1/acceptance.csv">下载空白验收表 ↓</a></section></section>
+<section id="rc-download" class="rc-section"><p class="rc-meta">DOWNLOADS</p><h2>下载资料</h2><div class="rc-files"><a href="https://gitee.com/hjz0810/H2O/releases/tag/r10.0.0-rc.2"><b>RC2 固件、硬件、网页与校验值</b><span>Gitee ↗</span></a><a id="r10.0.0-rc.1" href="https://gitee.com/hjz0810/H2O/releases/tag/r10.0.0-rc.1"><b>上一版 RC1 与原始附件</b><span>Gitee ↗</span></a><a download href="./r10-rc1/acceptance.csv"><b>首件验收记录表（沿用 RC1 表格）</b><span>CSV ↓</span></a><a download href="./r10-rc1/yd-wide-metric.pdf"><b>源地 YD 宽板厂家尺寸图</b><span>PDF ↓</span></a><a download href="./downloads/H2O-R9-1-4-RC1-assembly-review.zip"><b>R9.1.4 RC1 历史装配复核包</b><span>ZIP ↓</span></a></div></section>
+<section id="rc-check" class="rc-section"><p class="rc-meta">ACCEPTANCE &nbsp; / &nbsp; r10.0.0-rc.2</p><h2>首件实机验收</h2><p>以下项目待在 R10 首件上逐项记录。保留测量值、照片或平台回执，再填写结论。</p><ol><li><b>板型与针序</b><p>记录开发板型号和照片，测量两排针中心距、单排节距，核对 2×22 针和针序。</p></li><li><b>断电试装</b><p>记录排母、板边、USB 插头、执行板支撑孔与线束的实际净空。</p></li><li><b>任务 A 闯关</b><p>在手柄完成登录、接题、答题与回执，将组内成绩与网页显示核对。</p></li><li><b>任务 B 采集</b><p>记录 DHT11、MQ-2、MQ-135 的实物读数和 OneNET 上报时间。</p></li><li><b>执行器与供电</b><p>记录 SG90 动作、风扇启停及带载 5 V 电压，核对云端控制和设备反馈。</p></li></ol><a download href="./r10-rc1/acceptance.csv">下载空白验收表 ↓</a></section></section>
 <h2 class="rc-history">历史工程档案 <small>R1—R9 · 旧版原文</small></h2>
 <section class="hero" aria-labelledby="title">
   <div class="panel">
