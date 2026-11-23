@@ -14,7 +14,8 @@ void Core::fail(const std::string& why) {
   if(phase!=Phase::Recovery || pending!=Pending::None) {
     statusKnown=false;statusGeneration++;
   }
-  phase=Phase::Recovery; pending=Pending::None; hasFollow_=false; selected=0; notice=why; revision++;
+  phase=Phase::Recovery; pending=Pending::None; hasFollow_=false; followQueue_.clear();
+  selected=0; notice=why; revision++;
   if(protocolV2){resumeWanted_=true;requestId_.clear();}
 }
 void Core::link(bool up) {
@@ -63,16 +64,28 @@ std::string Core::start(unsigned long now) {
   if(!connected || !ready || !statusKnown || busy()) return {};
   // Legacy recovery still allows a manual start after a fresh HTTP snapshot.
   if(phase!=Phase::Menu && (protocolV2 || phase!=Phase::Recovery)) return {};
-  hasFollow_=false; lastJudge_.clear(); everActive_=true; selected=removed=0; hints=1;
+  hasFollow_=false; followQueue_.clear(); lastJudge_.clear(); everActive_=true;
+  selected=removed=0; hints=1;
   return command("start",Pending::Start,now);
 }
 std::string Core::advance(unsigned long now) {
   if(!connected || !ready || busy()) return {};
+  if(phase==Phase::Judge && hasFollow_) {
+    auto f=follow_;
+    hasFollow_=false;
+    apply(f);
+    return {};
+  }
+  if(!followQueue_.empty()) {
+    Frame next=std::move(followQueue_.front());
+    followQueue_.erase(followQueue_.begin());
+    apply(next);
+    return {};
+  }
   if(phase==Phase::Story) return command("story_next",Pending::Story,now);
   if(phase==Phase::Judge) {
     if(protocolV2)return command("continue",Pending::Follow,now);
-    if(hasFollow_) { auto f=follow_; hasFollow_=false; apply(f); }
-    else { pending=Pending::Follow; sentAt_=now; notice="等待服务器下一题"; revision++; }
+    pending=Pending::Follow; sentAt_=now; notice="等待服务器下一题"; revision++;
   }
   return {};
 }
@@ -109,7 +122,7 @@ void Core::tick(unsigned long now) {
 }
 void Core::apply(const Frame& f) {
   frame=f; pending=Pending::None; selected=removed=0; notice.clear(); revision++;
-  if(f.type=="story") {phase=Phase::Story; if(f.seq==1) {hints=1;hp=protocolV2?v2StartHealth_:3;}}
+  if(f.type=="story") {phase=Phase::Story; if(f.seq==1) hints=1;}
   else if(f.type=="question") phase=Phase::Question;
   else if(f.type=="game_over") {phase=Phase::Finished;score=f.score;}
   else if(f.type=="judge") {phase=Phase::Judge;hp=f.hp;}
@@ -178,7 +191,8 @@ bool Core::receive(const std::string& json) {
       if (!started && hp > 0) v2StartHealth_=hp;
       removed=0;for(JsonVariantConst key:d["removed_options"].as<JsonArrayConst>())
         for(unsigned i=0;i<frame.options.size();i++)if(key.as<std::string>()==frame.options[i].key)removed|=1U<<i;
-      pending=Pending::None;hasFollow_=false;statusKnown=true;resumeWanted_=false;requestId_.clear();notice.clear();everActive_=started;revision++;return true;
+      pending=Pending::None;hasFollow_=false;followQueue_.clear();statusKnown=true;
+      resumeWanted_=false;requestId_.clear();notice.clear();everActive_=started;revision++;return true;
     }
     if(pending==Pending::Resume)return true;
     if((d["exam_id"]|std::string())!=examId||!d["revision"].is<uint64_t>()||d["revision"].as<uint64_t>()!=serverRevision+1){fail("答题进度不一致，正在同步");return false;}
@@ -245,7 +259,8 @@ bool Core::receive(const std::string& json) {
   if(phase==Phase::Judge && pending!=Pending::Follow) {
     if(hasFollow_) {
       if(f.type==follow_.type && f.qid==follow_.qid && f.seq==follow_.seq && f.level==follow_.level) return true;
-      fail("后续题目队列异常，已暂停");return false;
+      if(followQueue_.size()>=7) { fail("后续题目过多，已暂停"); return false; }
+      followQueue_.push_back(std::move(f)); revision++; return true;
     }
     follow_=f;hasFollow_=true;revision++;return true;
   }

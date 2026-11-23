@@ -46,6 +46,7 @@ class Core {
  private:
   Frame follow_;
   bool hasFollow_=false, everActive_=false;
+  std::vector<Frame> followQueue_;
   unsigned long sentAt_=0;
   std::string lastJudge_;
   std::string requestPrefix_="boot",requestId_;

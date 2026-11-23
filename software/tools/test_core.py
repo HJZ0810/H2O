@@ -53,7 +53,7 @@ class CoreTests(unittest.TestCase):
         self.t.recv('judge',qid='L1-Q',correct=False,correct_answer='B',score=0,hp=2,explain='解析')
         self.assertIsNone(self.t.send('advance')['command'])
         s=self.t.recv('story',level=1,seq=1,total=2,text='重打剧情')
-        self.assertEqual((s['phase'],s['hp']),('story',3))
+        self.assertEqual((s['phase'],s['hp']),('story',2))
     def test_hint_removes_selection_and_does_not_submit(self):
         self.question('multi'); self.t.send('choose',index=0)
         self.assertEqual(self.t.send('hint')['command']['type'],'hint')
@@ -153,5 +153,19 @@ class CoreTests(unittest.TestCase):
         self.t.recv('judge',qid='L1-Q',correct=True,correct_answer='A,B,C,D',score=10,hp=3,explain='最后一题')
         self.t.recv('game_over',total_score=350,rank=1,certificate='ZLC-2025-0350',message='恭喜通关')
         s=self.t.send('advance'); self.assertEqual((s['phase'],s['score']),('finished',350))
+
+    def test_level_transition_burst_does_not_restart_exam(self):
+        self.question()
+        self.t.send('choose',index=0)
+        self.t.send('submit')
+        self.t.recv('judge',qid='L1-Q',correct=True,correct_answer='A',score=10,hp=3,explain='解析')
+        self.t.recv('level_result',level=1,score=10,hp=3,passed=True)
+        self.t.recv('story',level=2,seq=1,total=1,text='第二关剧情')
+        self.t.recv('question',level=2,qid='L2-Q1',type='single',text='第二关第一题',
+                    options=[{'key':'A','text':'A'},{'key':'B','text':'B'}])
+        self.assertEqual(self.t.send('advance')['phase'],'judge')
+        self.assertEqual(self.t.send('advance')['phase'],'story')
+        self.assertEqual((self.t.send('advance')['phase'],self.t.send('advance')['qid']),
+                         ('question','L2-Q1'))
 
 if __name__=='__main__': unittest.main(verbosity=2)

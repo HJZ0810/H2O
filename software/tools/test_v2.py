@@ -22,6 +22,17 @@ class V2(unittest.TestCase):
   self.restore(self.q(),0,2);self.send('choose',index=0);self.send('submit',now=100);self.send('tick',now=12101)
   j={'type':'judge','data':{'level':1,'qid':'T1','correct':True,'correct_answer':'A','score':10,'hp':3,'explain':'解析'}}
   s=self.restore(j,10,3);self.assertEqual(s['phase'],'judge');self.assertEqual(s['score'],10);c=self.send('advance')['command'];self.assertEqual(c['type'],'continue');self.assertEqual(c['data']['revision'],3)
+
+ def test_new_level_story_preserves_server_health(self):
+  self.restore(self.q(),0,2,hp=4);self.send('choose',index=0);c=self.send('submit')['command']
+  judge=self.recv('judge',protocol=2,request_id=c['data']['request_id'],exam_id='SESSION',
+                  revision=3,total_score=10,level=1,qid='T1',correct=True,
+                  correct_answer='A',score=10,hp=4,explain='解析')
+  self.assertEqual(judge['hp'],4)
+  c=self.send('advance')['command']
+  story=self.recv('story',protocol=2,request_id=c['data']['request_id'],exam_id='SESSION',
+                  revision=4,total_score=10,level=2,seq=1,total=1,text='下一关剧情')
+  self.assertEqual((story['phase'],story['hp']),('story',4))
  def test_delayed_reply_cannot_replace_current_state(self):
   self.restore(self.q(),0,2);self.send('choose',index=0);c=self.send('submit')['command'];s=self.recv('judge',protocol=2,request_id='OTHER',exam_id='SESSION',revision=3,total_score=10,qid='T1',correct=True,correct_answer='A',score=10,hp=3,explain='解析');self.assertTrue(s['busy']);self.assertEqual(s['phase'],'question')
  def test_finished_snapshot_restores_result_without_start(self):
