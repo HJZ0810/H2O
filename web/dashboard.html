@@ -59,28 +59,37 @@
   .cfg input{width:100%;background:#fbfcfe;border:1px solid var(--line);color:var(--text);
              padding:8px 10px;border-radius:8px;font-size:13px}
   footer{margin-top:16px;color:var(--dim);font-size:12px;text-align:center}
+  main{max-width:1360px;margin:auto}.box h2{font-size:16px;font-weight:650;color:var(--text)}
+  #viewDevice{overflow-wrap:anywhere}.target>span{font-size:12px;color:var(--dim);max-width:100%}
+  .target{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:0 0 14px}.target label,.control-grid label{display:grid;gap:4px;font-size:12px;color:var(--dim)}
+  input:not([type=range]){font:inherit;min-width:0;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fbfcfe;color:var(--text)}
+  .control-grid{display:grid;grid-template-columns:1fr auto;align-items:end;gap:9px}.control-grid button,.target button{min-height:38px}.control-grid button:enabled{background:#294bc6;color:white}
+  button:disabled{cursor:default;color:#727d91;background:#f3f5fa}.note{color:var(--dim);font-size:12px}.mode{font-size:12px;font-weight:500;color:#445a81}.box,.chart-wrap{min-width:0}
+  @media(max-width:500px){body{padding:12px}.cards{grid-template-columns:1fr 1fr}.chart-wrap{height:190px}.card .v{font-size:23px}.fresh{width:100%}}
 </style>
 </head>
 <body>
+<main>
 <header>
   <h1>一氧化二氢 · 环境监测</h1>
   <div class="pills">
-    <span class="pill"><span class="dot wait" id="dotOne"></span>OneNET <b id="stOne">检测中</b></span>
-    <span class="pill"><span class="dot wait" id="dotSrv"></span>服务器 <b id="stSrv">检测中</b></span>
+    <span class="pill"><span class="dot wait" id="dotOne"></span>OneNET <b id="stOne">待更新</b></span>
+    <span class="pill"><span class="dot wait" id="dotSrv"></span>实时遥测 <b id="stSrv">待更新</b></span>
   </div>
   <span class="spacer"></span>
   <span class="fresh" id="fresh">等待数据…</span>
 </header>
 
+<form class="target" id="switcher"><label for="dev">切换到设备<input id="dev" value="yhyegj-01" required pattern="[A-Za-z0-9_\-]{1,64}" maxlength="64" autocomplete="off" /></label><button>切换设备</button><span>正在查看 <strong id="viewDevice"></strong></span></form>
 <section class="grid cards" style="margin-bottom:12px">
   <div class="card"><div class="k"><span>温度</span><span id="tTime"></span></div>
     <div class="v" id="vTemp">--<small>°C</small></div></div>
   <div class="card"><div class="k"><span>湿度</span><span id="hTime"></span></div>
     <div class="v" id="vHumi">--<small>%RH</small></div></div>
   <div class="card"><div class="k"><span>烟雾</span><span id="sTime"></span></div>
-    <div class="v" id="vSmoke">--<small>ppm</small></div></div>
+    <div class="v" id="vSmoke">--<small>相对值</small></div></div>
   <div class="card"><div class="k"><span>空气质量</span><span id="aTime"></span></div>
-    <div class="v" id="vAir">--<small>ppm</small></div></div>
+    <div class="v" id="vAir">--<small>相对值</small></div></div>
   <div class="card"><div class="k"><span>风扇</span><span id="fTime"></span></div>
     <div class="v" id="vFan">--<small>%</small></div></div>
   <div class="card"><div class="k"><span>舵机</span><span id="gTime"></span></div>
@@ -89,51 +98,33 @@
 
 <section class="grid row" style="margin-bottom:12px">
   <div class="box">
-    <h2>历史曲线 · 已存 <b id="ptCount">0</b> 点</h2>
+    <h2>遥测曲线 · 显示 <b id="ptCount">0</b> 点</h2>
     <div class="chart-wrap"><canvas id="chart"></canvas></div>
   </div>
   <div class="box">
-    <h2>控制</h2>
-    <div class="ctrl">
-      <div class="lab"><span>风扇</span><span><b id="fanVal">0</b> %</span></div>
-      <input type="range" id="fan" min="0" max="100" step="5" value="0" />
-      <div class="btns">
-        <button data-fan="0">停转</button><button data-fan="50">半速</button><button data-fan="100">全速</button>
-      </div>
+    <h2>执行机构 <span class="mode" id="mode">只读</span></h2>
+    <div class="control-grid">
+      <label for="token">操作者令牌<input id="token" type="password" autocomplete="off" spellcheck="false" disabled /></label><button id="lock" disabled>清除令牌</button>
+      <label for="fan_level">风扇占空比（0–100%）<input id="fan_level" type="number" min="0" max="100" step="1" placeholder="输入百分比" disabled /></label><button id="sendFan" disabled>设置风扇</button>
+      <label for="servo">舵机设定角（0–180°）<input id="servo" type="number" min="0" max="180" step="1" placeholder="输入角度" disabled /></label><button id="sendServo" disabled>设置舵机</button>
     </div>
-    <div class="ctrl">
-      <div class="lab"><span>舵机</span><span><b id="servoVal">0</b> °</span></div>
-      <input type="range" id="servo" min="0" max="180" step="5" value="0" />
-      <div class="btns">
-        <button data-servo="0">关窗 0°</button><button data-servo="90">开窗 90°</button>
-      </div>
-    </div>
+    <p role="status" id="receipt">正在检查设备控制权限…</p>
+    <p class="note">读数来自设备上报。舵机显示设定角，烟雾与空气质量显示未标定的相对值。</p>
   </div>
 </section>
-
-<section class="box">
-  <h2>运行信息</h2>
-  <details>
-    <summary>设备与地址（一般不用改）</summary>
-    <div class="cfg">
-      <div><label>设备名称</label><input id="dev" value="yhyegj-01" /></div>
-      <div><label>数据接口</label><input id="api" value="/h2o/api" /></div>
-      <div><label>WebSocket</label><input id="url" value="wss://air-quality.luo-jin-ai.com/mqtt" /></div>
-    </div>
-  </details>
-</section>
-
-<footer>打开即连 · 历史来自服务器 · 实时来自 WebSocket</footer>
-
-<script src="/h2o/lib/chart.umd.min.js" defer></script>
+</main>
+<script src="./lib/chart.umd.min.js" defer></script>
 <script>
 const $ = (id) => document.getElementById(id);
 const MAXP = 180;
 const series = {temperature:[], humidity:[], smoke:[]};
 const times = [];
 let ws = null, chart = null, devId = 'yhyegj-01';
-let apiBase = '/h2o/api', wsUrl = 'wss://air-quality.luo-jin-ai.com/mqtt';
-let lastMsgAt = 0, lastOnenet = null, dirty = false;
+const apiBase = '/h2o/api';
+const wsUrl = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/mqtt`;
+let socketReceived = false;
+let lastMsgAt = 0, historyAt = 0, lastOnenet = null, dirty = false;
+let generation = 0, retry, livePoints = [], enabled = false, sending = false, historyFailed = false;
 
 function initChart(){
   if (typeof Chart === 'undefined') return false;
@@ -179,124 +170,139 @@ function flushChart(){
   dirty = false;
 }
 
-const UNITS = {vTemp:'°C', vHumi:'%RH', vSmoke:'ppm', vAir:'ppm', vFan:'%', vServo:'°'};
+const UNITS = {vTemp:'°C', vHumi:'%RH', vSmoke:'相对值', vAir:'相对值', vFan:'%', vServo:'°'};
 function setCard(id, value){
   const el = $(id);
-  el.innerHTML = (value === null || value === undefined || value === '' || Number.isNaN(value))
-    ? `--<small>${UNITS[id]}</small>` : `${value}<small>${UNITS[id]}</small>`;
+  const small = document.createElement('small');
+  small.textContent = UNITS[id];
+  el.replaceChildren(document.createTextNode(Number.isFinite(value) ? String(value) : '--'), small);
 }
 
-function appendPoint(d){
-  times.push(d.label || new Date().toLocaleTimeString('zh-CN',{hour12:false}));
-  series.temperature.push(d.temperature ?? null);
-  series.humidity.push(d.humidity ?? null);
-  series.smoke.push(d.smoke ?? null);
-  while (times.length > MAXP) {
-    times.shift(); series.temperature.shift(); series.humidity.shift(); series.smoke.shift();
-  }
+const fields = [
+  ['temperature','vTemp','tTime'], ['humidity','vHumi','hTime'], ['smoke','vSmoke','sTime'],
+  ['air','vAir','aTime'], ['fan_level','vFan','fTime'], ['servo','vServo','gTime']
+];
+function reading(d, key){
+  const value = d[key];
+  if (!Number.isFinite(value) || (key !== 'temperature' && value < 0)) return null;
+  return value;
+}
+function clock(at){return new Date(at).toLocaleTimeString('zh-CN', {hour12:false});}
+function appendPoint(d, at){
+  times.push(at ? clock(at) : '时间未知');
+  for (const key of Object.keys(series)) series[key].push(reading(d,key));
+  if (times.length > MAXP){times.shift(); Object.values(series).forEach(a => a.shift());}
   dirty = true;
 }
-
-function render(d){
-  if (d.temperature !== undefined) setCard('vTemp', d.temperature);
-  if (d.humidity !== undefined) setCard('vHumi', d.humidity);
-  if (d.smoke !== undefined && d.smoke >= 0) setCard('vSmoke', d.smoke);
-  if (d.air !== undefined && d.air >= 0) setCard('vAir', d.air);
-  if (d.fan_level !== undefined){
-    setCard('vFan', d.fan_level);
-    $('vFan').parentElement.className = 'card ' + (d.fan_level >= 80 ? 'bad' : d.fan_level > 0 ? 'warn' : '');
-    $('fan').value = d.fan_level; $('fanVal').textContent = d.fan_level;
+function render(d, at){
+  for (const [key,id,stamp] of fields){
+    const value = reading(d,key);
+    setCard(id,value);
+    $(stamp).textContent = value === null ? '暂无读数' : (at ? clock(at) : '时间未知');
   }
-  if (d.servo !== undefined){
-    setCard('vServo', d.servo);
-    $('servo').value = d.servo; $('servoVal').textContent = d.servo;
-  }
-  if (d.onenet !== undefined) lastOnenet = Number(d.onenet) === 1;
-  const now = new Date().toLocaleTimeString('zh-CN',{hour12:false});
-  ['tTime','hTime','sTime','aTime','fTime','gTime'].forEach(id => {
-    const e = $(id); if (e) e.textContent = now;
-  });
+  const fan = reading(d,'fan_level');
+  $('vFan').parentElement.className = 'card' + (fan >= 80 ? ' bad' : fan > 0 ? ' warn' : '');
 }
-
 function paintStatus(){
-  const age = lastMsgAt ? (Date.now() - lastMsgAt) / 1000 : Infinity;
-  const srvOn = !!(ws && ws.readyState === WebSocket.OPEN) && age < 20;
-  $('dotSrv').className = 'dot ' + (srvOn ? 'on' : age < 60 ? 'wait' : '');
-  $('stSrv').textContent = srvOn ? '在线' : (age < 60 ? '间歇' : '离线');
-  $('dotOne').className = 'dot ' + (lastOnenet === true ? 'on' : lastOnenet === false ? '' : 'wait');
-  $('stOne').textContent = lastOnenet === true ? '在线' : lastOnenet === false ? '离线' : '检测中';
-  $('fresh').textContent = lastMsgAt
-    ? `最后更新 ${age < 1 ? '刚刚' : age.toFixed(0) + ' 秒前'}` : '等待数据…';
+  const live = socketReceived && ws?.readyState === WebSocket.OPEN && lastMsgAt && Date.now()-lastMsgAt < 20000;
+  $('dotSrv').className = 'dot ' + (live ? 'on' : 'wait');
+  $('stSrv').textContent = live ? '在线' : lastMsgAt ? '已中断' : '待上报';
+  const one = live ? lastOnenet : null;
+  $('dotOne').className = 'dot ' + (one === 1 ? 'on' : one === 0 ? '' : 'wait');
+  $('stOne').textContent = one === 1 ? '在线' : one === 0 ? '离线' : '未知';
+  $('fresh').textContent = lastMsgAt ? `${live ? '实时' : '最后实时上报'} · ${clock(lastMsgAt)}` :
+    historyAt ? `历史快照 · ${new Date(historyAt).toLocaleString('zh-CN',{hour12:false})}` : historyFailed ? '历史暂不可用' : '等待设备数据';
 }
-
+function clearChart(){times.length=0; Object.values(series).forEach(a=>a.length=0); dirty=true;}
+function unixMs(sec){return Number.isFinite(sec) && sec >= 1577836800 && sec <= Date.now()/1000+60 ? sec*1000 : 0;}
 async function loadHistory(){
+  const selected = generation;
   try {
     const r = await fetch(`${apiBase}/history?dev=${encodeURIComponent(devId)}&n=${MAXP}`, {cache:'no-store'});
+    if (!r.ok) throw Error();
     const j = await r.json();
-    const pts = j.points || [];
-    $('ptCount').textContent = pts.length;
-    if (!pts.length) { paintStatus(); return; }
-    times.length = 0; series.temperature.length = 0;
-    series.humidity.length = 0; series.smoke.length = 0;
-    pts.forEach(p => {
-      const sec = p.at || p.ts || 0;
-      const t = new Date(sec * 1000);
-      appendPoint({...p, label: isNaN(t) ? '' : t.toLocaleTimeString('zh-CN',{hour12:false})});
-    });
-    flushChart();
-    if (j.latest) { render(j.latest); lastMsgAt = Date.now(); }
-    paintStatus();
-  } catch (e) {
-    $('fresh').textContent = '历史加载失败';
+    if (selected !== generation || j.dev !== devId) return;
+    historyFailed = false;
+    clearChart();
+    for (const p of (Array.isArray(j.points) ? j.points : [])){
+      if (!p || typeof p !== 'object') continue;
+      const at = unixMs(p.at ?? p.ts);
+      if (!livePoints.length || (at && at < livePoints[0].at - 1000)) appendPoint(p, at);
+    }
+    for (const p of livePoints) appendPoint(p.d, p.at);
+    if (!lastMsgAt && j.latest){historyAt = unixMs(j.at ?? j.latest.ts); render(j.latest,historyAt);}
+    flushChart(); $('ptCount').textContent = times.length;
+  } catch { if (selected === generation) historyFailed = true; }
+  paintStatus();
+}
+function connect(){
+  const selected = generation;
+  const socket = new WebSocket(wsUrl), topic = `h2o/${devId}/telemetry`;
+  ws = socket; socketReceived=false;
+  socket.onopen = () => {if (selected === generation) socket.send(JSON.stringify({sub:topic}));};
+  socket.onmessage = ev => {
+    if (selected !== generation) return;
+    try {
+      const m = JSON.parse(ev.data);
+      if (m.t !== 'msg' || m.topic !== topic) return;
+      const d = JSON.parse(m.data);
+      if (!d || typeof d !== 'object' || Array.isArray(d) ||
+          !fields.some(([k]) => Number.isFinite(d[k])) && ![0,1].includes(d.onenet)) return;
+      socketReceived=true; lastMsgAt = Date.now(); lastOnenet = d.onenet;
+      livePoints.push({d,at:lastMsgAt}); if (livePoints.length > MAXP) livePoints.shift();
+      render(d,lastMsgAt); appendPoint(d,lastMsgAt); flushChart(); paintStatus(); $('ptCount').textContent=times.length;
+    } catch {return;}
+  };
+  socket.onclose = () => {if (selected === generation){paintStatus();retry=setTimeout(connect,3000);}};
+}
+function controls(){
+  $('token').disabled = !enabled;
+  $('lock').disabled = !$('token').value;
+  for (const [key,id] of [['fan_level','sendFan'],['servo','sendServo']]){
+    const input=$(key);
+    input.disabled=!enabled || sending;
+    $(id).disabled=$('dev').value !== devId || !enabled || sending || !$('token').value || !input.value || !input.validity.valid;
   }
 }
-
-function connect(){
-  ws = new WebSocket(wsUrl);
-  ws.onopen = () => { ws.send(JSON.stringify({sub: `h2o/${devId}/#`})); paintStatus(); };
-  ws.onmessage = (ev) => {
-    let m; try { m = JSON.parse(ev.data); } catch { return; }
-    if (m.t !== 'msg') return;
-    let d; try { d = JSON.parse(m.data); } catch { return; }
-    if (m.topic.endsWith('/telemetry')) {
-      lastMsgAt = Date.now();
-      render(d); appendPoint(d); flushChart(); paintStatus();
-    }
-  };
-  ws.onclose = () => { paintStatus(); setTimeout(connect, 3000); };
-  ws.onerror = () => {};
+async function capability(){
+  const selected=generation;
+  let allowed=false;
+  try {
+    const r=await fetch(`${apiBase}/control/status?dev=${encodeURIComponent(devId)}`,{cache:'no-store',mode:'same-origin'});
+    allowed=window.isSecureContext && r.ok && (await r.json()).enabled===true;
+  } catch {}
+  if (selected!==generation) return;
+  enabled=allowed; $('mode').textContent=allowed?'需要令牌':'只读';
+  $('receipt').textContent=allowed?'输入本次操作令牌及目标值。':'当前设备未开放网页控制。'; controls();
 }
-
-function publishCmd(obj){
-  if (!ws || ws.readyState !== WebSocket.OPEN) { $('fresh').textContent = '通道未就绪'; return; }
-  ws.send(JSON.stringify({pub: `h2o/${devId}/cmd`, data: JSON.stringify(obj)}));
+async function command(key){
+  if ($('dev').value !== devId || !enabled || sending || !$('token').value || !Number.isInteger($(key).valueAsNumber) || !$(key).validity.valid) return;
+  const selected=generation, value=$(key).valueAsNumber;
+  sending=true;controls();$('receipt').textContent=`${devId} · 等待设备回执…`;
+  try {
+    const r=await fetch(`${apiBase}/control`,{method:'POST',mode:'same-origin',redirect:'error',cache:'no-store',credentials:'omit',
+      headers:{'Content-Type':'application/json',Authorization:`Bearer ${$('token').value}`},body:JSON.stringify({dev:devId,key,value}),signal:AbortSignal.timeout(12000)});
+    const result=await r.json(); if(selected!==generation)return;
+    if(r.status===401)$('token').value='';
+    $('receipt').textContent=`${devId} · ${key==='servo'?'舵机':'风扇'} ${value}${key==='servo'?'°':'%'} · ${result.message || '回执未知'}`;
+  } catch {if(selected===generation)$('receipt').textContent='回执未知，请核对遥测后再操作。';}
+  finally {if(selected===generation){sending=false; controls();}}
 }
-
+function resetSource(){
+  generation++; clearTimeout(retry); if (ws) ws.close(); ws=null;
+  lastMsgAt=0;historyAt=0;lastOnenet=null;livePoints=[];historyFailed=false; enabled=false;sending=false;
+  for(const id of ['token','fan_level','servo']) $(id).value='';
+  $('mode').textContent='只读'; $('receipt').textContent='正在检查设备控制权限…'; $('viewDevice').textContent=devId;
+  clearChart();flushChart();render({},0);$('ptCount').textContent='0';controls();paintStatus();loadHistory();capability();connect();
+}
 function boot(){
   initChart();
-  const saved = JSON.parse(localStorage.getItem('h2o-cfg') || '{}');
-  if (saved.dev) devId = saved.dev;
-  if (saved.url) wsUrl = saved.url;
-  if (saved.api) apiBase = saved.api;
-  $('dev').value = devId; $('url').value = wsUrl; $('api').value = apiBase;
-
-  const remember = () => localStorage.setItem('h2o-cfg',
-    JSON.stringify({dev:devId, url:wsUrl, api:apiBase}));
-  $('dev').onchange = () => { devId = $('dev').value.trim() || 'yhyegj-01'; remember(); loadHistory(); };
-  $('url').onchange = () => { wsUrl = $('url').value.trim(); remember(); if (ws) ws.close(); };
-  $('api').onchange = () => { apiBase = $('api').value.trim(); remember(); loadHistory(); };
-
-  $('fan').oninput = (e) => { $('fanVal').textContent = e.target.value; };
-  $('servo').oninput = (e) => { $('servoVal').textContent = e.target.value; };
-  document.querySelectorAll('[data-fan]').forEach(b =>
-    b.onclick = () => publishCmd({fan_level: Number(b.dataset.fan)}));
-  document.querySelectorAll('[data-servo]').forEach(b =>
-    b.onclick = () => publishCmd({servo: Number(b.dataset.servo)}));
-
-  loadHistory();
-  connect();
-  setInterval(loadHistory, 60000);
-  setInterval(paintStatus, 1000);
+  $('switcher').onsubmit=e=>{e.preventDefault();devId=$('dev').value;resetSource();};
+  for(const id of ['dev','token','fan_level','servo']) $(id).oninput=controls;
+  $('lock').onclick=()=>{$('token').value='';controls();};
+  window.addEventListener('pagehide',()=>{$('token').value='';controls();});
+  $('sendFan').onclick=()=>command('fan_level'); $('sendServo').onclick=()=>command('servo');
+  resetSource();setInterval(loadHistory,60000);setInterval(paintStatus,1000);
 }
 
 if (document.readyState === 'loading') {

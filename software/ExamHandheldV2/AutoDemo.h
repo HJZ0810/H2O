@@ -9,11 +9,17 @@ class AutoDemo {
   bool loadAnswers(const std::string& json);
   bool start(const Core& core,uint32_t now);
   void stop(const std::string& reason="演示已停止");
+#if defined(ARDUINO)
+  bool active() const {return false;}
+#else
   bool active() const {return active_;}
+  static uint32_t fingerprint(const Frame& frame);
+#endif
   const std::string& status() const {return status_;}
   DemoStep tick(Core& core,uint32_t now,bool lastPage,bool painted);
-  static uint32_t fingerprint(const Frame& frame);
  private:
+  std::string status_;
+#if !defined(ARDUINO)
   enum class Stage {Read,Select,Review};
   struct Answer {std::string qid; uint32_t fingerprint; unsigned mask;};
   std::vector<Answer> answers_;
@@ -21,6 +27,7 @@ class AutoDemo {
   Stage stage_=Stage::Read;
   uint32_t due_=0;
   unsigned target_=0;
-  std::string key_,status_;
+  std::string key_;
+#endif
 };
 }

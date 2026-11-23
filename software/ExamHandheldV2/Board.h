@@ -36,7 +36,7 @@ constexpr int MotorPwmB = 5, MotorBin1 = -1, MotorBin2 = -1;
 constexpr bool kHasPowerStage = false;
 
 constexpr const char* HanOutlineUrl = "http://124.70.71.221/r9-font/outline-v1/han-outline.bin";
-constexpr const char* FirmwareVersion = "2.0.1-r9-ui";
+constexpr const char* FirmwareVersion = "10.0.0-rc.1";
 constexpr const char* BoardName = "verify-board";
 
 }  // namespace board
@@ -63,8 +63,8 @@ constexpr int MotorPwmB = 48, MotorBin1 = 38, MotorBin2 = 43;
 constexpr bool kHasPowerStage = true;
 
 constexpr const char* HanOutlineUrl = "http://124.70.71.221/r9-font/outline-v1/han-outline.bin";
-constexpr const char* FirmwareVersion = "2.0.1-r9-ui";
-constexpr const char* BoardName = "r9.1.3";
+constexpr const char* FirmwareVersion = "10.0.0-rc.1";
+constexpr const char* BoardName = "YD-25.40-R10";
 
 }  // namespace board
 

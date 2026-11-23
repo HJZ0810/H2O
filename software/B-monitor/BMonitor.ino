@@ -21,12 +21,14 @@
 #include <Preferences.h>
 #include <DHT.h>
 #include "OneNetAuth.h"
+#include "OneNetTransport.h"
 #include "BCfg.h"
+#include "CloudSet.h"
 
 // ---------------- 配置存储 ----------------
 struct Creds {
   String ssid, wifi, host = "mqtts.heclouds.com", pid, dev, key;
-  uint16_t port = 1883;
+  uint16_t port = onetransport::Port;
   bool ready() const { return !ssid.isEmpty() && !pid.isEmpty() && !dev.isEmpty() && !key.isEmpty(); }
 };
 
@@ -38,7 +40,10 @@ static void loadCreds() {
   creds.ssid = prefs.getString("ssid", "");
   creds.wifi = prefs.getString("wifi", "");
   creds.host = prefs.getString("host", "mqtts.heclouds.com");
-  creds.port = prefs.getUShort("port", 1883);
+  creds.port = prefs.getUShort("port", onetransport::Port);
+#ifdef H2O_ONENET_CA
+  creds.port = onetransport::Port;
+#endif
   creds.pid = prefs.getString("pid", "");
   creds.dev = prefs.getString("dev", "");
   creds.key = prefs.getString("key", "");
@@ -75,7 +80,9 @@ static void pollSerialConfig() {
   while (Serial.available()) {
     char c = char(Serial.read());
     if (c == '\r') continue;
-    if (c != '\n') { if (line.length() < 200) line += c; continue; }
+    static bool overflow = false;
+    if (c != '\n') { if (line.length() < 200) line += c; else overflow = true; continue; }
+    if (overflow) { overflow = false; line = ""; Serial.println("command too long"); continue; }
     line.trim();
     if (line.isEmpty()) continue;
     String cmd = line; line = "";
@@ -89,7 +96,7 @@ static void pollSerialConfig() {
       if (k == "ssid") creds.ssid = v;
       else if (k == "wifi") creds.wifi = v;
       else if (k == "host") creds.host = v;
-      else if (k == "port") creds.port = uint16_t(v.toInt());
+      else if (k == "port") { long port = v.toInt(); if (port <= 0 || port > 65535 || String(port) != v) { Serial.println("invalid port"); continue; } creds.port = uint16_t(port); }
       else if (k == "pid") creds.pid = v;
       else if (k == "dev") creds.dev = v;
       else if (k == "key") creds.key = v;
@@ -123,7 +130,7 @@ static bmon::Sample sampleSensors() {
   float t = dht.readTemperature();
   float h = dht.readHumidity();
   if (!isnan(t) && !isnan(h)) { s.temp = t; s.humi = h; s.dhtOk = true; }
-  s.smoke = readAdcPpm(bmon::Mq2Pin, bmon::MqFullScalePpm2);
+  s.smoke = bmon::kVerify ? -1 : readAdcPpm(bmon::Mq2Pin, bmon::MqFullScalePpm2);
   s.air = readAdcPpm(bmon::Mq135Pin, bmon::MqFullScalePpm135);
   return s;
 }
@@ -136,28 +143,31 @@ static int servoAngle = bmon::ServoClose;
 static bool manualHold = false;
 static uint32_t manualAt = 0;
 
-static void applyFan(int level) {
+static bool fanReady = false, servoReady = false;
+static bool applyFan(int level) {
   if (level < 0) level = 0;
   if (level > 100) level = 100;
+  if (!fanReady || !ledcWrite(bmon::FanPwm, uint32_t(level) * 255 / 100)) return false;
   fanLevel = level;
-  ledcWrite(bmon::FanPwm, uint32_t(level) * 255 / 100);
   if (bmon::FanIn1 >= 0) digitalWrite(bmon::FanIn1, level > 0 ? HIGH : LOW);
   if (bmon::FanIn2 >= 0) digitalWrite(bmon::FanIn2, LOW);
+  return true;
 }
 
-static void applyServo(int angle) {
+static bool applyServo(int angle) {
   if (angle < 0) angle = 0;
   if (angle > 180) angle = 180;
-  servoAngle = angle;
   // SG90：0.5 ms ~ 2.5 ms，周期 20 ms
   uint32_t us = 500 + uint32_t(angle) * 2000 / 180;
-  uint32_t duty = us * 65535u / 20000u;
-  ledcWrite(bmon::ServoPwm, duty);
+  uint32_t duty = us * 16383u / 20000u;
+  if (!servoReady || !ledcWrite(bmon::ServoPwm, duty)) return false;
+  servoAngle = angle;
+  return true;
 }
 
 static void initActuators() {
-  ledcAttach(bmon::FanPwm, 20000, 8);    // 风扇 20 kHz，8 位分辨率
-  ledcAttach(bmon::ServoPwm, 50, 16);    // 舵机 50 Hz，16 位分辨率
+  fanReady = ledcAttach(bmon::FanPwm, 20000, 8);    // 风扇 20 kHz，8 位分辨率
+  servoReady = ledcAttach(bmon::ServoPwm, 50, 14);    // 舵机 50 Hz，16 位分辨率
   if (bmon::FanIn1 >= 0) pinMode(bmon::FanIn1, OUTPUT);
   if (bmon::FanIn2 >= 0) pinMode(bmon::FanIn2, OUTPUT);
   applyFan(0);
@@ -198,7 +208,7 @@ static bool runLinkage(const bmon::Sample& s) {
 }
 
 // ---------------- OneNET MQTT ----------------
-static WiFiClient net;
+static onetransport::Client net;
 static PubSubClient mqtt(net);
 static String topicUp, topicSet, topicReply;
 static uint32_t msgSeq = 0;
@@ -222,8 +232,8 @@ static void report(const bmon::Sample& s) {
   }
   if (s.smoke >= 0) p["smoke"]["value"] = s.smoke;
   if (s.air >= 0) p["air"]["value"] = s.air;
-  p["fan_level"]["value"] = fanLevel;
-  p["servo"]["value"] = servoAngle;
+  if (fanReady) p["fan_level"]["value"] = fanLevel;
+  if (servoReady) p["servo"]["value"] = servoAngle;
   String out;
   serializeJson(d, out);
   bool ok = mqtt.publish(topicUp.c_str(), out.c_str(), false);
@@ -235,29 +245,18 @@ static void onMessage(char* topic, uint8_t* payload, unsigned int len) {
   if (topicSet != String(topic)) return;
   JsonDocument d;
   if (deserializeJson(d, payload, len)) { Serial.println("[down] bad json"); return; }
-  String id = d["id"] | "";
-  JsonObject p = d["params"];
-  if (p.isNull()) return;
-  bool touched = false;
-  if (p["fan"].is<JsonObject>()) {
-    JsonVariant v = p["fan"]["value"];
-    bool on = v.is<bool>() ? v.as<bool>() : (v.as<int>() != 0);
-    applyFan(on ? 100 : 0);
-    touched = true;
-    Serial.printf("[down] fan=%s\n", on ? "on" : "off");
+  cloudset::Command requested;
+  const bool valid = cloudset::parse(d["params"].as<JsonObjectConst>(), requested);
+  const bool ready = (requested.fan < 0 || fanReady) && (requested.servo < 0 || servoReady);
+  const bool applied = valid && ready && (requested.fan < 0 || applyFan(requested.fan)) && (requested.servo < 0 || applyServo(requested.servo));
+  if (applied) {
+    manualHold = true;
+    manualAt = millis();
   }
-  if (p["servo"].is<JsonObject>()) {
-    int a = p["servo"]["value"] | servoAngle;
-    applyServo(a);
-    touched = true;
-    Serial.printf("[down] servo=%d deg\n", a);
-  }
-  if (touched) { manualHold = true; manualAt = millis(); }
-
   JsonDocument r;
-  r["id"] = id;
-  r["code"] = 200;
-  r["msg"] = "success";
+  r["id"] = d["id"];
+  r["code"] = applied ? 200 : (valid ? 503 : 400);
+  r["msg"] = applied ? "success" : (valid ? "actuator unavailable" : "invalid properties");
   String out;
   serializeJson(r, out);
   mqtt.publish(topicReply.c_str(), out.c_str(), false);
@@ -265,7 +264,7 @@ static void onMessage(char* topic, uint8_t* payload, unsigned int len) {
 
 static uint32_t nextConnectAt = 0;
 static void ensureMqtt() {
-  if (WiFi.status() != WL_CONNECTED) { if (mqtt.connected()) mqtt.disconnect(); return; }
+  if (!creds.ready() || WiFi.status() != WL_CONNECTED) { if (mqtt.connected()) mqtt.disconnect(); return; }
   if (mqtt.connected()) { mqtt.loop(); return; }
   uint32_t now = millis();
   if (int32_t(now - nextConnectAt) < 0) return;
@@ -302,27 +301,14 @@ void setup() {
   WiFi.setSleep(false);
   WiFi.setAutoReconnect(true);
   WiFi.begin(creds.ssid.c_str(), creds.wifi.c_str());
-  Serial.print("[wifi] connecting");
-  for (int i = 0; i < 40 && WiFi.status() != WL_CONNECTED; i++) { delay(500); Serial.print("."); }
-  Serial.println();
-  if (WiFi.status() == WL_CONNECTED) {
-    Serial.print("[wifi] IP=");
-    Serial.println(WiFi.localIP());
-    configTime(0, 0, "ntp.aliyun.com", "cn.pool.ntp.org", "pool.ntp.org");
-    for (int i = 0; i < 20 && time(nullptr) < 1700000000; i++) delay(500);
-    Serial.print("[time] "); Serial.println((unsigned long)time(nullptr));
-    if (!creds.ready()) {
-      Serial.println("[mqtt] 缺 pid/dev/key：联网正常，云端待配置");
-      return;
-    }
-    buildTopics();
-    mqtt.setServer(creds.host.c_str(), creds.port);
-    mqtt.setBufferSize(1024);
-    mqtt.setKeepAlive(60);
-    mqtt.setCallback(onMessage);
-  } else {
-    Serial.println("[wifi] FAIL: check ssid/password (wifi=6 cannot tell wrong pwd from out of range)");
-  }
+  configTime(0, 0, "ntp.aliyun.com", "cn.pool.ntp.org", "pool.ntp.org");
+  buildTopics();
+  onetransport::prepare(net);
+  mqtt.setServer(creds.host.c_str(), creds.port);
+  mqtt.setBufferSize(1024);
+  mqtt.setKeepAlive(60);
+  mqtt.setCallback(onMessage);
+
 }
 
 void loop() {

@@ -1,5 +1,4 @@
 #include "Config.h"
-#include "AutoDemo.h"
 #include "PortalHtml.h"
 #include <ArduinoJson.h>
 #include <Preferences.h>
@@ -12,7 +11,6 @@ void Configuration::load() {
   value.name=p.getString("name","手柄");value.host=p.getString("host","124.70.71.221");
   value.port=p.getUShort("port",1883);value.rotation=p.getUChar("rotation",1);value.panel=p.getUChar("panel",0);
   value.mq1=p.getBool("mq1",true);value.mq2=p.getBool("mq2",true);
-  value.demoAnswers=p.getString("demo_answers","");
   JsonDocument cloud;
   if (!deserializeJson(cloud,p.getString("thingscloud",""))) {
     value.cloud.host=cloud["host"]|"";
@@ -31,9 +29,8 @@ bool Configuration::save(const DeviceConfig& next) {
   String data;
   serializeJson(cloud,data);
   if (p.putString("thingscloud",data)!=data.length()) return false;
-  if (next.demoAnswers.isEmpty()) {
-    if (p.isKey("demo_answers") && !p.remove("demo_answers")) return false;
-  } else if (p.putString("demo_answers",next.demoAnswers)!=next.demoAnswers.length()) return false;
+  // Remove any unused profile left by older firmware on the next valid save.
+  if (p.isKey("demo_answers") && !p.remove("demo_answers")) return false;
   return p.putString("ssid",next.ssid)==next.ssid.length() &&
          p.putString("wifi",next.wifiPassword)==next.wifiPassword.length() &&
          p.putString("group",next.group)==next.group.length() &&
@@ -63,7 +60,6 @@ void Configuration::page() {
   f.port=value.port;f.rotation=value.rotation;f.panel=value.panel;
   f.mq1=value.mq1;f.mq2=value.mq2;
   f.cloudHost=value.cloud.host.c_str();f.hasCloudCredentials=value.cloud.configured();
-  f.hasDemoAnswers=!value.demoAnswers.isEmpty();
   auto html=buildPortalHtml(f);
   server_.sendHeader("Cache-Control","no-store");server_.send(200,"text/html; charset=utf-8",html.c_str());
 }
@@ -81,6 +77,10 @@ static bool validCredential(const String& value) {
 }
 void Configuration::accept() {
   if(!server_.hasArg("token")||server_.arg("token")!=token_) {server_.send(403,"text/plain","Invalid setup token");return;}
+  if (server_.hasArg("demo_answers") || server_.hasArg("demo_clear")) {
+    server_.send(400,"text/plain; charset=utf-8","此版本已停用演示答案设置。请刷新配网页。");
+    return;
+  }
   DeviceConfig next=value;
   next.ssid=server_.arg("ssid");next.group=server_.arg("group");next.group.trim();
   next.name=server_.arg("name");next.host=server_.arg("host");next.host.trim();
@@ -104,16 +104,6 @@ void Configuration::accept() {
       return;
     }
     if (!edited) next.cloud=CloudConfig{};
-  }
-  if (server_.hasArg("demo_clear")) next.demoAnswers="";
-  else if (!server_.arg("demo_answers").isEmpty()) {
-    const auto data=server_.arg("demo_answers");
-    exam::AutoDemo validator;
-    if (data.length()>exam::AutoDemo::MaxProfileBytes || !validator.loadAnswers(data.c_str())) {
-      server_.send(400,"text/plain; charset=utf-8","演示答案文件无效。请使用与本次题库对应的 JSON。");
-      return;
-    }
-    next.demoAnswers=data;
   }
   long port=server_.arg("port").toInt();int r=server_.arg("rotation").toInt(),panel=server_.arg("panel").toInt();
   if(!next.usable()||next.ssid.length()>32||next.wifiPassword.length()>64||next.name.length()>64||

@@ -10,7 +10,7 @@ static AnalogSample readAnalog(int pin,bool enabled) {
   a.raw=raw/16;a.mv=mv/16;a.sampled=true;a.clipped=a.raw>=4090||a.mv>=3050;return a;
 }
 void Sensors::begin(const DeviceConfig& cfg) {
-  mq[0].enabled=cfg.mq1;mq[1].enabled=cfg.mq2;
+  mq[0].enabled=board::kHasMq && cfg.mq1;mq[1].enabled=board::kHasMq && cfg.mq2;
   analogReadResolution(12);
   for(int pin:{board::MQ1,board::MQ2}) {if(pin<0)continue;pinMode(pin,INPUT);analogSetPinAttenuation(pin,ADC_11db);}
   dht_.begin();lastDht_=millis();

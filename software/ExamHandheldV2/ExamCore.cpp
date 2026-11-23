@@ -14,7 +14,7 @@ void Core::fail(const std::string& why) {
   if(phase!=Phase::Recovery || pending!=Pending::None) {
     statusKnown=false;statusGeneration++;
   }
-  phase=Phase::Recovery; pending=Pending::None; hasFollow_=false; notice=why; revision++;
+  phase=Phase::Recovery; pending=Pending::None; hasFollow_=false; selected=0; notice=why; revision++;
   if(protocolV2){resumeWanted_=true;requestId_.clear();}
 }
 void Core::link(bool up) {
@@ -60,7 +60,9 @@ std::string Core::resume(unsigned long now) {
   return command("resume",Pending::Resume,now);
 }
 std::string Core::start(unsigned long now) {
-  if(!connected || !ready || !statusKnown || busy() || phase==Phase::Finished) return {};
+  if(!connected || !ready || !statusKnown || busy()) return {};
+  // Legacy recovery still allows a manual start after a fresh HTTP snapshot.
+  if(phase!=Phase::Menu && (protocolV2 || phase!=Phase::Recovery)) return {};
   hasFollow_=false; lastJudge_.clear(); everActive_=true; selected=removed=0; hints=1;
   return command("start",Pending::Start,now);
 }

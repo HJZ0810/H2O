@@ -11,10 +11,11 @@ import base64
 import hashlib
 import hmac
 import sys
+import argparse
+import getpass
+from urllib.parse import urlencode
 import time
 
-sys.path.insert(0, ".")
-from mqtt_probe import connect  # noqa: E402
 
 VERSION = "2018-10-31"
 
@@ -28,13 +29,14 @@ def make_token(pid, dev, key, expire_secs=86400 * 30, method="sha1"):
     sign = base64.b64encode(
         hmac.new(key_bytes, for_sign.encode(), digestmod=digestmod).digest()
     ).decode()
-    return f"version={VERSION}&res={resource}&et={et}&method={method}&sign={sign}"
+    return urlencode(dict(version=VERSION,res=resource,et=et,method=method,sign=sign))
 
 
 if __name__ == "__main__":
-    pid, dev, key = sys.argv[1], sys.argv[2], sys.argv[3]
-    token = make_token(pid, dev, key)
-    print("token =", token)
-    rc = connect("mqtts.heclouds.com", 1883, dev, pid, token)
-    names = {0: "ACCEPTED", 4: "BAD_USERNAME_OR_PASSWORD", 5: "NOT_AUTHORIZED"}
-    print(f"CONNACK={rc} {names.get(rc, 'OTHER')}")
+    parser = argparse.ArgumentParser(description="Generate a device token locally. No network request.")
+    parser.add_argument("pid")
+    parser.add_argument("dev")
+    parser.add_argument("--show-token", action="store_true", help="explicitly display the short-lived token")
+    args = parser.parse_args()
+    token = make_token(args.pid, args.dev, getpass.getpass("Device key: "), expire_secs=3600)
+    print(token if args.show_token else "Token generated. Valid for one hour.")

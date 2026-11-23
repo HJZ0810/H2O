@@ -10,11 +10,13 @@
 #include "UiRender.h"
 #include "FontCN.h"
 #include "Actuators.h"
-#include "AutoDemo.h"
 #include "ButtonLogic.h"
 #include "Config.h"
 #include "OneNetCfg.h"
 #include "Mirror.h"
+#if __has_include("MirrorLocal.h")
+#include "MirrorLocal.h"
+#endif
 #include "ExamCore.h"
 #include "ExamNetwork.h"
 #include "Auth.h"
@@ -35,7 +37,6 @@ Actuators fan;
 OneNet onenet;
 Mirror mirror;
 bool onenetActive = false;   // 菜单第6项切换：开启后按10秒周期上报并跑联动
-exam::AutoDemo demo;
 ButtonLogic buttons[board::KeyCount];
 
 enum class View { Menu, Question, Story, Judge, Finished, Recovery, Sensor, Info, Setup, Fan, Monitor };
@@ -177,7 +178,6 @@ static void render() {
           ui::MenuEntry items[6] = {
               {"开始考试", nullptr, 0}, {"环境采样", nullptr, 1}, {"设备信息", nullptr, 2},
               {"配网设置", nullptr, 3}, {"执行器", nullptr, 4}, {"云端监测", nullptr, 5}};
-          if (demo.active()) items[menuIndex].label = "演示中…";
           painter->menu(items, 6, menuIndex);
           painter->statusBar(makeStatus());
           painter->pageTitle("智联迷城", session.ready ? (session.statusKnown ? "ON" : "SYNC") : "OFF",
@@ -203,8 +203,15 @@ static void render() {
   paintedRevision = session.revision;
 }
 
+// Taking local control releases the automatic and remote writer first.
+static void localStop() {
+  onenetActive = false;
+  onenet.suspend();
+  fan.stop();
+}
+
 static void switchView(View v) {
-  if (view == View::Fan && v != View::Fan) fan.stop();
+  if (v == View::Fan || (view == View::Fan && v != View::Fan)) localStop();
   view = v;
   qScroll = 0;
   lastKey = "";
@@ -227,12 +234,7 @@ static void handleKey(board::Key key, Press press) {
   Serial.print(session.revision);
   Serial.print("/");
   Serial.println(paintedRevision);
-  if (demo.active()) {
-    demo.stop();
-    tell("已停止演示，可手动作答");
-    return;
-  }
-  if (view == View::Sensor || view == View::Info) {
+  if (view == View::Sensor || view == View::Info || view == View::Monitor) {
     if (key == Confirm || key == Back) switchView(View::Menu);
     return;
   }
@@ -242,7 +244,7 @@ static void handleKey(board::Key key, Press press) {
   }
   if (view == View::Fan) {
     if (key == Back) switchView(View::Menu);
-    else if (key == Confirm) fan.stop();
+    else if (key == Confirm) localStop();
     else if (key == Test) fan.selectNextChannel();
     else if (key == Up) fan.changeSpeed(1);
     else if (key == Down) fan.changeSpeed(-1);
@@ -251,10 +253,8 @@ static void handleKey(board::Key key, Press press) {
     return;
   }
   if (press == Press::Long) {
-    if (key == Test && view == View::Menu) {
-      if (demo.start(session, millis())) switchView(View::Menu);
-      else tell("需先同步进度");
-    } else if (key == Confirm && session.phase == exam::Phase::Question) {
+    if (key == Confirm && view == View::Question && session.phase == exam::Phase::Question) {
+      if (paintedRevision != session.revision) return;
       auto cmd = session.hint(millis());
       if (cmd.empty()) tell("暂无锦囊");
       sendCommand(cmd);
@@ -266,9 +266,7 @@ static void handleKey(board::Key key, Press press) {
   if (view == View::Menu) {  // 以界面为准：画的是菜单就必须响应菜单按键
     if (key == Up) menuIndex = (menuIndex + 5) % 6;
     else if (key == Down) menuIndex = (menuIndex + 1) % 6;
-    else if (key == Test) {
-      if (!demo.start(session, millis())) tell("需先同步进度");
-    } else if (key == Confirm) {
+    else if (key == Confirm) {
       const View views[] = {View::Menu, View::Sensor, View::Info, View::Setup, View::Fan, View::Monitor};
       if (menuIndex == 0) {
         if (!session.ready || !session.statusKnown) { tell("连接未就绪"); return; }
@@ -277,6 +275,7 @@ static void handleKey(board::Key key, Press press) {
       } else if (menuIndex == 5) {
         if (!onenet.configured()) { tell("未配置 OneNET"); return; }
         onenetActive = !onenetActive;
+        if (!onenetActive) localStop();
         tell(onenetActive ? "云端监测已开" : "云端监测已关");
         switchView(View::Monitor);
       } else {
@@ -285,7 +284,8 @@ static void handleKey(board::Key key, Press press) {
     }
     return;
   }
-  if (session.phase == exam::Phase::Question) {
+  if (view == View::Question && session.phase == exam::Phase::Question) {
+    if (paintedRevision != session.revision) return;
     const unsigned n = session.frame.options.size();
     if (key == Left || key == Right) {
       if (n) optionCursor = (optionCursor + (key == Left ? n - 1 : 1)) % n;
@@ -359,8 +359,9 @@ void setup() {
   }
   sensors.begin(configuration.value);
   onenetcfg::loadFromNvs(onenet, onenetActive, fan);
-  mirror.configure("yhyegj-01", "186.241.90.115", 1884, "h2o", "H2oDemo2026");
-  mirror.attach(&fan);
+#ifdef H2O_MIRROR_HOST
+  mirror.configure(H2O_MIRROR_DEVICE, H2O_MIRROR_HOST, H2O_MIRROR_PORT, H2O_MIRROR_USER, H2O_MIRROR_PASS, H2O_MIRROR_CA);
+#endif
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
   configTime(0, 0, "ntp.aliyun.com", "cn.pool.ntp.org");
@@ -392,7 +393,8 @@ void loop() {
   configuration.tick();
   sensors.tick();
   if (onenetActive) onenet.tick(sensors, fan);
-  mirror.tick(sensors, fan, onenet.fanLevel(), onenet.servoAngle(), onenet.connected());
+  else if (onenet.connected()) onenet.suspend();
+  mirror.tick(sensors, fan, onenetActive && onenet.connected());
 
   if (networkStarted) {
     if (network.overflowed()) session.fail("接收队列溢出，已暂停");
@@ -423,11 +425,6 @@ void loop() {
     if (board::Keys[i] < 0) continue;
     auto press = buttons[i].update(digitalRead(board::Keys[i]) == LOW, millis());
     handleKey(static_cast<board::Key>(i), press);
-  }
-
-  if (demo.active()) {
-    auto step = demo.tick(session, millis(), true, view == View::Menu && paintedRevision == session.revision);
-    sendCommand(step.command);
   }
 
   if (network.online() && uint32_t(millis() - lastReport) >= 5000) {

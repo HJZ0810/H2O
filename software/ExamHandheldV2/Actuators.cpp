@@ -23,7 +23,7 @@ bool setMotor(const BridgePins& pins, unsigned speed) {
   if (!speed) {
     // PWM high and both inputs low selects high-impedance STOP.
     if (pins.in1 >= 0) digitalWrite(pins.in1, LOW);
-    return ledcWrite(pins.pwm, FullDuty);
+    return ledcWrite(pins.pwm, pins.in1 < 0 ? 0 : FullDuty);
   }
   if (!ledcWrite(pins.pwm, speed * FullDuty / 100)) return false;
   if (pins.in1 >= 0) digitalWrite(pins.in1, HIGH);
@@ -118,6 +118,9 @@ bool Actuators::setServo(int position, bool enabled) {
 
 bool Actuators::apply(const ActuatorCommand& command) {
   if (!ready_) return false;
+  if ((command.fields & ActuatorCommand::ServoPosition) && (command.servoPosition < -100 || command.servoPosition > 100)) return false;
+  if ((command.fields & ActuatorCommand::MotorA) && (command.motorAPct < 0 || command.motorAPct > 100)) return false;
+  if ((command.fields & ActuatorCommand::MotorB) && (command.motorBPct < 0 || command.motorBPct > 100)) return false;
   if ((command.fields & ActuatorCommand::MotorA) && command.motorAPct != speedA_) {
     if (!setMotor(MotorA, command.motorAPct)) return fail();
     speedA_ = command.motorAPct;

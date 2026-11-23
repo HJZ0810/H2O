@@ -1,4 +1,7 @@
-# 任务 B · 物联监测控制系统
+# R10 任务 B 独立固件
+
+运行 `../tools/build-r10.ps1 -Target monitor -Board yd2540`。自研宽版用于三个真实传感器验收。验证板只提供 DHT11 与 LED 输出模拟。
+
 
 抽签配置（2026-11-18，24 级物联网工程 4 班 · 一氧化二氢）：
 
@@ -28,12 +31,12 @@ ADC 只用 GPIO1~10（ADC1）。ADC2（GPIO11~20）与 Wi-Fi 冲突，联网后�
 | --- | --- | --- | --- | --- |
 | `temperature` | 温度 | float | 只读 | °C |
 | `humidity` | 湿度 | float | 只读 | %RH |
-| `smoke` | 烟雾浓度 | int32 | 只读 | ppm |
-| `air` | 空气质量 | int32 | 只读 | ppm |
-| `fan_level` | 风扇档位 | int32 | 只读 | % |
+| `smoke` | 烟雾相对值 | int32 | 只读 | 0–1000 |
+| `air` | 空气质量相对值 | int32 | 只读 | 0–1000 |
+| `fan_level` | 风扇档位 | int32 | 读写 | % |
 | `servo` | 舵机角度 | int32 | 读写 | ° |
 
-`servo` 设为读写，云端可下发角度；`fan_level` 只读，用于回显当前联动档位。
+`servo` 和 `fan_level` 均为读写属性。云端可以设置指令角度与风扇档位。
 风扇的开关用 `fan_level` 表达（0 = 停，1~100 = 转速百分比），避免布尔量与档位两套语义打架。
 
 ## 接入参数
@@ -43,7 +46,7 @@ ADC 只用 GPIO1~10（ADC1）。ADC2（GPIO11~20）与 Wi-Fi 冲突，联网后�
 | 地址 | `mqtts.heclouds.com:1883` |
 | clientId | 设备名称 |
 | username | 产品 ID |
-| password | 设备密钥 |
+| password | 设备端签发的限时 token |
 | 上报 | `$sys/{pid}/{dev}/thing/property/post` |
 | 下发 | `$sys/{pid}/{dev}/thing/property/set` |
 | 应答 | `$sys/{pid}/{dev}/thing/property/set_reply` |

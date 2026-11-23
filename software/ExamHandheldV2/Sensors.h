@@ -7,6 +7,7 @@ struct AnalogSample {
   int raw=0,mv=0;
   bool enabled=false,sampled=false,clipped=false;
   bool valid() const {return enabled && sampled && !clipped;}
+  int gasIndex() const { return valid() ? (mv * 1000 + 1650) / 3300 : -1; }
   int outputMv() const {return lroundf(mv/board::MqDivider);}
 };
 class Sensors {

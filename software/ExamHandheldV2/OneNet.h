@@ -9,6 +9,9 @@
 #include "Sensors.h"
 #include "Actuators.h"
 #include "LinkageCore.h"
+#include "CloudSet.h"
+#include "Board.h"
+#include "OneNetTransport.h"
 
 // 任务 B · OneNET 接入
 //
@@ -18,8 +21,19 @@
 // 鉴权要点（踩坑记录见 docs/踩坑与经验总结-v1.md 第 9/10 条）：
 //   password 不是设备密钥，而是用密钥签名出的 token；
 //   token 里的 et 是绝对过期时间，所以必须先 NTP 对时，否则必然 CONNACK 4。
+static String onenetEscape(const String& text) {
+  String out;
+  const char hex[] = "0123456789ABCDEF";
+  for (size_t i = 0; i < text.length(); ++i) {
+    const unsigned char c = text[i];
+    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '-' || c == '.' || c == '_' || c == '~') out += char(c);
+    else { out += '%'; out += hex[c >> 4]; out += hex[c & 15]; }
+  }
+  return out;
+}
 class OneNet {
  public:
+  void suspend() { if (mqtt_.connected()) mqtt_.disconnect(); nextConnect_ = 0; }
   bool connected() { return mqtt_.connected(); }
   uint32_t lastReportMs() const { return lastReport_; }
   uint32_t downlinkCount() const { return downlinkCount_; }
@@ -28,7 +42,9 @@ class OneNet {
   bool manualHold() const { return manualHold_ && millis() - manualAt_ < kManualHoldMs; }
 
   void configure(const String& pid, const String& dev, const String& key,
-                 const String& host = "mqtts.heclouds.com", uint16_t port = 1883) {
+                 const String& host = "mqtts.heclouds.com", uint16_t port = onetransport::Port) {
+    suspend();
+    onetransport::prepare(net_);
     pid_ = pid; dev_ = dev; key_ = key; host_ = host; port_ = port;
     ready_ = !pid_.isEmpty() && !dev_.isEmpty() && !key_.isEmpty();
     if (ready_) {
@@ -46,7 +62,9 @@ class OneNet {
 
   // 每轮主循环调用：维持连接、按周期上报、执行联动
   void tick(const Sensors& s, Actuators& act) {
-    if (!ready_ || WiFi.status() != WL_CONNECTED) { if (mqtt_.connected()) mqtt_.disconnect(); return; }
+    if (!ready_) return;
+    linkage(s, act);
+    if (WiFi.status() != WL_CONNECTED) { if (mqtt_.connected()) mqtt_.disconnect(); return; }
     if (mqtt_.connected()) { mqtt_.loop(); }
     else if (int32_t(millis() - nextConnect_) >= 0) {
       nextConnect_ = millis() + 5000;
@@ -59,7 +77,6 @@ class OneNet {
         Serial.printf("[onenet] connect fail state=%d\n", mqtt_.state());
       }
     }
-    linkage(s, act);
     if (mqtt_.connected() && millis() - lastReport_ >= kReportIntervalMs) {
       lastReport_ = millis();
       report(s);
@@ -71,17 +88,17 @@ class OneNet {
   static constexpr uint32_t kManualHoldMs = 30000;
   // 联动阈值，与 BCfg.h 保持一致
 
-  WiFiClient net_;
+  onetransport::Client net_;
   PubSubClient mqtt_{net_};
   String pid_, dev_, key_, host_ = "mqtts.heclouds.com", topicUp_, topicSet_, topicReply_;
-  uint16_t port_ = 1883;
+  uint16_t port_ = onetransport::Port;
   bool ready_ = false;
   uint32_t nextConnect_ = 0, lastReport_ = 0, msgSeq_ = 0, downlinkCount_ = 0;
   int fanLevel_ = 0, servoAngle_ = 0;
   bool manualHold_ = false;
   uint32_t manualAt_ = 0;
 
-  String makeToken(uint32_t ttlSec = 86400u * 30u) {
+  String makeToken(uint32_t ttlSec = 3600u) {
     unsigned char keyBuf[192];
     size_t keyLen = 0;
     if (mbedtls_base64_decode(keyBuf, sizeof(keyBuf), &keyLen,
@@ -107,15 +124,15 @@ class OneNet {
     unsigned char signBuf[64];
     size_t signLen = 0;
     if (mbedtls_base64_encode(signBuf, sizeof(signBuf), &signLen, mac, sizeof(mac)) != 0) return String();
-    return "version=2018-10-31&res=" + res + "&et=" + String(et) + "&method=sha1&sign=" +
-           String((const char*)signBuf, signLen);
+    return "version=2018-10-31&res=" + onenetEscape(res) + "&et=" + String(et) + "&method=sha1&sign=" +
+           onenetEscape(String((const char*)signBuf, signLen));
   }
 
   int smokePpm(const Sensors& s) const {
-    return (s.mq[0].enabled && s.mq[0].sampled) ? int(s.mq[0].outputMv() * 1000.0f / 3300.0f) : -1;
+    return board::kHasMq ? s.mq[0].gasIndex() : -1;
   }
   int airPpm(const Sensors& s) const {
-    return (s.mq[1].enabled && s.mq[1].sampled) ? int(s.mq[1].outputMv() * 1000.0f / 3300.0f) : -1;
+    return board::kHasMq ? s.mq[1].gasIndex() : -1;
   }
 
   void linkage(const Sensors& s, Actuators& act) {
@@ -130,16 +147,16 @@ class OneNet {
       ActuatorCommand c;
       c.fields = ActuatorCommand::MotorA;
       c.motorAPct = want.fanPct;
-      act.apply(c);
+      if (!act.apply(c)) return;
       Serial.printf("[link] fan %d%% (temp %.1f smoke %d)\n", want.fanPct, s.temperature, smokePpm(s));
       fanLevel_ = want.fanPct;
     }
     if (want.servoDeg != servoAngle_) {
       ActuatorCommand c;
       c.fields = ActuatorCommand::ServoPosition | ActuatorCommand::ServoEnabled;
-      c.servoPosition = want.servoDeg;
+      c.servoPosition = cloudset::normalizedPosition(want.servoDeg);
       c.servoEnabled = true;
-      act.apply(c);
+      if (!act.apply(c)) return;
       Serial.printf("[link] servo %d deg (air %d)\n", want.servoDeg, airPpm(s));
       servoAngle_ = want.servoDeg;
     }
@@ -158,8 +175,10 @@ class OneNet {
     if (smoke >= 0) p["smoke"]["value"] = smoke;
     const int air = airPpm(s);
     if (air >= 0) p["air"]["value"] = air;
-    p["fan_level"]["value"] = fanLevel_;
-    p["servo"]["value"] = servoAngle_;
+    if (act_ && act_->ready()) {
+      p["fan_level"]["value"] = act_->speedPercent(false);
+      if (act_->pulseWidth()) p["servo"]["value"] = (act_->servoPosition() + 100) * 180 / 200;
+    }
     String out;
     serializeJson(d, out);
     if (!mqtt_.publish(topicUp_.c_str(), out.c_str(), false)) Serial.println("[onenet] publish failed");
@@ -170,34 +189,27 @@ class OneNet {
     if (topicSet_ != String(topic)) return;
     JsonDocument d;
     if (deserializeJson(d, payload, len)) return;
-    JsonObject p = d["params"];
-    if (p.isNull()) return;
+    cloudset::Command request;
+    bool valid = cloudset::parse(d["params"].as<JsonObjectConst>(), request);
     ActuatorCommand c;
-    bool touched = false;
-    if (p["servo"].is<JsonObject>()) {
+    if (valid && request.fan >= 0) { c.fields |= ActuatorCommand::MotorA; c.motorAPct = request.fan; }
+    if (valid && request.servo >= 0) {
       c.fields |= ActuatorCommand::ServoPosition | ActuatorCommand::ServoEnabled;
-      c.servoPosition = p["servo"]["value"] | servoAngle_;
+      c.servoPosition = cloudset::normalizedPosition(request.servo);
       c.servoEnabled = true;
-      servoAngle_ = c.servoPosition;
-      touched = true;
     }
-    if (p["fan_level"].is<JsonObject>()) {
-      c.fields |= ActuatorCommand::MotorA;
-      c.motorAPct = p["fan_level"]["value"] | fanLevel_;
-      fanLevel_ = c.motorAPct;
-      touched = true;
-    }
-    if (touched) {
-      act_->apply(c);
+    bool applied = valid && act_ && act_->apply(c);
+    if (applied) {
+      if (request.fan >= 0) fanLevel_ = request.fan;
+      if (request.servo >= 0) servoAngle_ = request.servo;
       manualHold_ = true;
       manualAt_ = millis();
       ++downlinkCount_;
-      Serial.printf("[onenet] downlink servo=%d fan=%d\n", servoAngle_, fanLevel_);
     }
     JsonDocument r;
-    r["id"] = d["id"] | "";
-    r["code"] = 200;
-    r["msg"] = "success";
+    r["id"] = d["id"];
+    r["code"] = applied ? 200 : (valid ? 503 : 400);
+    r["msg"] = applied ? "success" : (valid ? "actuator unavailable" : "invalid properties");
     String out;
     serializeJson(r, out);
     mqtt_.publish(topicReply_.c_str(), out.c_str(), false);

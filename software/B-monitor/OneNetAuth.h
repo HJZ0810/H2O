@@ -14,8 +14,18 @@
 //
 // et 是绝对过期时间，所以设备必须先完成 NTP 对时。时钟不对时算出的 token
 // 一定过期，服务端会回 CONNACK 4（用户名或密码错误），很容易误判成凭据填错。
+static String onenetEscape(const String& text) {
+  String out;
+  const char hex[] = "0123456789ABCDEF";
+  for (size_t i = 0; i < text.length(); ++i) {
+    const unsigned char c = text[i];
+    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '-' || c == '.' || c == '_' || c == '~') out += char(c);
+    else { out += '%'; out += hex[c >> 4]; out += hex[c & 15]; }
+  }
+  return out;
+}
 static String onenetMakeToken(const String& pid, const String& dev, const String& keyB64,
-                              uint32_t ttlSec = 86400u * 30u) {
+                              uint32_t ttlSec = 3600u) {
   unsigned char keyBuf[192];
   size_t keyLen = 0;
   if (mbedtls_base64_decode(keyBuf, sizeof(keyBuf), &keyLen,
@@ -53,5 +63,5 @@ static String onenetMakeToken(const String& pid, const String& dev, const String
     return String();
   }
   const String sign((const char*)signBuf, signLen);
-  return "version=2018-10-31&res=" + res + "&et=" + String(et) + "&method=sha1&sign=" + sign;
+  return "version=2018-10-31&res=" + onenetEscape(res) + "&et=" + String(et) + "&method=sha1&sign=" + onenetEscape(sign);
 }

@@ -34,32 +34,32 @@
     },
     {
       "identifier": "smoke",
-      "name": "烟雾浓度",
+      "name": "烟雾相对值",
       "functionType": "u",
       "accessMode": "r",
-      "desc": "MQ-2 折算浓度，未做温湿度补偿",
+      "desc": "模拟电压折算的相对趋势值，需单独标定才能报告 ppm",
       "dataType": {
         "type": "int32",
         "specs": {
           "min": "0",
           "max": "1000",
-          "unit": "ppm",
+          "unit": "",
           "step": "1"
         }
       }
     },
     {
       "identifier": "air",
-      "name": "空气质量",
+      "name": "空气质量相对值",
       "functionType": "u",
       "accessMode": "r",
-      "desc": "MQ-135 折算浓度，未做温湿度补偿",
+      "desc": "模拟电压折算的相对趋势值，需单独标定才能报告 ppm",
       "dataType": {
         "type": "int32",
         "specs": {
           "min": "0",
           "max": "1000",
-          "unit": "ppm",
+          "unit": "",
           "step": "1"
         }
       }
@@ -68,7 +68,7 @@
       "identifier": "fan_level",
       "name": "风扇档位",
       "functionType": "u",
-      "accessMode": "r",
+      "accessMode": "rw",
       "desc": "当前风扇占空比，0 表示停转",
       "dataType": {
         "type": "int32",

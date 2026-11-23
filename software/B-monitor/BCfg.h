@@ -33,7 +33,7 @@ constexpr int Mq135Pin = 4;  // ADC1
 constexpr int FanPwm = 41, FanIn1 = 40, FanIn2 = 39;  // 风扇，TB6612 类驱动
 constexpr int ServoPwm = 42;
 constexpr int LedPwmB = 48;
-constexpr const char* BoardName = "r9.1.3";
+constexpr const char* BoardName = "YD-25.40-R10";
 }  // namespace bmon
 #endif
 

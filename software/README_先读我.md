@@ -1,3 +1,5 @@
+> R10 用户请从 [双固件构建、下载与验收](../docs/R10/README.md) 开始。本文记录旧版 ExamHandheld。
+
 # Arduino R9 固件 · ThingsCloud 与智联迷城
 
 `1.4.0-r9-outline` 对应 [R9.1.3 双板工程](../hardware/R9-10P/ESP32-handheld-R9-10P.epro2)。只给手柄的 ESP32-S3 烧录，执行板的 TB6612 和 MG996R 由十芯排线上的控制信号驱动。电压检测已按本版需求取消。

@@ -3,22 +3,27 @@
 
 - 订阅 h2o/+/telemetry，每个设备一个定长环形缓冲（默认 720 点 ≈ 1 小时@5s）
 - 每 10 秒落盘一次，重启不丢历史
-- 只读 HTTP 接口给前端：
+- HTTP 查询接口：
     GET /history?dev=<设备名>&n=<条数>   返回 {"dev","latest","points":[...]}
     GET /status                          各设备最后上报距今多少秒
+    GET /control/status?dev=...          指定设备是否配置控制
+    POST /control                        默认关闭，仅接受经授权的同源请求
 """
 import json
 import os
+import math
+import re
 import threading
 import time
 from collections import deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
-import paho.mqtt.client as mqtt
+from r10_control import Control
+
+control = Control()
 
 MQTT_HOST, MQTT_PORT = "127.0.0.1", 1884
-MQTT_USER, MQTT_PASS = "h2o", "H2oDemo2026"
 HTTP_HOST, HTTP_PORT = "127.0.0.1", 9003
 STORE = "/opt/h2o-bridge/history.json"
 MAX_POINTS = 720
@@ -61,16 +66,23 @@ def on_connect(c, u, flags, rc, props=None):
 
 
 def on_message(c, u, msg):
+    if msg.retain:
+        return
     parts = msg.topic.split("/")
-    if len(parts) != 3:
+    if len(parts) != 3 or parts[0] != "h2o" or parts[2] != "telemetry" or not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", parts[1]) or len(msg.payload) > 4096:
         return
     dev = parts[1]
     try:
         payload = json.loads(msg.payload.decode("utf-8", "replace"))
-    except json.JSONDecodeError:
+    except (ValueError, RecursionError):
         return
-    point = {"ts": time.time()}
-    point.update(payload)
+    if not isinstance(payload, dict):
+        return
+    point = {k: v for k, v in payload.items() if k in {"temperature", "humidity", "air", "smoke", "fan_level", "servo", "onenet"} and type(v) in (int, float) and -1e6 <= v <= 1e6 and math.isfinite(v)}
+    if not point:
+        return
+    point["ts"] = time.time()  # Device millis() is uptime, not Unix time.
+
     with lock:
         item = data.setdefault(dev, {"points": deque(maxlen=MAX_POINTS), "latest": {}, "at": 0})
         item["points"].append(point)
@@ -87,36 +99,46 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(body)
 
+    def do_POST(self):
+        if self.path == "/control":
+            return control.post(self)
+        return self._json({"error": "not found"}, 404)
+
     def do_GET(self):
         u = urlparse(self.path)
+        if u.path == "/control/status":
+            dev = parse_qs(u.query).get("dev", [""])[0]
+            return self._json({"enabled": control.available(dev)})
         if u.path.rstrip("/") == "/status":
             now = time.time()
             with lock:
                 out = {dev: {"age": round(now - v["at"], 1),
                              "points": len(v["points"]),
-                             "onenet": bool(v["latest"].get("onenet"))}
+                             "onenet": (bool(v["latest"]["onenet"]) if v["latest"].get("onenet") in (0, 1) else None),
+                             "source": "history"}
                        for dev, v in data.items()}
             return self._json({"devices": out, "now": now})
 
         if u.path.rstrip("/") == "/history":
             q = parse_qs(u.query)
             dev = (q.get("dev") or [""])[0]
-            n = int((q.get("n") or ["300"])[0])
+            try:
+                n = max(1, min(MAX_POINTS, int((q.get("n") or ["300"])[0])))
+            except ValueError:
+                return self._json({"error": "invalid count"}, 400)
             with lock:
                 if dev:
                     item = data.get(dev)
-                    if not item:
-                        return self._json({"dev": dev, "latest": None, "points": []})
-                    pts = list(item["points"])[-n:]
-                    return self._json({"dev": dev, "latest": item["latest"],
-                                       "at": item["at"], "points": pts})
-                return self._json({"devices": {d: {"points": len(v["points"])}
-                                               for d, v in data.items()}})
+                    response = {"dev": dev, "latest": None, "points": []} if not item else {
+                        "dev": dev, "latest": item["latest"], "at": item["at"], "points": list(item["points"])[-n:]}
+                else:
+                    response = {"devices": {d: {"points": len(v["points"])} for d, v in data.items()}}
+            return self._json(response)
 
         return self._json({"error": "not found"}, 404)
 
@@ -131,10 +153,11 @@ def saver():
 
 
 def main():
+    import paho.mqtt.client as mqtt
     load()
     threading.Thread(target=saver, daemon=True).start()
     c = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="h2o-recorder")
-    c.username_pw_set(MQTT_USER, MQTT_PASS)
+    c.username_pw_set(os.environ["H2O_MQTT_USER"], os.environ["H2O_MQTT_PASSWORD"])
     c.on_connect = on_connect
     c.on_message = on_message
     c.connect(MQTT_HOST, MQTT_PORT, 60)

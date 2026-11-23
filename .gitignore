@@ -14,3 +14,7 @@ desktop.ini
 # 构建输出
 build/
 output/
+
+# Device-specific provisioning
+MirrorLocal.h
+OneNetTrust.h

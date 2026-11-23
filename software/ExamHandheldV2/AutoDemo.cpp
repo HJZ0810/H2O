@@ -2,6 +2,17 @@
 #include <algorithm>
 
 namespace exam {
+#if defined(ARDUINO)
+// Device builds never load answer profiles or drive the exam state machine.
+// Keep the interface for the existing menu and configuration callers.
+bool AutoDemo::loadAnswers(const std::string& json) { return json.empty(); }
+bool AutoDemo::start(const Core&, uint32_t) {
+  status_ = "正式固件仅支持手动作答";
+  return false;
+}
+void AutoDemo::stop(const std::string& reason) { status_ = reason; }
+DemoStep AutoDemo::tick(Core&, uint32_t, bool, bool) { return {}; }
+#else
 bool AutoDemo::loadAnswers(const std::string& json) {
   if (json.empty()) { answers_.clear(); return true; }
   JsonDocument doc;
@@ -77,10 +88,15 @@ DemoStep AutoDemo::tick(Core& c,uint32_t now,bool lastPage,bool painted) {
          (c.frame.questionType!="multi" && (target_&(target_-1)))){stop("答案无法匹配，演示停止");return step;}
       stage_=Stage::Select;step.action=DemoAction::FirstPage;status_="开始选择 F1停止";due_=now+1200;return step;
     }
+    if (c.selected != target_) {
+      stop("演示选项已改变，未提交");
+      return step;
+    }
     step.command=c.submit(now);status_="演示提交 F1停止";
   }else if(c.phase==Phase::Story||c.phase==Phase::Judge){
     step.command=c.advance(now);status_="演示继续 F1停止";
   }
   return step;
 }
+#endif
 }

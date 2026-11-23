@@ -1,4 +1,23 @@
-# 智联迷城 ESP32 手柄 · R9
+# 一氧化二氢 · H₂O R10
+
+物联网工程 4 班 24014 组。ESP32-S3 手柄通过 MQTT 接入「智联迷城」，环境监测任务通过 OneNET 上报传感器数据、控制风扇和舵机。R10 面向 **25.40 mm 排距**的双板系统，版本为 **`r10.0.0-rc.1` 装配及实机验收候选**。
+
+[下载 R10](https://gitee.com/hjz0810/H2O/releases/tag/r10.0.0-rc.1) · [工程复核与使用说明](docs/R10/README.md) · [官方评分逐项对照](docs/R10/requirements.md) · [关联项目范围](docs/R10/scope.md)
+
+| 你要做的事 | 入口 | 选用依据 |
+|---|---|---|
+| 核对手柄与执行板 | [R10 硬件目录](hardware/R10/) | 两排针中心距 25.40 mm。任务 B 登记 SG90，历史执行板四孔按 MG996R 设计。|
+| 使用手柄做任务 A 和 B | [综合手柄固件](software/ExamHandheldV2/) | `handheld`，包含按键、TFT、课程 MQTT 与 OneNET。|
+| 只运行任务 B | [独立监测固件](software/B-monitor/) | `monitor`，采集三种传感器并控制两个执行机构。|
+| 查看成绩与环境 | [任务 A 网页](software/A-mazecity/web/) · [任务 B 面板](web/dashboard.html) | 课程成绩来自课程服务。设备状态、历史曲线与控制走任务 B 的服务端。|
+| 自行构建 | [R10 构建脚本](software/tools/build-r10.ps1) | Arduino ESP32 Core 3.3.12，按固件目标和板型分别输出。|
+
+![H₂O R10 工程发布页预览](docs/R10/images/archive-preview.png)
+
+## R9 及更早版本
+
+以下内容保留各版工程、引脚与烧录记录。办理 R10 装配和下载时使用上表。
+
 
 ## R9 元器件选型与购买
 

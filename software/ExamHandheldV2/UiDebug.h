@@ -1,18 +1,16 @@
 #pragma once
 #include <mbedtls/base64.h>
 
-// 无摄像头时的 UI 验收通道：串口注入按键 + 导出帧缓冲。
+// 串口用于屏幕诊断和设备配置。考试按键只从 GPIO 读取。
 //
 // 摄像头拍出来的屏太小、有摩尔纹，判不清字形细节；直接把 framebuf 逐像素导出来，
 // 才能确定"这一行到底是字被裁了，还是相机糊了"。
 //
 // 命令：
-//   key up|down|left|right|ok|back|test    短按注入一次
-//   long up|down|...                       长按注入
 //   page                                   打印当前 view / phase / menuIndex
 //   shot                                   导出 160x128 RGB565，base64 分行
 //
-// 本文件必须在 render()/handleKey() 之后 include，因为它直接用这些静态函数。
+// 在主程序定义屏幕状态和 localStop() 之后包含本文件。
 
 static const char* viewName(int v) {
   switch (v) {
@@ -29,17 +27,6 @@ static const char* viewName(int v) {
     case 10: return "Monitor";
     default: return "?";
   }
-}
-
-static int parseKeyName(const String& n) {
-  if (n == "test") return board::Test;
-  if (n == "back") return board::Back;
-  if (n == "up") return board::Up;
-  if (n == "down") return board::Down;
-  if (n == "left") return board::Left;
-  if (n == "right") return board::Right;
-  if (n == "ok") return board::Confirm;
-  return -1;
 }
 
 static void dumpShot() {
@@ -78,36 +65,20 @@ static unsigned long fbChecksum() {
 
 static void pollUiDebug() {
   static String buf;
+  static bool overflow = false;
   while (Serial.available()) {
     const int ch = Serial.read();
     if (ch == 13) continue;
     if (ch != 10) {
-      if (buf.length() < 300) buf += char(ch);
+      if (buf.length() < 300) buf += char(ch); else overflow = true;
       continue;
     }
+    if (overflow) { overflow = false; buf = ""; Serial.println("command too long"); continue; }
     buf.trim();
     const String cmd = buf;
     buf = "";
     if (cmd.isEmpty()) continue;
 
-    if (cmd.startsWith("key ") || cmd.startsWith("long ")) {
-      const bool isLong = cmd.startsWith("long ");
-      const String name = cmd.substring(isLong ? 5 : 4);
-      const int idx = parseKeyName(name);
-      if (idx < 0) {
-        Serial.println("[ui] unknown key");
-      } else {
-        handleKey(static_cast<board::Key>(idx), isLong ? Press::Long : Press::Short);
-        render();
-        Serial.print("[ui] key=");
-        Serial.print(name);
-        Serial.print(" long=");
-        Serial.print(isLong ? 1 : 0);
-        Serial.print(" view=");
-        Serial.println(viewName(int(view)));
-      }
-      continue;
-    }
     if (cmd == "page") {
       Serial.print("[ui] view=");
       Serial.print(viewName(int(view)));
@@ -123,6 +94,7 @@ static void pollUiDebug() {
     }
     if (cmd == "shot") { dumpShot(); continue; }
 
+    if (cmd == "onoff") { localStop(); Serial.println("[onenet] monitor off"); continue; }
     onenetcfg::handleLine(cmd, onenet, onenetActive);
   }
 }

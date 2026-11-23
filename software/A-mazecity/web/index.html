@@ -98,6 +98,9 @@
      color:var(--dimmer);padding:8px 10px;border-bottom:1px solid var(--line)}
   td{padding:10px;border-bottom:1px solid rgba(29,43,58,.55);font-variant-numeric:tabular-nums}
   tr:last-child td{border-bottom:none}
+  .empty-row{color:var(--dimmer);text-align:center;padding:22px}
+  .board-score{color:var(--gold);font-weight:600}
+  td{overflow-wrap:anywhere}
   tr.me{background:rgba(34,211,238,.07)}
   tr.me td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
   .rank{font-weight:700;color:var(--dim)}
@@ -149,26 +152,27 @@
     <h2>登录取 token <small>POST /student/api/login</small></h2>
     <div class="login">
       <div>
-        <label>组号</label>
+        <label for="group">组号</label>
         <input id="group" placeholder="如 24001" autocomplete="username">
       </div>
       <div>
-        <label>密码（组号 + MAC 由算法生成）</label>
+        <label for="password">密码（组号 + MAC 由算法生成）</label>
         <input id="password" type="password" placeholder="8 位十六进制" autocomplete="current-password">
       </div>
       <button class="primary" id="loginBtn">登录并拉取</button>
     </div>
 
     <div class="tokenbar">
-      <span class="tag">当前 token</span>
+      <span class="tag">登录凭证</span>
       <code id="tokenView">未获取</code>
-      <button class="ghost" id="clearBtn" style="padding:7px 14px;font-size:12.5px">清除 token 直调 /api/data</button>
+      <button class="ghost" id="clearBtn" disabled style="padding:7px 14px;font-size:12.5px">退出登录</button>
       <button class="ghost" id="refreshBtn" style="padding:7px 14px;font-size:12.5px" disabled>立即刷新</button>
       <label style="margin:0 0 0 auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);cursor:pointer">
-        <input type="checkbox" id="auto" style="width:auto" checked> 每 5 秒自动刷新
+        <input type="checkbox" id="auto" style="width:auto" disabled> 每 5 秒自动刷新
       </label>
     </div>
-    <div class="msg" id="msg"></div>
+    <button class="ghost" id="demoBtn" style="margin-top:10px">本地演示无凭证拒绝</button>
+    <div class="msg" id="msg" role="status"></div>
   </section>
 
   <!-- 指标 -->
@@ -220,8 +224,7 @@
   </section>
 
   <div class="foot">
-    智联迷城 · 任务 A 数据看板　|　数据来源 124.70.71.221　|　页面只做展示，不含任何硬编码成绩<br>
-    演示顺序：输入组号密码 → 登录返回 token → 自动带 token 请求 /api/data → 展示成绩与排名
+    智联迷城 · 任务 A 成绩查询。请使用手柄按键作答。
   </div>
 </div>
 
@@ -236,6 +239,31 @@
   let token = "";
   let timer = null;
   let lastGroup = "";
+  let session = null;
+  let pulling = false;
+
+  function updateControls() {
+    const loggingIn = !!session && !token;
+    $("loginBtn").disabled = loggingIn;
+    $("loginBtn").textContent = loggingIn ? "登录中…" : "登录并拉取";
+    $("tokenView").textContent = token ? "已获取" : "未获取";
+    $("refreshBtn").disabled = !token || pulling;
+    $("auto").disabled = !token;
+    $("clearBtn").disabled = !session;
+    $("demoBtn").disabled = !!session;
+  }
+
+  function resetSession() {
+    stopAuto();
+    if (session) session.abort();
+    session = null;
+    token = lastGroup = "";
+    pulling = false;
+    $("auto").checked = false;
+    $("password").value = "";
+    render();
+    updateControls();
+  }
 
   function msg(text, kind) {
     const el = $("msg");
@@ -243,14 +271,6 @@
     el.textContent = text;
   }
   function hideMsg() { $("msg").className = "msg"; }
-
-  function setToken(t) {
-    token = t || "";
-    if (!token) { $("tokenView").textContent = "未获取"; return; }
-    const short = token.length > 22 ? token.slice(0, 14) + "…" + token.slice(-6) : token;
-    $("tokenView").textContent = short;
-    $("tokenView").title = token;
-  }
 
   function fmtTime(sec) {
     if (typeof sec !== "number" || sec < 0) return "—";
@@ -277,6 +297,19 @@
   }
 
   function render(data) {
+    if (!data) {
+      for (const id of ["pillGroup", "sScore", "sLevel", "sHp", "sRank", "dRight", "dWrong", "dRate", "dHints", "dTime", "dOnline", "dCert", "dName"]) {
+        $(id).textContent = "—";
+      }
+      $("sRankOf").textContent = "位";
+      $("scoreBar").style.width = "0%";
+      $("scorePct").textContent = "0%";
+      $("progressHint").textContent = "等待数据";
+      $("raw").textContent = "尚未请求。";
+      renderLevels(0, false);
+      renderBoard([], "", "登录后显示");
+      return;
+    }
     const g = data.game || {};
     const group = data.group_id || g.device_id || lastGroup;
 
@@ -287,7 +320,7 @@
     $("sRank").textContent = g.rank ? g.rank : "—";
     $("sRankOf").textContent = g.rank ? "位" : "未上榜";
 
-    renderLevels(g.level || 1, !!g.finished);
+    renderLevels(g.started || g.finished ? (g.level || 1) : 0, !!g.finished);
 
     const pct = Math.min(100, Math.round(((g.score || 0) / MAX_SCORE) * 100));
     $("scoreBar").style.width = pct + "%";
@@ -307,114 +340,139 @@
     $("dCert").textContent = g.certificate || "—";
     $("dName").textContent = g.name || "—";
 
-    const lb = data.leaderboard || [];
-    const body = $("board");
-    if (!lb.length) {
-      body.innerHTML = '<tr><td colspan="5" style="color:var(--dimmer);text-align:center;padding:22px">排行榜暂无数据</td></tr>';
-    } else {
-      body.innerHTML = lb.map(function (r) {
-        const me = String(r.device_id) === String(group);
-        const cls = "rank" + (r.rank === 1 ? " top1" : r.rank === 2 ? " top2" : r.rank === 3 ? " top3" : "");
-        return '<tr' + (me ? ' class="me"' : '') + '>' +
-          '<td><span class="' + cls + '">' + (r.rank || "-") + '</span></td>' +
-          '<td>' + (r.device_id || "-") + '</td>' +
-          '<td>' + (r.name || "-") + '</td>' +
-          '<td style="color:var(--gold);font-weight:600">' + (r.score || 0) + '</td>' +
-          '<td>' + (r.level || "-") + ' / 7</td>' +
-        '</tr>';
-      }).join("");
-    }
-
+    renderBoard(Array.isArray(data.leaderboard) ? data.leaderboard : [], group, "排行榜暂无数据");
     $("raw").textContent = JSON.stringify(data, null, 2);
   }
 
-  async function fetchData(withToken) {
-    const headers = { "Accept": "application/json" };
-    if (withToken && token) headers["Authorization"] = "Bearer " + token;
-    const resp = await fetch("/api/data", { headers: headers, cache: "no-store" });
-    let body;
-    const text = await resp.text();
-    try { body = JSON.parse(text); } catch (e) { body = { parse_error: text.slice(0, 300) }; }
-    return { status: resp.status, body: body };
+  function renderBoard(rows, group, empty) {
+    const body = $("board");
+    body.replaceChildren();
+    if (!rows.length) {
+      const cell = body.insertRow().insertCell();
+      cell.colSpan = 5;
+      cell.className = "empty-row";
+      cell.textContent = empty;
+      return;
+    }
+    for (const r of rows) {
+      if (!r || typeof r !== "object") continue;
+      const row = body.insertRow();
+      if (group && String(r.device_id) === String(group)) row.className = "me";
+      const rank = document.createElement("span");
+      rank.className = "rank" + ([1, 2, 3].includes(r.rank) ? " top" + r.rank : "");
+      rank.textContent = r.rank ?? "—";
+      row.insertCell().appendChild(rank);
+      row.insertCell().textContent = r.device_id ?? "—";
+      row.insertCell().textContent = r.name ?? "—";
+      const score = row.insertCell();
+      score.className = "board-score";
+      score.textContent = r.score ?? 0;
+      row.insertCell().textContent = (r.level ?? "—") + " / " + MAX_LEVEL;
+    }
   }
 
   async function login() {
+    if (session && !token) return;
     const group = $("group").value.trim();
     const password = $("password").value.trim();
     if (!group || !password) { msg("请先填写组号和密码。", "err"); return; }
 
-    $("loginBtn").disabled = true;
-    $("loginBtn").textContent = "登录中…";
-    hideMsg();
+    resetSession();
+    const current = session = new AbortController();
+    updateControls();
+    msg("正在换取登录凭证…", "ok");
     try {
       const resp = await fetch("/student/api/login", {
         method: "POST",
+        redirect: "error",
+        cache: "no-store",
+        signal: current.signal,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ group_id: group, password: password })
+        body: JSON.stringify({ group_id: group, password })
       });
       const body = await resp.json();
-      if (!resp.ok || !body.ok) {
-        throw new Error(body.message || ("登录失败，HTTP " + resp.status));
+      if (session !== current) return;
+      if (!resp.ok || !body?.ok || typeof body.token !== "string" || !body.token.trim()) {
+        resetSession();
+        msg("登录未成功。请核对组号和密码。", "err");
+        return;
       }
-      setToken(body.token);
+      token = body.token;
       lastGroup = body.group_id || group;
-      msg("登录成功，已换取 token（" + token.slice(0, 12) + "…）。正在带 token 拉取数据。", "ok");
-      $("refreshBtn").disabled = false;
       await pull();
-      startAuto();
     } catch (e) {
-      setToken("");
-      msg("登录失败：" + e.message, "err");
-    } finally {
-      $("loginBtn").disabled = false;
-      $("loginBtn").textContent = "登录并拉取";
+      if (session !== current) return;
+      resetSession();
+      msg("登录请求失败。请检查网络后重试。", "err");
     }
   }
 
   async function pull() {
-    if (!token) return;
+    const current = session;
+    if (!current || !token || pulling) return;
+    pulling = true;
+    updateControls();
     try {
-      const r = await fetchData(true);
-      if (r.status !== 200 || r.body.errno !== 0) {
-        msg("带 token 请求被拒绝：HTTP " + r.status + "，errno=" + (r.body.errno != null ? r.body.errno : "-") +
-            "（" + (r.body.error || r.body.parse_error || "") + "）", "err");
+      const resp = await fetch("/api/data", {
+        method: "GET",
+        redirect: "error",
+        cache: "no-store",
+        signal: current.signal,
+        headers: { "Accept": "application/json", "Authorization": "Bearer " + token }
+      });
+      if (session !== current) return;
+      if (resp.status === 401 || resp.status === 403) {
+        resetSession();
+        msg("成绩查询凭证失效，请重新登录。", "err");
         return;
       }
-      render(r.body.data || {});
+      const body = await resp.json();
+      if (session !== current) return;
+      if (body?.errno === 1001) {
+        resetSession();
+        msg("成绩查询凭证失效，请重新登录。", "err");
+        return;
+      }
+      if (!resp.ok || body?.errno !== 0 || !body.data?.game) {
+        msg("成绩读取失败（HTTP " + resp.status + "）。", "err");
+        return;
+      }
+      render(body.data);
+      msg("已带凭证读取本组成绩。", "ok");
     } catch (e) {
-      msg("请求失败：" + e.message, "err");
+      if (session === current) msg("成绩请求失败。请检查网络后重试。", "err");
+    } finally {
+      if (session === current) {
+        pulling = false;
+        updateControls();
+      }
     }
   }
 
-  async function demoNoToken() {
-    setToken("");
-    $("refreshBtn").disabled = true;
-    stopAuto();
-    try {
-      const r = await fetchData(false);
-      $("raw").textContent = JSON.stringify(r.body, null, 2);
-      if (r.status === 401 && r.body.errno === 1001) {
-        msg("已复现：不带 token 直调 /api/data → HTTP 401，errno 1001「" + r.body.error + "」。" +
-            "说明接口确实做了 token 鉴权，成绩不是谁都能拉到。", "ok");
-      } else {
-        msg("预期返回 401 / errno 1001，实际为 HTTP " + r.status + "，errno=" + (r.body.errno != null ? r.body.errno : "-"), "err");
-      }
-    } catch (e) {
-      msg("直调失败：" + e.message, "err");
-    }
+  function demoNoToken() {
+    if (session) return;
+    msg("本地模拟 · 无凭证时预期返回 HTTP 401 / errno 1001。此操作未发出请求。", "ok");
   }
 
   function startAuto() {
     stopAuto();
-    if (!$("auto").checked) return;
-    timer = setInterval(pull, 5000);
+    if (token && $("auto").checked) timer = setInterval(pull, 5000);
   }
   function stopAuto() {
-    if (timer) { clearInterval(timer); timer = null; }
+    if (timer !== null) { clearInterval(timer); timer = null; }
   }
 
   $("loginBtn").addEventListener("click", login);
-  $("clearBtn").addEventListener("click", demoNoToken);
+  $("clearBtn").addEventListener("click", function () {
+    resetSession();
+    msg("登录凭证已清除。", "ok");
+  });
+  $("demoBtn").addEventListener("click", demoNoToken);
+  $("group").addEventListener("input", function () {
+    if (!session) return;
+    resetSession();
+    hideMsg();
+  });
   $("refreshBtn").addEventListener("click", pull);
   $("auto").addEventListener("change", function () { this.checked ? startAuto() : stopAuto(); });
   $("password").addEventListener("keydown", function (e) { if (e.key === "Enter") login(); });
@@ -429,7 +487,8 @@
     try { localStorage.setItem("zlc_group", this.value.trim()); } catch (e) {}
   });
 
-  renderLevels(1, false);
+  render();
+  updateControls();
 })();
 </script>
 </body>
