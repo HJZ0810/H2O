@@ -1,5 +1,6 @@
 #pragma once
 #include <mbedtls/base64.h>
+#include <Preferences.h>
 
 // 串口用于屏幕诊断和设备配置。考试按键只从 GPIO 读取。
 //
@@ -93,6 +94,73 @@ static void pollUiDebug() {
       continue;
     }
     if (cmd == "shot") { dumpShot(); continue; }
+
+    // view <n>：直接跳到某个界面，绕过按键路径，便于远程核对布局
+    if (cmd.startsWith("view ")) {
+      const int v = cmd.substring(5).toInt();
+      if (v >= 0 && v <= 10) {
+        switchView(static_cast<View>(v));
+        Serial.printf("[ui] view=%s\n", viewName(v));
+      }
+      continue;
+    }
+    // key <n>：模拟一次短按，枚举同 board::Key（0 测试 1 返回 2 上 3 下 4 左 5 右 6 确认）
+    if (cmd.startsWith("key ")) {
+      const int k = cmd.substring(4).toInt();
+      if (k >= 0 && k < board::KeyCount) {
+        handleKey(static_cast<board::Key>(k), Press::Short);
+        Serial.printf("[ui] key=%d scroll=%d/%d\n", k, pageScroll, pageScrollMax);
+      }
+      continue;
+    }
+
+    if (cmd == "sensor") {
+      Serial.print("[sensor] ");
+      Serial.println(sensors.json());
+      continue;
+    }
+    if (cmd == "cfg") {
+      Serial.printf("[cfg] ssid=%s wifiPass=%s grp=%s pass=%s mac=%s ip=%s wifi=%d rssi=%d online=%d ready=%d\n",
+                    configuration.value.ssid.c_str(), configuration.value.wifiPassword.c_str(),
+                    configuration.value.group.c_str(),
+                    configuration.value.mqttPassword.c_str(), auth::deviceMac().c_str(),
+                    WiFi.localIP().toString().c_str(), int(WiFi.status()), int(WiFi.RSSI()),
+                    network.online() ? 1 : 0, session.ready ? 1 : 0);
+      continue;
+    }
+    // wifi <ssid> <password>：直接写 NVS 并重启，绕过配网页
+    if (cmd.startsWith("wifi ")) {
+      String rest = cmd.substring(5);
+      const int sp = rest.indexOf(' ');
+      if (sp > 0) {
+        String ssid = rest.substring(0, sp);
+        String pass = rest.substring(sp + 1);
+        ssid.trim();
+        pass.trim();
+        Preferences p;
+        bool ok = p.begin("zlc-config", false);
+        if (ok) {
+          ok = p.putString("ssid", ssid) == ssid.length();
+          ok = (p.putString("wifi", pass) == pass.length()) && ok;
+          p.end();
+        }
+        Serial.printf("[cfg] ssid=%s passLen=%d saved=%d\n", ssid.c_str(), int(pass.length()), ok ? 1 : 0);
+        delay(250);
+        ESP.restart();
+      } else {
+        Serial.println("[cfg] usage: wifi <ssid> <password>");
+      }
+      continue;
+    }
+    if (cmd == "scan") {
+      const int n = WiFi.scanNetworks();
+      Serial.printf("[scan] %d aps\n", n);
+      for (int i = 0; i < n; i++)
+        Serial.printf("  ssid=%-24s rssi=%4d ch=%2d auth=%d\n", WiFi.SSID(i).c_str(),
+                      int(WiFi.RSSI(i)), int(WiFi.channel(i)), int(WiFi.encryptionType(i)));
+      continue;
+    }
+    if (cmd == "reboot") { Serial.println("[sys] reboot"); delay(80); ESP.restart(); }
 
     if (cmd == "onoff") { localStop(); Serial.println("[onenet] monitor off"); continue; }
     onenetcfg::handleLine(cmd, onenet, onenetActive);

@@ -440,9 +440,9 @@ void Painter::bar(int x, int y, int w, int h, int percent, Color col) {
 }
 
 void Painter::sensorPage(bool dhtValid, float temp, float humidity,
-                         const Metric* mq, int mqCount, bool simulating) {
+                         const Metric* mq, int mqCount, bool simulating, int scroll) {
   int x = t_.pad, w = t_.W - 2 * t_.pad;
-  int y = t_.contentTop() + t_.gap;
+  int y = t_.contentTop() + t_.gap - scroll;
   int half = (w - t_.gap) / 2;
 
   // 温湿度两块大数字卡
@@ -458,7 +458,7 @@ void Painter::sensorPage(bool dhtValid, float temp, float humidity,
   const char* units[2] = {"°C", "%RH"};
   Color cols[2] = {Color::hex(0xFF8A5B), t_.accent};
   for (int i = 0; i < 2; i++) {
-    Rect r(x + i * (half + t_.gap), y, half, t_.compact ? 58 : 78);
+    Rect r(x + i * (half + t_.gap), y, half, t_.compact ? 42 : 78);
     cardBg(r);
     f_.useSize(t_.smallPx);
     f_.draw(c_, r.x + t_.pad, r.y + t_.pad, labels[i], t_.dim);
@@ -469,42 +469,62 @@ void Painter::sensorPage(bool dhtValid, float temp, float humidity,
     f_.useSize(t_.smallPx);
     f_.draw(c_, r.right() - t_.pad - f_.width(units[i]), r.bottom() - t_.pad - f_.lineHeight(), units[i], t_.dim);
   }
-  y += (t_.compact ? 58 : 78) + t_.gap;
+  y += (t_.compact ? 42 : 78) + t_.gap;
 
-  // 气体两路
+  // 气体两路：紧凑档并排放一行，一屏内放得下；大屏仍竖排逐条列出
   for (int i = 0; i < mqCount; i++) {
-    Rect r(x, y, w, t_.compact ? 40 : 54);
+    Rect r = t_.compact ? Rect(x + i * (half + t_.gap), y, half, 32)
+                        : Rect(x, y, w, 54);
     cardBg(r);
     f_.useSize(t_.bodyPx);
     f_.draw(c_, r.x + t_.pad, r.y + t_.pad - 2, mq[i].label, t_.text);
     f_.useSize(t_.smallPx);
     int lh2 = f_.lineHeight();
-    f_.draw(c_, r.x + t_.pad, r.bottom() - t_.pad - lh2, mq[i].value, t_.dim);
-    // 右侧大数值
-    f_.useSize(t_.bodyPx);
-    int vw = f_.width(mq[i].unit);
-    f_.draw(c_, r.right() - t_.pad - vw, r.cy() - f_.lineHeight() / 2 + 1, mq[i].unit, mq[i].color);
-    y += r.h + t_.gap;
+    f_.draw(c_, r.x + t_.pad, r.bottom() - t_.pad - lh2, mq[i].value, mq[i].color);
+    if (!t_.compact) {
+      // 右侧大数值单位
+      f_.useSize(t_.bodyPx);
+      int vw = f_.width(mq[i].unit);
+      f_.draw(c_, r.right() - t_.pad - vw, r.cy() - f_.lineHeight() / 2 + 1, mq[i].unit, mq[i].color);
+      y += r.h + t_.gap;
+    }
   }
   if (simulating) {
     f_.useSize(t_.smallPx);
     f_.draw(c_, x + 2, t_.contentBottom() - f_.lineHeight() - 2, "MQ 通道为模拟值（验证板无该传感器）", t_.warn);
   }
+  // 裁掉滚出内容区的部分；标题栏与页脚随后会覆盖这两条
+  c_.fillRect(0, 0, t_.W, t_.contentTop(), t_.bg);
+  c_.fillRect(0, t_.contentBottom(), t_.W, t_.H - t_.contentBottom(), t_.bg);
 }
 
-void Painter::infoPage(const char* const* keys, const char* const* values, int count) {
+int Painter::sensorHeight(int mqCount, bool simulating) const {
+  if (t_.compact) return 42 + t_.gap + 32 + t_.gap;   // 温湿度一行 + 气体一行
+  int h = 78 + t_.gap;
+  h += mqCount * (54 + t_.gap);
+  if (simulating) h += t_.lineStep;
+  return h;
+}
+
+void Painter::infoPage(const char* const* keys, const char* const* values, int count, int scroll) {
   int x = t_.pad, w = t_.W - 2 * t_.pad;
-  int y = t_.contentTop() + t_.gap;
+  int y = t_.contentTop() + t_.gap - scroll;
   int rowH = t_.compact ? 22 : 28;
-  int maxRows = (t_.contentBottom() - t_.gap - y) / rowH;
-  Rect r(x, y, w, (count < maxRows ? count : maxRows) * rowH + t_.pad);
+  Rect r(x, y, w, count * rowH + t_.pad);
   cardBg(r);
   int yy = y + t_.pad / 2 + 2;
-  for (int i = 0; i < count && i < maxRows; i++) {
+  for (int i = 0; i < count; i++) {
     kv(x + t_.pad, yy, w - 2 * t_.pad, keys[i], values[i], t_.text);
-    if (i + 1 < count && i + 1 < maxRows) c_.blendRect(x + t_.pad, yy + rowH - 5, w - 2 * t_.pad, 1, t_.stroke, 90);
+    if (i + 1 < count) c_.blendRect(x + t_.pad, yy + rowH - 5, w - 2 * t_.pad, 1, t_.stroke, 90);
     yy += rowH;
   }
+  c_.fillRect(0, 0, t_.W, t_.contentTop(), t_.bg);
+  c_.fillRect(0, t_.contentBottom(), t_.W, t_.H - t_.contentBottom(), t_.bg);
+}
+
+int Painter::infoHeight(int count) const {
+  int rowH = t_.compact ? 22 : 28;
+  return count * rowH + 2 * t_.pad;
 }
 
 void Painter::setupPage(const char* ap, const char* pass, const char* url, const char* mac) {
@@ -583,8 +603,22 @@ void Painter::finishedPage(int score, int rank, const char* certificate) {
   cardBg(r);
   cornerBrackets(r, t_.ok);
   f_.useSize(t_.smallPx);
+  char buf[32];
+  if (t_.compact) {
+    // 128 px 高时卡片只有 75 px：标题 / 分数 / 名次 / 证书各占一行，避免相互压字
+    f_.draw(c_, r.cx() - f_.width("已通关") / 2, y + 1, "已通关", t_.ok);
+    snprintf(buf, sizeof(buf), "%d", score);
+    f_.useSize(16);
+    f_.draw(c_, r.cx() - f_.width(buf) / 2, y + 17, buf, t_.accent);
+    snprintf(buf, sizeof(buf), "总分 · 排名 %d", rank);
+    f_.useSize(t_.smallPx);
+    f_.draw(c_, r.cx() - f_.width(buf) / 2, y + 38, buf, t_.text);
+    if (certificate && *certificate) {
+      f_.draw(c_, r.cx() - f_.width(certificate) / 2, y + 54, certificate, t_.dimmer);
+    }
+    return;
+  }
   f_.draw(c_, r.cx() - f_.width("已通关") / 2, y + t_.pad, "已通关", t_.ok);
-  char buf[24];
   snprintf(buf, sizeof(buf), "%d", score);
   f_.useSize(t_.compact ? 30 : 44);
   f_.draw(c_, r.cx() - f_.width(buf) / 2, y + (t_.compact ? 26 : 40), buf, t_.accent);

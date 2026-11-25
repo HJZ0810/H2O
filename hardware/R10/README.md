@@ -1,5 +1,7 @@
 # H2O R10 · 硬件装配审查
 
+> **首件实测缺陷（2026-11-25）**：J5（DHT11）针序与市面通用模块**相反**，直插会把模块电源反接，属致命缺陷；J6/J7（MQ）的 `DO`/`AO` 与板上 `AO`/空位**错开一位**，ADC 恒读 0；另有 `+5V` 主干在板内不通。三路传感器因此全部不可用，与固件无关。详见 [硬件缺陷与勘误](../../docs/R10/硬件缺陷与勘误.md)。
+
 **工程入口**　[source/H2O-R10-YD254.epro2](source/H2O-R10-YD254.epro2) 包含原理图、PCB1 手柄和 PCB2 执行器。以源地 YD-ESP32-S3 的 25.40 mm 宽版为基础。RC2 维持 RC1 的工程源与制造基线。离线重建可回读，待原生重开。
 
 **制造资料**　[PCB1 原始宽版 Gerber](gerber-baseline/wide-PCB1-after-silk-gerber.zip) 与 [PCB2 原始宽版 Gerber](gerber-baseline/wide-PCB2-probe-gerber.zip) 是 11 月 20 日的制造基线，两包均通过 ZIP CRC 和 SHA-256 检查。**这两包仍含原丝印。R10 新丝印待重新导出，目前不能据此下单 R10。**

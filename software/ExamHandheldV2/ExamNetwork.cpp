@@ -53,6 +53,7 @@ void ExamNetwork::run() {
   });
   uint32_t nextConnect=millis(),helloAt=0;
   auto hello=[&]{JsonDocument d;d["type"]="hello";d["data"]["name"]=cfg_.name;
+    d["data"]["device_id"]=cfg_.group;
     d["data"]["firmware"]=board::FirmwareVersion;d["data"]["protocol"]=2;String s;serializeJson(d,s);
     return mqtt.publish(up.c_str(),s.c_str(),false);};
   for(;;) {
@@ -67,9 +68,11 @@ void ExamNetwork::run() {
         if(mqtt.connect(clientId.c_str(),cfg_.group.c_str(),cfg_.mqttPassword.c_str())) {
           if(mqtt.subscribe(down.c_str(),1)) {
             online_=true;emit(NetKind::Online);hello();helloAt=now;
+            Serial.printf("[mqtt] online cid=%s down=%s\n", clientId.c_str(), down.c_str());
           } else {mqtt.disconnect();emit(NetKind::Error,"MQTT订阅发送失败");}
         } else {
           String err="MQTT连接失败，状态码 "+String(mqtt.state())+"；检查组号、密码及网络";
+          Serial.printf("[mqtt] rc=%d server=%s up=%s\n", mqtt.state(), cfg_.host.c_str(), up.c_str());
           emit(NetKind::Error,err.c_str());
         }
       }

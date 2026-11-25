@@ -44,6 +44,7 @@ View view = View::Menu;
 int menuIndex = 0;
 unsigned optionCursor = 0;
 int qScroll = 0;
+int pageScroll = 0, pageScrollMax = 0;   // 传感器/信息/监测页的画幅滚动
 String feedback, lastKey;
 uint32_t feedbackAt = 0, lastReport = 0, lastPaint = 0, linkEpoch = 0, lastResume = 0;
 bool networkStarted = false;
@@ -124,8 +125,11 @@ static void render() {
         ui::Metric mq[2];
         mq[0] = {"MQ-2", mq0v, "ADC", theme.ok};
         mq[1] = {"MQ-135", mq1v, "ADC", theme.warn};
+        pageScrollMax = painter->sensorHeight(2, !board::kHasMq) - theme.contentH();
+        if (pageScrollMax < 0) pageScrollMax = 0;
+        if (pageScroll > pageScrollMax) pageScroll = pageScrollMax;
         painter->sensorPage(sensors.dhtValid, sensors.temperature, sensors.humidity,
-                            mq, 2, !board::kHasMq);
+                            mq, 2, !board::kHasMq, pageScroll);
         painter->statusBar(makeStatus());
         painter->pageTitle("环境采样");
         break;
@@ -137,7 +141,10 @@ static void render() {
         const char* vals[] = {board::FirmwareVersion, configuration.value.group.c_str(),
                               configuration.value.ssid.c_str(), ip.c_str(), rssi.c_str(),
                               session.ready ? "已连接" : "等待"};
-        painter->infoPage(keys, vals, 6);
+        pageScrollMax = painter->infoHeight(6) - theme.contentH();
+        if (pageScrollMax < 0) pageScrollMax = 0;
+        if (pageScroll > pageScrollMax) pageScroll = pageScrollMax;
+        painter->infoPage(keys, vals, 6, pageScroll);
         painter->statusBar(makeStatus());
         painter->pageTitle("设备信息");
         break;
@@ -175,8 +182,9 @@ static void render() {
           painter->statusBar(makeStatus());
           painter->pageTitle("剧情");
         } else {
+          const bool done = session.phase == exam::Phase::Finished;
           ui::MenuEntry items[6] = {
-              {"开始考试", nullptr, 0}, {"环境采样", nullptr, 1}, {"设备信息", nullptr, 2},
+              {done ? "重新挑战" : "开始考试", nullptr, 0}, {"环境采样", nullptr, 1}, {"设备信息", nullptr, 2},
               {"配网设置", nullptr, 3}, {"执行器", nullptr, 4}, {"云端监测", nullptr, 5}};
           painter->menu(items, 6, menuIndex);
           painter->statusBar(makeStatus());
@@ -190,7 +198,7 @@ static void render() {
     if (session.phase == exam::Phase::Story) hint = "OK 继续";
     else if (session.phase == exam::Phase::Judge) hint = "OK 继续";
     else if (session.phase == exam::Phase::Question) hint = "左右选 F1勾 OK交";
-    else if (session.phase == exam::Phase::Finished) hint = "长按返回采样";
+    else if (session.phase == exam::Phase::Finished) hint = "OK/返回 退出";
     else if (session.phase == exam::Phase::Recovery) hint = "OK 重新同步";
     if (view == View::Sensor || view == View::Info || view == View::Setup || view == View::Fan ||
         view == View::Monitor)
@@ -214,6 +222,8 @@ static void switchView(View v) {
   if (v == View::Fan || (view == View::Fan && v != View::Fan)) localStop();
   view = v;
   qScroll = 0;
+  pageScroll = 0;
+  pageScrollMax = 0;
   lastKey = "";
 }
 
@@ -234,8 +244,19 @@ static void handleKey(board::Key key, Press press) {
   Serial.print(session.revision);
   Serial.print("/");
   Serial.println(paintedRevision);
+  if (view == View::Finished) {
+    // 通关页必须留出口，否则会停在这里没有任何按键响应
+    if (key == Back || key == Confirm) switchView(View::Menu);
+    return;
+  }
   if (view == View::Sensor || view == View::Info || view == View::Monitor) {
-    if (key == Confirm || key == Back) switchView(View::Menu);
+    if (key == Confirm || key == Back) { switchView(View::Menu); return; }
+    // 上下键滚动画幅；一屏放得下时 pageScrollMax 为 0，按键无效果
+    if (key == Up || key == Down) {
+      pageScroll += (key == Up ? -theme.lineStep : theme.lineStep);
+      if (pageScroll < 0) pageScroll = 0;
+      if (pageScroll > pageScrollMax) pageScroll = pageScrollMax;
+    }
     return;
   }
   if (view == View::Setup) {
@@ -270,7 +291,10 @@ static void handleKey(board::Key key, Press press) {
       const View views[] = {View::Menu, View::Sensor, View::Info, View::Setup, View::Fan, View::Monitor};
       if (menuIndex == 0) {
         if (!session.ready || !session.statusKnown) { tell("连接未就绪"); return; }
-        sendCommand(session.start(millis()));
+        // start() 在状态不允许时会返回空串，此时不要切页，避免停在空白答题页
+        const auto cmd = session.start(millis());
+        if (cmd.empty()) { tell("暂时无法开始，稍后再试"); return; }
+        sendCommand(cmd);
         switchView(View::Question);
       } else if (menuIndex == 5) {
         if (!onenet.configured()) { tell("未配置 OneNET"); return; }
@@ -282,6 +306,12 @@ static void handleKey(board::Key key, Press press) {
         switchView(views[menuIndex]);
       }
     }
+    return;
+  }
+  // 停在答题页但会话已不在答题流程（如通关后重开失败）：允许退回菜单
+  if (view == View::Question && session.phase != exam::Phase::Question &&
+      session.phase != exam::Phase::Story && session.phase != exam::Phase::Judge) {
+    if (key == Back || key == Confirm) switchView(View::Menu);
     return;
   }
   if (view == View::Question && session.phase == exam::Phase::Question) {

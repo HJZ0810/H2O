@@ -35,6 +35,9 @@ void Actuators::begin() {
   for (int pin : {MotorA.pwm, MotorA.in1, MotorA.in2,
                   MotorB.pwm, MotorB.in1, MotorB.in2, board::ServoPwm}) {
     if (pin < 0) continue;
+#ifdef H2O_KEEP_UART0
+    if (pin == 43) continue;  // 调试构建：GPIO43 与 UART0 TX 复用，保留串口，B 路 BIN2 暂不驱动
+#endif
     digitalWrite(pin, LOW);
     pinMode(pin, OUTPUT);
   }
@@ -56,7 +59,9 @@ void Actuators::stop() {
   if (MotorA.in1 >= 0) digitalWrite(MotorA.in1, LOW);
   if (MotorA.in2 >= 0) digitalWrite(MotorA.in2, LOW);
   if (MotorB.in1 >= 0) digitalWrite(MotorB.in1, LOW);
+#ifndef H2O_KEEP_UART0
   if (MotorB.in2 >= 0) digitalWrite(MotorB.in2, LOW);
+#endif
   if (ready_) {
     const bool aOk = setMotor(MotorA, 0);
     const bool bOk = setMotor(MotorB, 0);

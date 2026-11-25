@@ -64,9 +64,12 @@ class Painter {
   int questionViewport() const { return t_.H - t_.statusH - t_.footerH - 2 * t_.gap; }
   void story(int level, const char* text, int seq, int total);
   void judge(bool correct, const char* answer, int gain, int hp, int score, const char* text);
+  // scroll：内容整体上移的像素数，由上下键调节，滚出内容区的部分被裁掉
   void sensorPage(bool dhtValid, float temp, float humidity,
-                  const Metric* mq, int mqCount, bool simulating);
-  void infoPage(const char* const* keys, const char* const* values, int count);
+                  const Metric* mq, int mqCount, bool simulating, int scroll = 0);
+  int sensorHeight(int mqCount, bool simulating) const;
+  void infoPage(const char* const* keys, const char* const* values, int count, int scroll = 0);
+  int infoHeight(int count) const;
   void setupPage(const char* ap, const char* pass, const char* url, const char* mac);
   void fanPage(bool linked, bool channelB, int pctA, int pctB, int pulseUs, bool servoActive);
   void finishedPage(int score, int rank, const char* certificate);

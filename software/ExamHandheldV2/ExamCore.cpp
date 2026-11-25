@@ -63,7 +63,8 @@ std::string Core::resume(unsigned long now) {
 std::string Core::start(unsigned long now) {
   if(!connected || !ready || !statusKnown || busy()) return {};
   // Legacy recovery still allows a manual start after a fresh HTTP snapshot.
-  if(phase!=Phase::Menu && (protocolV2 || phase!=Phase::Recovery)) return {};
+  // 允许从「已通关」重新开始：服务端对同一组开放多次挑战机会
+  if(phase!=Phase::Menu && phase!=Phase::Finished && (protocolV2 || phase!=Phase::Recovery)) return {};
   hasFollow_=false; followQueue_.clear(); lastJudge_.clear(); everActive_=true;
   selected=removed=0; hints=1;
   return command("start",Pending::Start,now);
